@@ -1,6 +1,5 @@
 import React from "react";
 import {Button, Icon, Input, Popover, Typography} from "antd";
-import black from '../loading.png'
 const { Paragraph } = Typography;
 
 export const isNull = (obj, or) => {
@@ -118,11 +117,11 @@ export const InputTitle = (props) => {
     </div>
 }
 export const Img = (props) => {
-    return <img src={props.loading?black:props.src} style={props.style} alt={props.alt} onClick={props.onClick}/>
+    return <img src={props.loading?"/loading.png":props.src} style={props.style} alt={props.alt} onClick={props.onClick}/>
 }
 
 export const getSmallHaihuImg = (loading, hrefConverse, onClick) => {
-    const converseUrl = src => isEmpty(src)? black:
+    const converseUrl = src => isEmpty(src)? "/loading.png":
         src.includes("http")? src:
             'http://img.haihu.com/' + src + "@1c_1e_80w"
     return {
@@ -200,3 +199,7 @@ export function If(boolean) {
         }
     }
 }
+
+export const For = list => ({
+    then: mapFun => list.map(mapFun).map((item, index) => <item key={index}/>),
+})
