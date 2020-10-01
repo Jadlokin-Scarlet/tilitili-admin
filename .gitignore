@@ -1,2 +1,7 @@
-# Project exclude paths
+.idea
+*.iml
+*.yml
 /target/
+DockerFile
+/src/main/resources/application.properties
+/src/main/resources/mybatis-generator-config.xml
