@@ -7,19 +7,25 @@ export default class SimpleModalButton extends Component {
         super(props)
         this.state = {
             visible: false,
+            loading: false,
         };
     }
 
     showModal = () => {
-        const showModal = this.props.showModal || (() => true);
-        const isShowModal = isNull(showModal(), true);
+        const onShowModal = this.props.onShowModal || (() => true);
+        const isShowModal = isNull(onShowModal(), true);
         this.setState({visible: isShowModal})
     };
 
     handleOk = () => {
-        const onOk = this.props.onOk || (() => true);
-        const isCloseModal = isNull(onOk(), true);
-        this.setState({visible: !isCloseModal})
+        this.setState({loading: true})
+        const onOk = this.props.onOk || (async () => true);
+        onOk().then((isCloseModal = true) => {
+            this.setState({
+                visible: !isCloseModal,
+                loading: false,
+            })
+        })
     };
 
     handleCancel = () => {
@@ -32,13 +38,12 @@ export default class SimpleModalButton extends Component {
         const { visible } = this.state;
         return (
             <span>
-                <Button style={{ marginLeft: 8 }}
+                <Button style={this.props.buttonStyle}
                         type="primary"
                         onClick={this.showModal}
                         disabled={isNull(this.props.disabled, false)}
                         hidden={this.props.hidden}
-                        title={this.props.title || '编辑'}
-                />
+                >{this.props.title || '编辑'}</Button>
                 <Modal
                     title={this.props.title || '标题'}
                     visible={visible}
@@ -47,8 +52,9 @@ export default class SimpleModalButton extends Component {
                     width={this.props.width}
                     footer={this.props.footer}
                     centered={this.props.centered}
+                    confirmLoading={this.state.loading}
                 >
-                    {If (Array.isArray(this.props.children)).then(() => (
+                    {If (Array.isArray(this.props.children) || ['span'].includes(this.props.children.type) || ['Form'].includes(this.props.children.type.name)).then(() => (
                         this.props.children
                     )).else(() => (
                         <this.props.children.type {...this.props.children.props} visible={this.state.visible}/>

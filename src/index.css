@@ -12,6 +12,21 @@ code {
     monospace;
 }
 
+.ant-dropdown-menu-item {
+  padding-bottom: 0 !important;
+}
+
 .primary-color {
   color: #FFBB66 !important;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.ant-input-affix-wrapper .ant-input:not(:last-child) {
+  padding-right: 11px !important;
+}
+.ant-input-affix-wrapper span.ant-input-suffix {
+  right: 1px;
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="47.100.66.36">
+    <serverData>
+      <paths name="47.100.66.36">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/public" local="$PROJECT_DIR$/build" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath path="/node_modules" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

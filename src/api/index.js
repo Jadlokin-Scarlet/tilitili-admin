@@ -3,20 +3,22 @@
     |- 每个接口返回的都是promise对象
  */
 
-import ajax from "./ajax"
+import {del, get, patch, post} from "./ajax"
 
-const BASE = '/api'
 
 // 登录
-export const reqLogin = (username, password) => ajax(BASE + '/Login', { username, password },"POST")
-export const reqLoginOut = () => ajax(BASE + '/logout')
+export const isLogin = () => get('/admin/isLogin')
+export const reqLogin = (userName, password) => post('/admin/login', { userName, password })
+export const reqLoginOut = () => post('/admin/loginOut')
 
-//  获取资源列表
-export const getResources = (data) => ajax(BASE + '/getResources', data)
+// 获取资源列表
+export const getResources = (data) => get('/resources', data)
 
-// 获取菜单权限
-export const getAdminUserRoleMenuList = () => ajax(BASE + '/getAdminUserRoleMenuList',{})
+//视频信息
+export const getVideoInfoByCondition = (data) => get('/video/info', data)
+export const deleteVideo = (av) => del(`/video/info/${av}/isDelete/true`)
+export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
 
-export const getTrafficCard = () => ajax(BASE+'/traffic/getTrafficCard')
-export const getUserTraffic = (dayBegin,dayEnd) => ajax(BASE+'/traffic/getUserTraffic',{dayBegin,dayEnd})
-export const getTrafficLineCard = (dayBegin,dayEnd) => ajax(BASE+'/traffic/getTrafficLineCard', {dayBegin,dayEnd})
+//视频数据
+export const getVideoDataByCondition = (data) => get('/video/data', data)
+export const reRank = (data) => patch('/video/data/rank', data)
