@@ -1,9 +1,7 @@
 package com.tilitili.admin.mapper;
 
-import com.tilitili.admin.entity.Type;
 import com.tilitili.admin.entity.Video;
-import com.tilitili.admin.query.VideoQuery;
-import org.apache.ibatis.annotations.Param;
+import com.tilitili.admin.entity.query.VideoQuery;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

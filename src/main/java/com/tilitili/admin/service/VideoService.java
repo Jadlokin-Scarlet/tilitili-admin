@@ -1,9 +1,12 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.Video;
+import com.tilitili.admin.entity.VideoInfo;
+import com.tilitili.admin.entity.query.VideoInfoQuery;
 import com.tilitili.admin.manager.VideoManager;
+import com.tilitili.admin.mapper.VideoInfoMapper;
 import com.tilitili.admin.mapper.VideoMapper;
-import com.tilitili.admin.query.VideoQuery;
+import com.tilitili.admin.entity.query.VideoQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +31,7 @@ public class VideoService {
     }
 
     public String getVideoDataFile(int issue) {
-        VideoQuery videoQuery = new VideoQuery().setTop(30).setIssue(issue).setSorter("point").setSorted("desc");
+        VideoQuery videoQuery = new VideoQuery().setPageSize(30).setStart(0).setIssue(issue).setSorter("point");
         String head = String.join("\t", fields) + "\n";
         String body = videoManager.listTopVideo(videoQuery).stream()
                 .map(video -> video.toString(fields))
@@ -39,4 +42,5 @@ public class VideoService {
     public List<Video> listVideo(VideoQuery videoQuery) {
         return videoManager.listTopVideo(videoQuery);
     }
+
 }

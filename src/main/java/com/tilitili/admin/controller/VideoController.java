@@ -1,6 +1,7 @@
 package com.tilitili.admin.controller;
+
 import com.tilitili.admin.entity.Video;
-import com.tilitili.admin.query.VideoQuery;
+import com.tilitili.admin.entity.query.VideoQuery;
 import com.tilitili.admin.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "api/video",produces = "application/json")
+@RequestMapping("api/video")
 @Validated
 @Slf4j
 public class VideoController {
@@ -30,15 +31,6 @@ public class VideoController {
     @GetMapping("/issue/{issue}/data.txt")
     public ResponseEntity<String> getVideoDataFile(@PathVariable int issue) {
         return ResponseEntity.ok(videoService.getVideoDataFile(issue));
-    }
-
-    @GetMapping("/issue/{issue}")
-    public ResponseEntity<List<Video>> listVideo(
-            @PathVariable Integer issue,
-            @RequestParam Integer top
-    ) {
-        VideoQuery videoQuery = new VideoQuery().setIssue(issue).setTop(top);
-        return ResponseEntity.ok(videoService.listVideo(videoQuery));
     }
 
 }

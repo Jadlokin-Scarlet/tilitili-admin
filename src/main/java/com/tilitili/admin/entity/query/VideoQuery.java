@@ -1,4 +1,4 @@
-package com.tilitili.admin.query;
+package com.tilitili.admin.entity.query;
 
 import lombok.Getter;
 import lombok.Setter;

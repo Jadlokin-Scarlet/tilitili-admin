@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tilitili.admin.mapper.VideoMapper">
 	<select id="list" resultType="Video">
-		select <if test="top != null">top ${top}</if><if test="top == null">top 20</if>
+		select top 100
 			video_info.av,
 			video_info.name,
 			video_info.img,
@@ -37,20 +37,8 @@
 		from video_info left join video_data on video_info.av = video_data.av
 			left join video_data as old_video_data on video_info.av = old_video_data.av and old_video_data.issue = video_data.issue - 1
 			left join video_data as more_old_video_data on video_info.av = more_old_video_data.av and more_old_video_data.issue = video_data.issue - 2
-		<where>
-		    and video_info.is_delete = 0
-			<if test="issue != null">
-				and video_data.issue = #{issue}
-			</if>
-		</where>
-		<if test="sorter != null and sorted != null">
-			order by [${sorter}] ${sorted}
-		</if>
-
-<!--		where video_info.is_delete = 0-->
-<!--			and video_info.type in <foreach collection="typeList" item="type" open="(" close=")" separator=",">-->
-<!--				#{type.name}-->
-<!--			</foreach>-->
-<!--			and video_info.name like ('%' + #{searchKey} + '%')-->
+		where video_info.is_delete = 0
+			and video_data.issue = #{issue}
+		order by video_data.point desc
 	</select>
 </mapper>

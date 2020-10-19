@@ -2,7 +2,7 @@ package com.tilitili.admin.manager;
 
 import com.tilitili.admin.entity.Video;
 import com.tilitili.admin.mapper.VideoMapper;
-import com.tilitili.admin.query.VideoQuery;
+import com.tilitili.admin.entity.query.VideoQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,6 @@ public class VideoManager {
     }
 
     public List<Video> listTopVideo(VideoQuery videoQuery) {
-        return videoMapper.list(videoQuery.setSorter("point").setSorted("desc"));
+        return videoMapper.list(videoQuery.setSorter("point"));
     }
 }

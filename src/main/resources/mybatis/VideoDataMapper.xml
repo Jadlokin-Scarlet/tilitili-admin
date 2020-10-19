@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tilitili.admin.mapper.VideoDataMapper">
+	<select id="countVideoByCondition" resultType="Integer">
+		select count(1) from video_data left join video_info on video_data.av = video_info.av
+		<where>
+			<if test="av != null">
+				and video_data.av = #{av}
+			</if>
+			<if test="issue != null">
+				and video_data.issue = #{issue}
+			</if>
+			<if test="isDelete != null">
+				and video_info.is_delete = #{isDelete}
+			</if>
+			<if test="name != null">
+				and video_info.name like concat('%', #{name}, '%')
+			</if>
+			<if test="owner != null">
+				and video_info.owner like concat('%', #{owner}, '%')
+			</if>
+			<if test="bv != null">
+				and video_info.bv = #{bv}
+			</if>
+			<if test="type != null">
+				and video_info.type = #{type}
+			</if>
+			<if test="copyright != null">
+				and video_info.copyright = #{copyright}
+			</if>
+		</where>
+	</select>
+	<select id="listVideoByCondition" resultType="VideoData">
+		select
+			video_data.av,
+			video_data.[view],
+			video_data.reply,
+			video_data.favorite,
+			video_data.coin,
+			video_data.page,
+			video_data.point,
+			video_data.rank,
+			video_data.issue,
+			video_data.danmaku,
+			video_data.share,
+			video_data.[like],
+			video_data.dislike,
+			video_data.evaluation,
+			video_info.name,
+			video_info.img,
+			video_info.type,
+			video_info.owner,
+			video_info.copyright,
+			video_info.pub_time as pubTime,
+			video_info.start_time as StartTime,
+			video_info.is_delete as isDelete,
+			video_info.bv,
+			video_info.description,
+			video_info.state,
+			video_info.duration,
+			video_info.mission_id as MissionId,
+			video_info.dynamic,
+			video_info.start_page as StartPage
+		from video_data left join video_info on video_data.av = video_info.av
+		<where>
+			<if test="av != null">
+				and video_data.av = #{av}
+			</if>
+			<if test="issue != null">
+				and video_data.issue = #{issue}
+			</if>
+			<if test="isDelete != null">
+				and video_info.is_delete = #{isDelete}
+			</if>
+			<if test="name != null">
+				and video_info.name like concat('%', #{name}, '%')
+			</if>
+			<if test="owner != null">
+				and video_info.owner like concat('%', #{owner}, '%')
+			</if>
+			<if test="bv != null">
+				and video_info.bv = #{bv}
+			</if>
+			<if test="type != null">
+				and video_info.type = #{type}
+			</if>
+			<if test="copyright != null">
+				and video_info.copyright = #{copyright}
+			</if>
+		</where>
+		<if test="sorter != null and sorted != null">
+			order by [${sorter}] ${sorted}
+		</if>
+		<if test="sorter == null or sorted == null">
+			order by video_data.av desc
+		</if>
+		<if test="start != null and pageSize != null">
+			offset ${start} rows fetch next ${pageSize} rows only
+		</if>
+	</select>
+</mapper>
