@@ -6,6 +6,11 @@
 import {del, get, patch, post} from "./ajax"
 
 
+let BASE_URL = 'http://localhost:8083/api'
+if (process.env.NODE_ENV !== "development") {
+    BASE_URL = 'http://47.100.66.36:8083/api'
+}
+
 // 登录
 export const isLogin = () => get('/admin/isLogin')
 export const reqLogin = (userName, password) => post('/admin/login', { userName, password })
@@ -22,3 +27,6 @@ export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
 //视频数据
 export const getVideoDataByCondition = (data) => get('/video/data', data)
 export const reRank = (data) => patch('/video/data/rank', data)
+
+//视频
+export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)

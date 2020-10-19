@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import {Col, Pagination, Row, Table} from 'antd';
 import {
     defineProperty,
     emptyFunc,
@@ -25,7 +25,7 @@ class SimpleTable extends React.Component {
         const { filters, sorter, loading, config = {} } = this.props;
         const event = config.event || {};
         const { onFilteredInfoChanged, onFilteredInfoChange } = event
-        const columns = this.props.columns;
+        const columns = this.props.columns || [];
         columns.forEach(column => Object.assign(column, {
             align: "center",
             dataIndex: column.key,
@@ -55,25 +55,29 @@ class SimpleTable extends React.Component {
         onChange(pagination, filter, sorter)
     }
 
+    showTotal = (total) => {
+        return `总共 ${total}`;
+    }
+
+    handlePaginationChange = page => {
+        const { pagination, filter, sorter, config } = this.props;
+        const { event = {} } = config
+        const { onChange = emptyFunc } = event
+
+        pagination.current = page
+        onChange(pagination, filter, sorter)
+    }
+
     render() {
-        const { config = {}, selectConfig = {}, data = {}, loading } = this.props;
+        const { pagination = {}, title = emptyFunc, config = {}, selectConfig = {}, list:dataSource = [], loading } = this.props;
 
         const { size, event = {}, rowKey = ((record, index) => index) } = config
         const { isShowRowSelection, selectedRowKey, onSelectRow = emptyFunc, type } = selectConfig;
-        const { list: dataSource=[], totalRows, pageSize, start } = data;
+        const { current, pageSize, total } = pagination
 
         const { onClick = emptyFunc, onDoubleClick = emptyFunc } = event
 
         const columns = this.getColumnsFromProps();
-
-        const pagination = {
-            position: "top",
-            showSizeChanger: true,
-            showQuickJumper: true,
-            total: totalRows,
-            pageSize: pageSize,
-            current: start / pageSize + 1
-        };
 
         const rowSelection = {
             type: isNull(type, 'radio'),
@@ -82,10 +86,11 @@ class SimpleTable extends React.Component {
         };
         return (
             <Table
-                {...{ rowKey, size, pagination, loading, dataSource, columns }}
+                {...{ rowKey, size, loading, dataSource, columns }}
                 bordered
                 size='small'
                 scroll={{x: 1}}
+                pagination={false}
                 rowSelection={isShowRowSelection ? rowSelection : null}
                 onChange={this.handleTableChange}
                 onRow={(record, index) => ({
@@ -98,6 +103,22 @@ class SimpleTable extends React.Component {
                         onDoubleClick(record, index);
                     }
                 })}
+                title={(data) =>
+                    <Row type="flex" justify="space-between" align="middle">
+                        <Col>{title(data)}</Col>
+                        <Col>
+                            <Pagination size="small"
+                                        total={total}
+                                        current={current}
+                                        pageSize={pageSize || 0}
+                                        showSizeChanger
+                                        showQuickJumper
+                                        pageSizeOptions={['10', '20', '50', '100']}
+                                        showTotal={this.showTotal}
+                                        onChange={this.handlePaginationChange}/>
+                        </Col>
+                    </Row>
+                }
             />
         );
     }

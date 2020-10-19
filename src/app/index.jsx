@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import './App.less';
-import {Button, Icon, Layout, Menu, Result, Tabs, Typography} from "antd";
+import {Button, Card, Col, Icon, Layout, Menu, Result, Row, Tabs, Typography} from "antd";
 import {For, If, isEmpty, isNotNull, isNull} from "../utils/htmlUtils";
 import LoginModal from "./LoginModal";
 import {isLogin, reqLoginOut} from "../api";
 import {HashRouter, Link} from "react-router-dom";
 import {menuList} from "../config/menuConfig";
-const { Header, Content, Sider } = Layout;
+const { Header, Content, Sider, Footer } = Layout;
 const { Title} = Typography;
 
 const menuMap = {};
@@ -110,7 +110,7 @@ export default class App extends Component{
         const selectedList = this.state.selectedKeyList.map(selectedKey => menuMap[selectedKey]);
         return (
             <HashRouter>
-                <Layout style={{ height: '100%' }}>
+                <Layout style={{minHeight: "100vh"}}>
                     <Header style={{background: "white", height: 'auto'}}>
                         <Menu mode="horizontal" style={{float: "left"}} selectable={false}>
                             <Menu.Item>
@@ -150,27 +150,38 @@ export default class App extends Component{
                                 {this.createMenu(menuList)}
                             </Menu>
                         </Sider>
-                        <Content>
-                            <Tabs type="editable-card"
-                                style={{marginTop:10,marginLeft:5,marginRight:5,}}
-                                hideAdd={true}
-                                onChange={this.handleSelected.bind(this)}
-                                activeKey={this.state.selectedKeyList[0]}
-                                onEdit={this.onEdit}>
-                                {For (selectedList).then(selected => (
-                                    <Tabs.TabPane tab={selected.title} key={selected.key} closable={true}>
-                                        <selected.component selectedTab={selected} />
-                                    </Tabs.TabPane>
-                                ))}
-                            </Tabs>
-                            {If (isEmpty(this.state.selectedKeyList)).then(() => (
-                                <Result
-                                    style={{ marginTop: 100 }}
-                                    icon={<img alt='' src='/min-logo.png'/>}
-                                    title="欢迎来到TiliTili后台!"
-                                />
-                            )).endIf()}
-                        </Content>
+                        <Layout>
+                            <Content>
+                                <div>
+                                    <Tabs type="editable-card"
+                                          style={{marginTop:10,marginLeft:5,marginRight:5,}}
+                                          hideAdd={true}
+                                          onChange={this.handleSelected.bind(this)}
+                                          activeKey={this.state.selectedKeyList[0]}
+                                          onEdit={this.onEdit}>
+                                        {For (selectedList).then(selected => (
+                                            <Tabs.TabPane tab={selected.title} key={selected.key} closable={true}>
+                                                <selected.component selectedTab={selected} />
+                                            </Tabs.TabPane>
+                                        ))}
+                                    </Tabs>
+                                    {If (isEmpty(this.state.selectedKeyList)).then(() => (
+                                        <Result
+                                            style={{ marginTop: 100 }}
+                                            icon={<img alt='' src='/min-logo.png'/>}
+                                            title="欢迎来到TiliTili后台!"
+                                        />
+                                    )).endIf()}
+                                </div>
+                            </Content>
+                            <Footer style={{backgroundColor: "white"}}>
+                                <Row type="flex" justify="space-around" align="middle">
+                                    <Col>
+                                        <a href="http://beian.miit.gov.cn/" target="_Blank" rel="noopener noreferrer">浙ICP备2020037336号</a>
+                                    </Col>
+                                </Row>
+                            </Footer>
+                        </Layout>
                     </Layout>
                 </Layout>
             </HashRouter>

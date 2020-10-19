@@ -12,7 +12,10 @@ import {message} from "antd"
 import  Qs from 'qs';
 import {isNull} from "../utils/htmlUtils";
 
-const BASE = '/api'
+let BASE = '/api'
+if (process.env.NODE_ENV !== "development") {
+    BASE = 'http://api.admin.tilitili.club'
+}
 
 // 响应拦截
 // axios.interceptors.response.use((response) => {
@@ -77,11 +80,16 @@ function handleGet(promise) {
 function handlePost(promise) {
     return new Promise((resolve, reject) => {
         promise.then(req => {
-            if (req.success) {
-                message.success(req.message)
-                resolve(req.data)
+            if (isNull(req.data)) {
+                message.error("请求失败")
+                reject(req)
+            }
+            const data = req.data;
+            if (data.success) {
+                message.success(data.message)
+                resolve(data.data)
             } else {
-                message.error(req.message);
+                message.error(data.message);
                 reject(req)
             }
         }).catch(reason => {

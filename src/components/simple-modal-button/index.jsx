@@ -54,21 +54,22 @@ export default class SimpleModalButton extends Component {
                     centered={this.props.centered}
                     confirmLoading={this.state.loading}
                 >
-                    {If (Array.isArray(this.props.children) || ['span'].includes(this.props.children.type) || ['Form'].includes(this.props.children.type.name)).then(() => (
-                        this.props.children
-                    )).else(() => (
-                        <this.props.children.type {...this.props.children.props} visible={this.state.visible}/>
-                    ))}
-                    {/*{*/}
-                    {/*    typeof this.props.children !== "object"*/}
-                    {/*        || Array.isArray(this.props.children)*/}
-                    {/*        || isNull(this.props.children.type)*/}
-                    {/*        || this.props.children.type.name === "Form"*/}
-                    {/*        ? this.props.children*/}
-                    {/*        : React.cloneElement(this.props.children, {visible: this.state.visible})*/}
-                    {/*}*/}
+                    {this.props.children}
                 </Modal>
             </span>
         );
     }
 }
+// {If (Array.isArray(this.props.children) || ['span'].includes(this.props.children.type) || ['Form'].includes(this.props.children.type.name)).then(() => (
+//     this.props.children
+// )).else(() => (
+//     <this.props.children.type {...this.props.children.props} visible={this.state.visible}/>
+// ))}
+// {
+//     typeof this.props.children !== "object"
+//     || Array.isArray(this.props.children)
+//     || isNull(this.props.children.type)
+//     || this.props.children.type.name === "Form"
+//         ? this.props.children
+//         : React.cloneElement(this.props.children, {visible: this.state.visible})
+// }

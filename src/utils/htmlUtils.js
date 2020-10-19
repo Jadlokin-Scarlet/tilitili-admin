@@ -34,6 +34,7 @@ export const getColumnChooseProps = (filteredInfo, key, map, isFilter = true) =>
 
 export const getColumnOrderProps = (sorter, key) => ({
     sorter: true,
+    sortDirections: ['descend', 'ascend', ],
     sortOrder: sorter.field === key? (sorter.order || null) : null,
 })
 
@@ -56,7 +57,13 @@ export const InputTitle = (props) => {
                    onChanged(newFilteredInfo)
                }}
                onPressEnter={e=>onChanged(defineProperty(filteredInfo, index, e.target.value))}
-               onChange={e=>onChange(defineProperty(filteredInfo, index, e.target.value))}
+               onChange={e=> {
+                   const newFilteredInfo = defineProperty(filteredInfo, index, e.target.value);
+                   onChange(newFilteredInfo)
+                   if (isBlank(e.target.value)) {
+                       onChanged(newFilteredInfo)
+                   }
+               }}
         />
     </div>
 }
@@ -120,11 +127,7 @@ export const For = (list = []) => ({
 })
 
 export const convertToPrams = (pagination = {}, filters = {}, sorter = {}) => {
-    const params = Object.assign({}, filters);
-    if (isNotEmptyObject(pagination)) {
-        params.start = (pagination.current - 1) * pagination.pageSize;
-        params.pageSize = pagination.pageSize;
-    }
+    const params = Object.assign({}, filters, pagination);
     if (isNotEmptyObject(sorter)) {
         params.sorter = sorter.field
         params.sorted = sorter.order === 'descend' ? 'desc' : 'asc';
