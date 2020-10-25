@@ -1,7 +1,7 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.Video;
-import com.tilitili.admin.entity.query.VideoQuery;
+import com.tilitili.common.entity.Video;
+import com.tilitili.common.entity.query.VideoQuery;
 import com.tilitili.admin.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

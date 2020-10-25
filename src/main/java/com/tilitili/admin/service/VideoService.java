@@ -1,12 +1,12 @@
 package com.tilitili.admin.service;
 
-import com.tilitili.admin.entity.Video;
-import com.tilitili.admin.entity.VideoInfo;
-import com.tilitili.admin.entity.query.VideoInfoQuery;
-import com.tilitili.admin.manager.VideoManager;
-import com.tilitili.admin.mapper.VideoInfoMapper;
-import com.tilitili.admin.mapper.VideoMapper;
-import com.tilitili.admin.entity.query.VideoQuery;
+import com.tilitili.common.entity.Video;
+import com.tilitili.common.entity.VideoInfo;
+import com.tilitili.common.entity.query.VideoInfoQuery;
+import com.tilitili.common.manager.VideoManager;
+import com.tilitili.common.mapper.VideoInfoMapper;
+import com.tilitili.common.mapper.VideoMapper;
+import com.tilitili.common.entity.query.VideoQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

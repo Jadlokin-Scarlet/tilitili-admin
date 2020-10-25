@@ -1,9 +1,9 @@
 package com.tilitili.admin.service;
 
-import com.tilitili.admin.entity.Resource;
-import com.tilitili.admin.entity.VideoData;
-import com.tilitili.admin.entity.query.VideoDataQuery;
-import com.tilitili.admin.mapper.VideoDataMapper;
+import com.tilitili.common.entity.Resource;
+import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.query.VideoDataQuery;
+import com.tilitili.common.mapper.VideoDataMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

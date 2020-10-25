@@ -1,12 +1,11 @@
 package com.tilitili.admin.service;
 
-import com.tilitili.admin.entity.Task;
-import com.tilitili.admin.entity.message.TaskMessage;
-import com.tilitili.admin.mapper.TaskMapper;
+import com.tilitili.common.entity.Task;
+import com.tilitili.common.entity.message.TaskMessage;
+import com.tilitili.common.mapper.TaskMapper;
 import com.tilitili.admin.sender.TaskSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TaskService {

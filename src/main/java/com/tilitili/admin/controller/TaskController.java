@@ -1,10 +1,10 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.Task;
-import com.tilitili.admin.entity.query.TaskQuery;
-import com.tilitili.admin.entity.view.BaseModel;
-import com.tilitili.admin.entity.view.PageModel;
-import com.tilitili.admin.mapper.TaskMapper;
+import com.tilitili.common.entity.Task;
+import com.tilitili.common.entity.query.TaskQuery;
+import com.tilitili.common.entity.view.BaseModel;
+import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.mapper.TaskMapper;
 import com.tilitili.admin.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

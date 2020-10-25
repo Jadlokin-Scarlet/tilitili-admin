@@ -1,4 +1,4 @@
-package com.tilitili.admin;
+package com.tilitili;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @EnableCaching
 @SpringBootApplication
-@MapperScan("com.tilitili.admin.mapper")
+@MapperScan("com.tilitili.common.mapper")
 public class StartApplication {
 
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.Admin;
-import com.tilitili.admin.entity.view.BaseModel;
+import com.tilitili.common.entity.Admin;
+import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

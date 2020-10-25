@@ -1,10 +1,10 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.VideoInfo;
-import com.tilitili.admin.entity.query.VideoInfoQuery;
-import com.tilitili.admin.entity.view.BaseModel;
-import com.tilitili.admin.entity.view.PageModel;
-import com.tilitili.admin.mapper.VideoInfoMapper;
+import com.tilitili.common.entity.VideoInfo;
+import com.tilitili.common.entity.query.VideoInfoQuery;
+import com.tilitili.common.entity.view.BaseModel;
+import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.mapper.VideoInfoMapper;
 import com.tilitili.admin.service.VideInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
