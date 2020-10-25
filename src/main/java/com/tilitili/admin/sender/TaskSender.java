@@ -21,7 +21,6 @@ public class TaskSender {
     }
 
     public void sendSpiderVideo(TaskMessage taskMessage) {
-        log.info(new GsonBuilder().setPrettyPrinting().create().toJson(taskMessage));
         jmsTemplate.convertAndSend(DESTINATION, taskMessage);
     }
 }

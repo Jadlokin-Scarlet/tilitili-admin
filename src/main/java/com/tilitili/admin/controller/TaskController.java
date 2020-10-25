@@ -33,8 +33,8 @@ public class TaskController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getTaskByCondition(TaskQuery query) {
-        int count = taskMapper.countTaskByCondition(query);
-        List<Task> taskList = taskMapper.listTaskByCondition(query);
+        int count = taskMapper.count(query);
+        List<Task> taskList = taskMapper.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), taskList);
     }
 

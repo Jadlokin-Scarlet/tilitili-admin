@@ -39,7 +39,7 @@ public class VideoDataService {
                 .setIsDelete(false)
                 .setStart(0).setPageSize(RANK_LIMIT)
                 .setSorter("point");
-        List<VideoData> videoList = videoDataMapper.listVideoByCondition(videoDataQuery);
+        List<VideoData> videoList = videoDataMapper.list(videoDataQuery);
         IntStream.range(0, RANK_LIMIT)//.parallel()
                 .filter(index -> !videoList.get(index).getRank().equals(index + 1))
                 .peek(index -> log.info("av{} rank{} update to {}", videoList.get(index).getAv(), videoList.get(index).getRank(), index + 1))

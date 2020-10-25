@@ -20,7 +20,7 @@ public class TaskService {
 
     public void spiderVideo(Long av) {
         Task task = new Task().setAv(av).setType(0);
-        taskMapper.addTask(task);
+        taskMapper.insert(task);
         taskSender.sendSpiderVideo(new TaskMessage().setAv(av).setId(task.getId()));
     }
 }

@@ -31,20 +31,20 @@ public class VideoInfoController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getVideoInfoByCondition(VideoInfoQuery query) {
-        int count = videoInfoMapper.countVideoByCondition(query);
-        List<VideoInfo> videoInfoList = videoInfoMapper.listVideoByCondition(query);
+        int count = videoInfoMapper.count(query);
+        List<VideoInfo> videoInfoList = videoInfoMapper.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoInfoList);
     }
 
     @DeleteMapping("/{av}/isDelete/true")
     public BaseModel deleteVideo(@PathVariable Long av) {
-        videoInfoMapper.deleteVideo(av);
+        videoInfoMapper.delete(av);
         return new BaseModel("成功删除", true);
     }
 
     @PatchMapping("/{av}/isDelete/false")
     public BaseModel recoveryVideo(@PathVariable Long av) {
-        videoInfoMapper.recoveryVideo(av);
+        videoInfoMapper.recovery(av);
         return new BaseModel("成功恢复", true);
     }
 

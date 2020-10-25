@@ -32,8 +32,8 @@ public class VideoDataController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getVideoDataByCondition(VideoDataQuery query) {
-        int count = videoDataMapper.countVideoByCondition(query);
-        List<VideoData> videoDataList = videoDataMapper.listVideoByCondition(query);
+        int count = videoDataMapper.count(query);
+        List<VideoData> videoDataList = videoDataMapper.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoDataList);
     }
 

@@ -18,7 +18,7 @@ public class AdminService {
     }
 
     public Admin login(String userName, String password) {
-        Admin admin = adminMapper.getAdminByName(userName);
+        Admin admin = adminMapper.getByName(userName);
         if (admin == null) {
             return null;
         }
