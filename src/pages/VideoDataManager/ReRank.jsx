@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import SimpleModalButton from "../../components/simple-modal-button";
 import {reRank} from "../../api";
-import {isNull} from "../../utils/htmlUtils";
+import {isNull} from "../../utils/HtmlUtils";
 
 export default class ReRank extends Component{
     reRank = async () => {

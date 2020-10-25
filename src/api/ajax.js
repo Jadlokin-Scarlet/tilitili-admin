@@ -10,7 +10,7 @@ import axios from 'axios'
 
 import {message} from "antd"
 import  Qs from 'qs';
-import {isNull} from "../utils/htmlUtils";
+import {isNull} from "../utils/HtmlUtils";
 
 let BASE = '/api'
 if (process.env.NODE_ENV !== "development") {

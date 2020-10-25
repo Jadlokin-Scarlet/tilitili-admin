@@ -30,3 +30,7 @@ export const reRank = (data) => patch('/video/data/rank', data)
 
 //视频
 export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)
+
+//任务
+export const getTaskByCondition = (data) => get('/task', data)
+export const spiderVideo = (data) => post('/task', data)

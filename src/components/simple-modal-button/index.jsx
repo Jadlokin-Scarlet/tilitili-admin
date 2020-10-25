@@ -1,6 +1,6 @@
 import React,{Component} from "react"
 import { Modal, Button } from 'antd';
-import {If, isNull} from "../../utils/htmlUtils";
+import {isNull} from "../../utils/HtmlUtils";
 
 export default class SimpleModalButton extends Component {
     constructor(props) {
@@ -23,9 +23,8 @@ export default class SimpleModalButton extends Component {
         onOk().then((isCloseModal = true) => {
             this.setState({
                 visible: !isCloseModal,
-                loading: false,
             })
-        })
+        }).finally(() => this.setState({loading: false}))
     };
 
     handleCancel = () => {
@@ -43,7 +42,7 @@ export default class SimpleModalButton extends Component {
                         onClick={this.showModal}
                         disabled={isNull(this.props.disabled, false)}
                         hidden={this.props.hidden}
-                >{this.props.title || '编辑'}</Button>
+                >{this.props.buttonText || this.props.title || '编辑'}</Button>
                 <Modal
                     title={this.props.title || '标题'}
                     visible={visible}

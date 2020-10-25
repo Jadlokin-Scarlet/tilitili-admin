@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import SimpleModalButton from "../../components/simple-modal-button";
 import {recoveryVideo} from "../../api";
-import {isNull} from "../../utils/htmlUtils";
+import {isNull} from "../../utils/HtmlUtils";
 
 export default class RecoveryVideo extends Component {
     recoveryVideo = async () => {

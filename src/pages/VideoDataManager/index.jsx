@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import {Button, Card} from "antd";
-import SimpleTable from "../../components/simple-table/SimpleTable";
+import SimpleTable from "../../components/simple-table";
 import {downloadDataTxtUrl, getResources, getVideoDataByCondition} from "../../api";
 import {
     convertToPrams,
     isNull
-} from "../../utils/htmlUtils";
+} from "../../utils/HtmlUtils";
 import ReRank from "./ReRank";
 
 export default class VideoDataManager extends Component {

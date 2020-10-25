@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import SimpleModalButton from "../simple-modal-button";
 import {Form, Input} from "antd";
-import {If} from "../../utils/htmlUtils";
+import {If} from "../../utils/HtmlUtils";
 
 export default class FormModalButton extends Component{
     constructor(props) {

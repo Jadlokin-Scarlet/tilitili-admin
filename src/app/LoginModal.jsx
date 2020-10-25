@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import SimpleModalButton from "../components/simple-modal-button";
 import {Form, Input} from "antd";
 import {reqLogin} from "../api";
-import {isNull} from "../utils/htmlUtils";
+import {isNull} from "../utils/HtmlUtils";
 
 export default class LoginModal extends Component{
     constructor(props) {

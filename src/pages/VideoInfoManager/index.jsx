@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {Button, Card, message} from "antd";
-import SimpleTable from "../../components/simple-table/SimpleTable";
-import {getResources, getVideoDataByCondition, getVideoInfoByCondition} from "../../api";
+import {Button, Card} from "antd";
+import SimpleTable from "../../components/simple-table";
+import {getResources, getVideoInfoByCondition} from "../../api";
 import {
     convertToPrams,
     isNull
-} from "../../utils/htmlUtils";
+} from "../../utils/HtmlUtils";
 import DeleteVideo from "./DeleteVideo";
 import RecoveryVideo from "./RecoveryVideo";
 
@@ -28,7 +28,7 @@ export default class VideoInfoManager extends Component {
 
             defaultPrams: {
                 filters: {},
-                sorter: {field:"av", order:"descend"},
+                sorter: {field:"pubTime", order:"descend"},
                 pagination: {
                     pageSize: 20,
                     current: 1

@@ -7,9 +7,9 @@ import {
     getColumnOrderProps,
     getInputTitle,
     getParagraph,
-    getSmallImg,
+    getSmallImg, isBlank, isNotBlank,
     isNull
-} from "../../utils/htmlUtils";
+} from "../../utils/HtmlUtils";
 
 class SimpleTable extends React.Component {
     handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -49,6 +49,7 @@ class SimpleTable extends React.Component {
         const { onChange = emptyFunc } = event
 
         const filter = Object.entries(filters)
+            .filter(item => isNotBlank(item[1]))
             .map(item => defineProperty({}, item[0], isNull(item[1])? item[1]: item[1][0]))
             .reduce((a, b) => Object.assign({}, a, b), {});
 

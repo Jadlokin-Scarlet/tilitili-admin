@@ -100,22 +100,42 @@ export const getInputTitle = (title, index, filteredInfo, onChanged, onChange, s
 //注意，此工具会会渲染每个条件的全部元素，注意性能和空值处理
 const runFunction = func => typeof func === "function"? func(): func;
 export function If(boolean) {
-    return {
-        then: trueEle => {
-            return {
-                endIf: () => boolean? runFunction(trueEle): undefined,
-                else: falseEle => boolean? runFunction(trueEle): runFunction(falseEle),
-                elseIf: boolean2 => {
-                    return {
-                        then: falseEle => {
-                            return {
-                                endIf: () => boolean? runFunction(trueEle): (boolean2? runFunction(falseEle): undefined),
-                            }
-                        }
-                    }
-                }
-            }
+    return new IfClass(boolean);
+}
+
+export class IfClass {
+    constructor(boolean) {
+        this.boolean = boolean;
+        this.result = null;
+    }
+
+    if (boolean) {
+        this.boolean = boolean;
+        return this;
+    }
+
+    then (result) {
+        if (this.boolean && this.result == null) {
+            this.result = result;
         }
+        return this;
+    }
+
+    elseIf (boolean) {
+        this.boolean = boolean;
+        return this;
+    }
+
+    else (result) {
+        if (this.result != null) {
+            return runFunction(this.result);
+        }else {
+            return runFunction(result);
+        }
+    }
+
+    endIf () {
+        return runFunction(this.result);
     }
 }
 
