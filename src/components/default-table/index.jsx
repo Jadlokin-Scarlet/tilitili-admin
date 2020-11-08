@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Card, Col, Pagination, Row, Table} from 'antd';
 import {
+    addRender, compose,
     convertToPrams,
     defineProperty,
     emptyFunc,
@@ -8,8 +9,8 @@ import {
     getColumnOrderProps,
     getInputTitle,
     getParagraph,
-    getSmallImg, If, isEmpty,
-    isNull
+    getSmallImg, If, isEmpty, isNotNull,
+    isNull, selfFunc
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
 
@@ -182,27 +183,36 @@ export default class DefaultTable extends Component {
         }
     };
 
-
-
     getColumnsFromProps() {
         const { filters, sorter, loading, resources } = this.state;
-        const { onColumnsInit=emptyFunc } = this.props
-        const columns = onColumnsInit(resources) || []
-        columns.forEach(column => Object.assign(column, {
-            align: "center",
-            dataIndex: column.key,
-        }));
-        columns.filter(column => column.ellipsis).forEach(column => Object.assign(column, {
-            ellipsis: undefined,
-            render: text => getParagraph(text),
-        }))
-        columns.forEach(column => Object.assign(column,
-            column.type === 'choose'? getColumnChooseProps(filters, column.key, column.chooseMap):
-                column.type === 'order'? getColumnOrderProps(sorter, column.key):
-                column.type === 'search'? getInputTitle(column.title, column.key, filters, this.handleFilteredInfoChanged, this.handleFilteredInfoChange):
-                column.type === 'image'? getSmallImg(loading, column.href): {}
-        ))
-        return columns;
+        const { columns=[] } = this.props
+
+        return columns.map(columnConfig => {
+            const { title, key, dataIndex, width, align, type, chooseMap=[], href, ellipsis, afterRender=selfFunc } = columnConfig;
+            const column =  {
+                title,
+                key,
+                width,
+                dataIndex: dataIndex || key,
+                align: align || 'center',
+
+                ...(type === 'choose'? getColumnChooseProps(filters, key, Array.isArray(chooseMap)? chooseMap: resources[chooseMap]):
+                    type === 'order'? getColumnOrderProps(sorter, key):
+                    type === 'search'? getInputTitle(title, key, filters, this.handleFilteredInfoChanged, this.handleFilteredInfoChange):
+                    type === 'image'? getSmallImg(loading, href): {}),
+            }
+            if (isNotNull(ellipsis)) {
+                if (ellipsis === true) {
+                    column.render = compose(column.render || selfFunc, text => getParagraph(text))
+                }else {
+                    const smallTextFun = text => text.includes(ellipsis)? text.split(ellipsis).map(text => <p key={text} style={{marginBottom: "0em"}}>{text}</p>): text;
+                    column.render = compose(column.render || selfFunc, text => getParagraph(smallTextFun(text), text))
+                }
+            }else{
+                column.render = compose(column.render || selfFunc, afterRender)
+            }
+            return column;
+        })
     }
 
     render() {
@@ -215,10 +225,10 @@ export default class DefaultTable extends Component {
             onDoubleClick=emptyFunc,
             onTitleInit=emptyFunc
         } = this.props;
-        const { loading, list:dataSource, selectedRowKey, selectedRow, pagination, filter, sorter } = this.state;
+        const { loading, list:dataSource, selectedRowKey, selectedRow, pagination, resources } = this.state;
         const { pageSize, current, total } = pagination
         const columns = this.getColumnsFromProps();
-        const title = onTitleInit(this.handleUpdated) || emptyFunc;
+        const title = onTitleInit(selectedRow, this.handleUpdated, resources) || emptyFunc;
         return (
             <Card onKeyUp={this.handleKeyUp} tabIndex="-1">
                 <Table
@@ -230,7 +240,7 @@ export default class DefaultTable extends Component {
                         type,
                         selectedRowKeys: [selectedRowKey],
                         onChange: this.handleRowSelectChange,
-                    })}
+                    }).endIf()}
                     onChange={this.handleTableChange}
                     onRow={(record, index) => ({
                         onClick: () => {

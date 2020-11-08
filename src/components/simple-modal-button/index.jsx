@@ -37,7 +37,7 @@ export default class SimpleModalButton extends Component {
         const { visible } = this.state;
         return (
             <span>
-                <Button style={this.props.buttonStyle}
+                <Button style={this.props.buttonStyle || {marginLeft: "8px"}}
                         type="primary"
                         onClick={this.showModal}
                         disabled={isNull(this.props.disabled, false)}

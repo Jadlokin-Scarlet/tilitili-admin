@@ -1,9 +1,22 @@
 import {defineProperty} from "./HtmlUtils";
-
-const list = ['f','Z','o','d','R','9','X','Q','D','S','U','m','2','1','y','C','k','r','6','z','B','q','i','v','e','Y','a','h','8','b','t','4','x','s','W','p','H','n','J','E','7','j','L','5','V','G','3','g','u','M','T','K','N','P','A','w','c','F'];
-const map = list.map((char, index) => defineProperty({}, char, index)).reduce(Object.assign)
+import {message} from "antd";
+const xor=177451812
+const add=8728348608
+const link = [11,10,3,8,4,6]
+const list = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF".split("");
+const map = list.map((char, index) => defineProperty({}, char, index)).reduce((a, b) => Object.assign(a, b), {})
 export const bvToAv = bv => {
-    return bv.split("").map(item => map[item]).reverse()
+    if (bv.length !== 12) {
+        message.error(`bv号${bv}长度应为12，不对劲`)
+        return null;
+    }
+    let av = link.map(i => bv[i]).map(item => map[item])
         .map((item, index) => item * Math.pow(list.length, index))
-        .reduce((a, b) => a + b);
+        .reduce((a, b) => a + b)
+    av = (av - add) ^ xor;
+    if (av.toString().length > 9) {
+        message.error(`av号${av}长度超过9了，不对劲`)
+        return null;
+    }
+    return av
 }

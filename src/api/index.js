@@ -31,6 +31,11 @@ export const reRank = (data) => patch('/video/data/rank', data)
 //视频
 export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)
 
-//任务
+//自定义爬取
 export const getTaskByCondition = (data) => get('/task', data)
 export const spiderVideo = (data) => post('/task', data)
+
+//批量爬取
+export const getBatchTaskByCondition = (data) => get('/batchTask', data);
+export const testBatchSpiderVideo = (data) => post('/batchTask/type/0', data)
+export const batchSpiderDeleteVideo = (data) => post('/batchTask/type/1', data)

@@ -26,7 +26,7 @@ export const getColumnChooseProps = (filteredInfo, key, map, isFilter = true) =>
     render: key => {
         for (const obj of (map || [])) {
             if (obj.value === key) {
-                return getParagraph(obj.text);
+                return obj.text;
             }
         }
     }
@@ -149,7 +149,7 @@ export const For = (list = []) => ({
 export const convertToPrams = (pagination = {}, filters = {}, sorter = {}) => {
     const params = Object.assign({}, filters, pagination);
     if (isNotEmptyObject(sorter)) {
-        params.sorter = sorter.field
+        params.sorter = toLine(sorter.field)
         params.sorted = sorter.order === 'descend' ? 'desc' : 'asc';
     }
     // return {query: params};
@@ -157,6 +157,7 @@ export const convertToPrams = (pagination = {}, filters = {}, sorter = {}) => {
 }
 
 export const emptyFunc = () => {}
+export const selfFunc = a => a
 
 export const defineProperty = (obj, key, value) => {
     return Object.defineProperty(obj, key, {
@@ -164,4 +165,12 @@ export const defineProperty = (obj, key, value) => {
         configurable: true,
         value
     })
+}
+
+export const toLine = (name) => {
+    return name.replace(/([A-Z])/g,"_$1").toLowerCase();
+}
+
+export const compose = (firstFun = selfFunc, secondFun = selfFunc) => {
+    return value => secondFun(firstFun(value));
 }
