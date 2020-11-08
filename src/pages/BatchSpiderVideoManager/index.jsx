@@ -18,7 +18,7 @@ export default class BatchSpiderVideoManager extends Component{
         {title: '更新时间', key: 'updateTime', width: 200, type: 'order'},
     ];
 
-    handleTitleInit = (selectedRow, handleUpdated) => {
+    handleTitleInit = (props, handleUpdated) => {
         return (() =>
                 <TestBatchSpiderVideo onSuccess={handleUpdated}/>
         )

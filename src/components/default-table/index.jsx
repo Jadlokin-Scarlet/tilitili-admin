@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Card, Col, Pagination, Row, Table} from 'antd';
 import {
-    addRender, compose,
+    compose,
     convertToPrams,
     defineProperty,
     emptyFunc,
@@ -188,28 +188,40 @@ export default class DefaultTable extends Component {
         const { columns=[] } = this.props
 
         return columns.map(columnConfig => {
-            const { title, key, dataIndex, width, align, type, chooseMap=[], href, ellipsis, afterRender=selfFunc } = columnConfig;
+            const { title, key, dataIndex, width, align, type, chooseMap=[], href, ellipsis, beforeRender=selfFunc, afterRender=selfFunc } = columnConfig;
             const column =  {
-                title,
-                key,
-                width,
+                title, key, width,
                 dataIndex: dataIndex || key,
                 align: align || 'center',
-
-                ...(type === 'choose'? getColumnChooseProps(filters, key, Array.isArray(chooseMap)? chooseMap: resources[chooseMap]):
-                    type === 'order'? getColumnOrderProps(sorter, key):
-                    type === 'search'? getInputTitle(title, key, filters, this.handleFilteredInfoChanged, this.handleFilteredInfoChange):
-                    type === 'image'? getSmallImg(loading, href): {}),
             }
-            if (isNotNull(ellipsis)) {
-                if (ellipsis === true) {
-                    column.render = compose(column.render || selfFunc, text => getParagraph(text))
-                }else {
-                    const smallTextFun = text => text.includes(ellipsis)? text.split(ellipsis).map(text => <p key={text} style={{marginBottom: "0em"}}>{text}</p>): text;
-                    column.render = compose(column.render || selfFunc, text => getParagraph(smallTextFun(text), text))
+
+            if (type === 'choose') {
+                Object.assign(column, getColumnChooseProps(filters, key, Array.isArray(chooseMap)? chooseMap: resources[chooseMap]));
+            }else if (type === 'order') {
+                Object.assign(column, getColumnOrderProps(sorter, key));
+            }else if (type === 'search') {
+                Object.assign(column, getInputTitle(title, key, filters, this.handleFilteredInfoChanged, this.handleFilteredInfoChange));
+            }else if (type === 'image') {
+                Object.assign(column, getSmallImg(loading, href));
+            }
+
+            if (type !== 'image') {
+                if (isNotNull(beforeRender)) {
+                    column.render = compose(beforeRender, column.render || selfFunc)
                 }
-            }else{
-                column.render = compose(column.render || selfFunc, afterRender)
+                if (isNotNull(ellipsis)) {
+                    if (ellipsis === true) {
+                        column.render = compose(column.render || selfFunc, text => getParagraph(text))
+                    } else {
+                        const smallTextFun = text => text.includes(ellipsis) ? text.split(ellipsis).map(text =>
+                            <p key={text} style={{marginBottom: "0em"}}>{text}</p>
+                        ) : text;
+                        column.render = compose(column.render || selfFunc, text => getParagraph(smallTextFun(text), text))
+                    }
+                }
+                if (isNotNull(afterRender)) {
+                    column.render = compose(column.render || selfFunc, afterRender)
+                }
             }
             return column;
         })
@@ -225,10 +237,10 @@ export default class DefaultTable extends Component {
             onDoubleClick=emptyFunc,
             onTitleInit=emptyFunc
         } = this.props;
-        const { loading, list:dataSource, selectedRowKey, selectedRow, pagination, resources } = this.state;
+        const { loading, list:dataSource, selectedRowKey, pagination } = this.state;
         const { pageSize, current, total } = pagination
         const columns = this.getColumnsFromProps();
-        const title = onTitleInit(selectedRow, this.handleUpdated, resources) || emptyFunc;
+        const title = onTitleInit(this.state, this.handleUpdated) || emptyFunc;
         return (
             <Card onKeyUp={this.handleKeyUp} tabIndex="-1">
                 <Table

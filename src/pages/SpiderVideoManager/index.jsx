@@ -29,8 +29,8 @@ export default class SpiderVideoManager extends Component {
         {title: '批爬id', key: 'batchId', width: 90, type: 'search'},
     ];
 
-    handleTitleInit = (selectedRow, handleUpdated, resources) => {
-        const { TaskReasonResource } = resources;
+    handleTitleInit = (props, handleUpdated) => {
+        const { TaskReasonResource } = props.resources;
         return (() =>
             <SpiderVideo onSuccess={handleUpdated} TaskReasonResource={TaskReasonResource}/>
         )

@@ -23,11 +23,10 @@ export default class SpiderVideo extends Component{
 
         if (choose === "av" && isNotNull(av)) {
             if (isNaN(Number(av))) {
-                av = Number.parseInt(av);
-            }else {
                 message.error("识别失败");
                 return;
             }
+            av = Number.parseInt(av);
         }
 
         if (choose === "bv" && isNotNull(bv)) {

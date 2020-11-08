@@ -76,7 +76,7 @@ export const getSmallImg = (loading, hrefConverse, onClick) => {
     return {
         width: 60,
         className: "no-padding",
-        render: (src, row) => getParagraph(
+        render: (src, row={}) => getParagraph(
             <Img loading={loading} style={{height: '400px'}} alt='-' src={converseUrl(src)} onClick={onClick}/>,
             If(isNull(hrefConverse)).then(() =>
                 <Img loading={loading} style={{height: '37px', maxWidth: '60px'}} alt='-' src={converseUrl(src)} onClick={onClick}/>
@@ -172,5 +172,5 @@ export const toLine = (name) => {
 }
 
 export const compose = (firstFun = selfFunc, secondFun = selfFunc) => {
-    return value => secondFun(firstFun(value));
+    return (...props) => secondFun(firstFun(...props));
 }
