@@ -26,7 +26,7 @@ public class VideoDataService {
         this.videoDataMapper = videoDataMapper;
     }
 
-    public List<Resource<?>> getIssueResource() {
+    public List<Resource> getIssueResource() {
         return videoDataMapper.listIssue().stream()
                 .map(Resource::new)
                 .collect(Collectors.toList());

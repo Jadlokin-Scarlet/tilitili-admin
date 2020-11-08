@@ -20,7 +20,7 @@ public class TypeService {
         this.typeMapper = typeMapper;
     }
 
-    public List<Resource<?>> getTypeResource() {
+    public List<Resource> getTypeResource() {
         return typeMapper.listTypeName().stream()
                 .map(Resource::new)
                 .collect(Collectors.toList());

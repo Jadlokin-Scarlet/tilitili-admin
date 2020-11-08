@@ -29,7 +29,7 @@ public class ResourceController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getResources(@RequestParam List<String> needResourcesList) {
-        HashMap<String, List<Resource<?>>> resourceMap = new HashMap<>();
+        HashMap<String, List<Resource>> resourceMap = new HashMap<>();
         needResourcesList.forEach(
                 resourceName -> resourceMap.put(resourceName, resourceService.getResource(resourceName))
         );

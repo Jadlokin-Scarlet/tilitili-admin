@@ -1,5 +1,6 @@
 package com.tilitili.admin.config;
 
+import org.apache.activemq.RedeliveryPolicy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
@@ -16,5 +17,15 @@ public class ActiveMQConfig {
         converter.setTypeIdPropertyName("Message");
         return converter;
     }
+
+//    @Bean
+//    public RedeliveryPolicy redeliveryPolicy() {
+//        RedeliveryPolicy queuePolicy = new RedeliveryPolicy();
+//        queuePolicy.setInitialRedeliveryDelay(0);
+//        queuePolicy.setRedeliveryDelay(1000);
+//        queuePolicy.setUseExponentialBackOff(false);
+//        queuePolicy.setMaximumRedeliveries(2);
+//        return queuePolicy;
+//    }
 
 }
