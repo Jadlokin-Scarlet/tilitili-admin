@@ -29,12 +29,9 @@ public class TaskService {
         this.spiderVideoViewTaskSender = spiderVideoViewTaskSender;
     }
 
-    @Transactional
     public void simpleSpiderVideo(SimpleTaskView simpleTaskView) {
         Long av = simpleTaskView.getAv();
-
         BatchTask batchTask = new BatchTask().setType(TaskType.SpiderVideo.getValue()).setReason(simpleTaskView.getReason());
-
         batchSpiderVideo(batchTask, Collections.singletonList(av));
     }
 

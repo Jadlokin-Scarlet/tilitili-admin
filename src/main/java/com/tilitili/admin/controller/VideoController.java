@@ -1,8 +1,6 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.common.entity.Video;
-import com.tilitili.common.entity.query.VideoQuery;
-import com.tilitili.admin.service.VideoService;
+import com.tilitili.admin.service.VideoDataFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("api/video")
@@ -21,16 +16,23 @@ import java.util.List;
 @Slf4j
 public class VideoController {
 
-    private final VideoService videoService;
+    private final VideoDataFileService videoDataFileService;
 
     @Autowired
-    public VideoController(VideoService videoService) {
-        this.videoService = videoService;
+    public VideoController(VideoDataFileService videoDataFileService) {
+        this.videoDataFileService = videoDataFileService;
     }
 
     @GetMapping("/issue/{issue}/data.txt")
     public ResponseEntity<String> getVideoDataFile(@PathVariable int issue) {
-        return ResponseEntity.ok(videoService.getVideoDataFile(issue));
+        return ResponseEntity.ok(videoDataFileService.getVideoDataFile(issue));
     }
+
+//    @GetMapping("/av/{av}")
+//    public BaseModel listVideo(@PathVariable Long av, VideoQuery videoQuery) {
+//        videoQuery.setAv(av);
+//        List<Video> videoList = videoService.listVideo(videoQuery);
+//        return PageModel.of(0, videoQuery.getPageSize(), videoQuery.getCurrent(), videoList);
+//    }
 
 }

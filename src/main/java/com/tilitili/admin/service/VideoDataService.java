@@ -37,8 +37,9 @@ public class VideoDataService {
         VideoDataQuery videoDataQuery = new VideoDataQuery()
                 .setIssue(issue)
                 .setIsDelete(false)
+                .setStatus(0)
                 .setStart(0).setPageSize(RANK_LIMIT)
-                .setSorter("point");
+                .setSorter("point", "desc");
         List<VideoData> videoList = videoDataMapper.list(videoDataQuery);
         IntStream.range(0, RANK_LIMIT)//.parallel()
                 .filter(index -> !videoList.get(index).getRank().equals(index + 1))

@@ -58,4 +58,10 @@ public class BatchTaskService {
         taskService.batchSpiderVideo(batchTask, avList);
     }
 
+    public void batchSpiderHiddenVideo() {
+        BatchTask batchTask = new BatchTask().setType(TaskType.BatchSpiderVideo.getValue()).setReason(TaskReason.RE_SPIDER_HIDDEN_VIDEO.getValue());
+        List<Long> avList = videoInfoMapper.listHiddenVideo().stream().map(VideoInfo::getAv).collect(Collectors.toList());
+        taskService.batchSpiderVideo(batchTask, avList);
+    }
+
 }

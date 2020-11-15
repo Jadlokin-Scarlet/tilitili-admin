@@ -42,17 +42,17 @@ public class BatchTaskController {
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), batchTaskList);
     }
 
-    @PostMapping("/type/0")
+    @PostMapping("/testBatchSpiderVideo")
     @ResponseBody
-    public BaseModel batchSpiderVideo() {
+    public BaseModel testBatchSpiderVideo() {
         batchTaskService.testBatchSpiderVideo();
         return new BaseModel("添加任务成功", true);
     }
 
-    @PostMapping("/type/1")
+    @PostMapping("/batchSpiderHiddenVideo")
     @ResponseBody
-    public BaseModel batchSpiderDeleteVideo() {
-
+    public BaseModel batchSpiderHiddenVideo() {
+        batchTaskService.batchSpiderHiddenVideo();
         return new BaseModel("添加任务成功", true);
     }
 
