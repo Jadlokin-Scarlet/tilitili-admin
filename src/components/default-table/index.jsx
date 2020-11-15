@@ -138,9 +138,10 @@ export default class DefaultTable extends Component {
         this.clearSelectedRows();
     }
 
-    handlePaginationChange = page => {
+    handlePaginationChange = (page, pageSize) => {
         const { pagination, filters, sorter } = this.state;
         pagination.current = page
+        pagination.pageSize = pageSize;
         this.refreshWithFilters(pagination, filters, sorter);
         this.clearSelectedRows();
     }
@@ -279,7 +280,8 @@ export default class DefaultTable extends Component {
                                             showQuickJumper
                                             pageSizeOptions={['10', '20', '50', '100']}
                                             showTotal={total => `总共 ${total}`}
-                                            onChange={this.handlePaginationChange}/>
+                                            onChange={this.handlePaginationChange}
+                                            onShowSizeChange={this.handlePaginationChange}/>
                             </Col>
                         </Row>
                     }

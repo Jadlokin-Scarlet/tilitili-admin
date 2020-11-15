@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import DefaultTable from "../../components/default-table";
 import {getBatchTaskByCondition} from "../../api";
 import TestBatchSpiderVideo from "./TestBatchSpiderVideo";
+import BatchSpiderHiddenVideo from "./BatchSpiderHiddenVideo";
 
 export default class BatchSpiderVideoManager extends Component{
 
@@ -20,7 +21,10 @@ export default class BatchSpiderVideoManager extends Component{
 
     handleTitleInit = (props, handleUpdated) => {
         return (() =>
+            <span>
                 <TestBatchSpiderVideo onSuccess={handleUpdated}/>
+                <BatchSpiderHiddenVideo onSuccess={handleUpdated}/>
+            </span>
         )
     }
 
@@ -28,10 +32,11 @@ export default class BatchSpiderVideoManager extends Component{
         return (
             <DefaultTable
                 needResourcesList={['TaskTypeResource', 'TaskReasonResource']}
-                onReqData={getBatchTaskByCondition}
-                columns={this.columns}
-                onTitleInit={this.handleTitleInit}
                 defaultSorter={{field: 'createTime', order: 'descend'}}
+                defaultFilters={{type: 1}}
+                columns={this.columns}
+                onReqData={getBatchTaskByCondition}
+                onTitleInit={this.handleTitleInit}
             />
         )
     }

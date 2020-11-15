@@ -37,5 +37,5 @@ export const spiderVideo = (data) => post('/task', data)
 
 //批量爬取
 export const getBatchTaskByCondition = (data) => get('/batchTask', data);
-export const testBatchSpiderVideo = (data) => post('/batchTask/type/0', data)
-export const batchSpiderDeleteVideo = (data) => post('/batchTask/type/1', data)
+export const testBatchSpiderVideo = (data) => post('/batchTask/testBatchSpiderVideo', data)
+export const batchSpiderHiddenVideo = (data) => post('/batchTask/batchSpiderHiddenVideo', data)

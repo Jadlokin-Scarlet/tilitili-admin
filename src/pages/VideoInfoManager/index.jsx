@@ -14,8 +14,11 @@ export default class VideoInfoManager extends Component {
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
         {title: '发布日期', key: 'pubTime', width: 180, type: 'order'},
         {title: '简介', key: 'description', width: 200, ellipsis: true},
-        {title: '状态', key: 'isDelete', width: 70, type: 'choose', chooseMap: [
+        {title: '是否已删除', key: 'isDelete', width: 110, type: 'choose', chooseMap: [
             {value: false, text: '正常'}, {value: true, text: '已删除'}
+        ]},
+        {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: [
+                {value: 0, text: '正常'}, {value: 62002, text: '稿件不可见'}, {value: -404, text: '啥都木有'}
         ]},
         {title: 'bv号', key: 'bv', width: 140, type: 'search'},
         {title: '搬运', key: 'copyright', width: 70, type: 'choose', chooseMap: [

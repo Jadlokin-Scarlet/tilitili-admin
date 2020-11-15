@@ -1,19 +1,19 @@
 import React, {Component} from "react";
 import SimpleModalButton from "../../components/simple-modal-button";
 import {emptyFunc } from "../../utils/HtmlUtils";
-import {batchSpiderDeleteVideo} from "../../api";
+import {batchSpiderHiddenVideo} from "../../api";
 
-export default class BatchSpiderDeleteVideo extends Component{
+export default class BatchSpiderHiddenVideo extends Component{
 
-    batchSpiderDeleteVideo = async () => {
+    batchSpiderHiddenVideo = async () => {
         const { onSuccess=emptyFunc } = this.props;
-        await batchSpiderDeleteVideo()
+        await batchSpiderHiddenVideo()
         onSuccess()
     }
 
     render() {
         return (
-            <SimpleModalButton title="重爬已删除视频" onOk={this.batchSpiderVideo}>
+            <SimpleModalButton title="重爬不可见视频" onOk={this.batchSpiderHiddenVideo}>
                 <span>确定？</span>
             </SimpleModalButton>
         )
