@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {Button, Card, Col, Pagination, Row, Table} from 'antd';
 import {
     compose,
@@ -13,8 +13,9 @@ import {
     isNull, selfFunc
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
+import './index.css'
 
-export default class DefaultTable extends Component {
+export default class DefaultTable extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -29,8 +30,8 @@ export default class DefaultTable extends Component {
             filters: {},
             sorter: {},
 
-            selectedRow: {},
-            selectedRowKey: null,
+            selectedRows: [],
+            selectedRowKeys: [],
 
             loading: true,
             visible: false,
@@ -86,18 +87,18 @@ export default class DefaultTable extends Component {
 
     clearSelectedRows = () => {
         this.setState({
-            selectedRow: {},
-            selectedRowKey: null,
+            selectedRows: [],
+            selectedRowKeys: [],
         })
     }
-    
+
     updateSelectedRows = () => {
-        const { rowKey=(record, index) => index } = this.props;
-        const list = isNull(this.state.list, [])
-        const selectedRows = list.filter((record, index) => rowKey(record,index) === this.state.selectedRowKey);
-        this.setState({
-            selectedRow: selectedRows[0] || {},
-        })
+        const { selectedRowKeys=[], list=[] } = this.state;
+        const { rowKey=(record, index) => isNull(record.id, index) } = this.props;
+        const selectedRows = selectedRowKeys.map(selectedRowKey => (
+            list.filter((record, index) => rowKey(record,index) === selectedRowKey)[0]
+        ))
+        this.setState({selectedRows,})
     }
     
     refresh = (
@@ -123,10 +124,6 @@ export default class DefaultTable extends Component {
     handleRefreshButtonClick = () => {
         this.refresh();
         this.clearSelectedRows();
-    }
-
-    handleSelectRow = (selectedRowKey, selectedRow) => {
-        this.setState({selectedRowKey, selectedRow})
     }
 
     handleTableChange = (pagination, filters, sorter) => {
@@ -175,13 +172,31 @@ export default class DefaultTable extends Component {
     }
 
 
-    handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-        const { onSelectRow } = isNull(this.props.selectConfig, {});
-        const selectedRowKey = selectedRowKeys[0] || null;
-        const selectedRow = selectedRows[0] || {};
-        if (onSelectRow) {
-            onSelectRow(selectedRowKey, selectedRow);
+    handleSelectRow = (selectedRowKey, selectedRow) => {
+        const { multiple=false } = this.props;
+        if (multiple) {
+            const { selectedRowKeys, selectedRows } = this.state;
+            if (selectedRowKeys.includes(selectedRowKey)) {
+                selectedRows.splice(selectedRowKeys.indexOf(selectedRowKey), 1)
+                selectedRowKeys.splice(selectedRowKeys.indexOf(selectedRowKey), 1);
+            }else {
+                selectedRows.push(selectedRow);
+                selectedRowKeys.push(selectedRowKey);
+            }
+            this.setState({
+                selectedRowKeys: selectedRowKeys,
+                selectedRows: selectedRows
+            })
+        }else {
+            this.setState({
+                selectedRowKeys: [selectedRowKey],
+                selectedRows: [selectedRow]
+            })
         }
+    }
+
+    handleRowSelectChange = (selectedRowKeys, selectedRows) => {
+        this.setState({selectedRowKeys, selectedRows});
     };
 
     getColumnsFromProps() {
@@ -228,20 +243,46 @@ export default class DefaultTable extends Component {
         })
     }
 
+    handleTitleInit = (data) => {
+        const { onTitleInit=emptyFunc } = this.props;
+        const { pagination } = this.state;
+        const title = onTitleInit(this.state, this.handleUpdated) || emptyFunc;
+        return (
+            <Title {...pagination}
+                   onPaginationChange={this.handlePaginationChange}
+                   onRefreshButtonClick={this.handleRefreshButtonClick}
+            >{title(data)}</Title>
+        )
+    }
+
+    handleRow = (record, index) => {
+        const { rowKey=(record, index) => index, onClick=emptyFunc, onDoubleClick=emptyFunc } = this.props;
+        return {
+            onClick: async () => {
+                this.handleSelectRow(rowKey(record, index), record)
+                onClick(record, index)
+            },
+            onDoubleClick: async () => {
+                onDoubleClick(record, index);
+            }
+        }
+    }
+
     render() {
+        console.log("reload html")
         const {
             rowKey=(record, index) => index,
             size='small',
             type='radio',
             isShowRowSelection=false,
-            onClick=emptyFunc,
-            onDoubleClick=emptyFunc,
-            onTitleInit=emptyFunc
         } = this.props;
-        const { loading, list:dataSource, selectedRowKey, pagination } = this.state;
-        const { pageSize, current, total } = pagination
+        const { loading, list:dataSource, selectedRowKeys } = this.state;
         const columns = this.getColumnsFromProps();
-        const title = onTitleInit(this.state, this.handleUpdated) || emptyFunc;
+        const rowSelection = If(isShowRowSelection).then({
+            type,
+            selectedRowKeys,
+            onChange: this.handleRowSelectChange,
+        }).endIf()
         return (
             <Card onKeyUp={this.handleKeyUp} tabIndex="-1">
                 <Table
@@ -249,46 +290,44 @@ export default class DefaultTable extends Component {
                     bordered
                     scroll={{x: 1}}
                     pagination={false}
-                    rowSelection={If(isShowRowSelection).then({
-                        type,
-                        selectedRowKeys: [selectedRowKey],
-                        onChange: this.handleRowSelectChange,
-                    }).endIf()}
+                    rowSelection={rowSelection}
                     onChange={this.handleTableChange}
-                    onRow={(record, index) => ({
-                        onClick: () => {
-                            this.handleSelectRow(rowKey(record, index), record)
-                            onClick(record, index)
-                        },
-                        onDoubleClick: () => {
-                            this.handleSelectRow(rowKey(record, index), record)
-                            onDoubleClick(record, index);
-                        }
-                    })}
-                    title={(data) =>
-                        <Row type="flex" justify="space-between" align="middle">
-                            <Col>
-                                <Button type="primary" onClick={this.handleRefreshButtonClick}>刷新</Button>
-                                {title(data)}
-                            </Col>
-                            <Col>
-                                <Pagination size="small"
-                                            total={total}
-                                            current={current}
-                                            pageSize={pageSize || 0}
-                                            showSizeChanger
-                                            showQuickJumper
-                                            pageSizeOptions={['10', '20', '50', '100']}
-                                            showTotal={total => `总共 ${total}`}
-                                            onChange={this.handlePaginationChange}
-                                            onShowSizeChange={this.handlePaginationChange}/>
-                            </Col>
-                        </Row>
-                    }
+                    onRow={this.handleRow}
+                    title={this.handleTitleInit}
                 />
             </Card>
         )
     }
 
 
+}
+
+class Title extends PureComponent {
+    pageSizeOptions = ['10', '20', '50', '100'];
+    showTotal = total => `总共 ${total}`;
+    render() {
+        return (
+            <Row type="flex" justify="space-between" align="middle">
+                <Col>
+                    <Button type="primary" onClick={this.props.onRefreshButtonClick}>刷新</Button>
+                    {this.props.children}
+                </Col>
+                <Col>
+                    <Pagination
+                        size="small"
+                        total={this.props.total}
+                        current={this.props.current}
+                        pageSize={this.props.pageSize || 0}
+                        showSizeChanger
+                        showQuickJumper
+                        pageSizeOptions={this.pageSizeOptions}
+                        showTotal={this.showTotal}
+                        onChange={this.props.onPaginationChange}
+                        onShowSizeChange={this.props.onPaginationChange}
+                    />
+                </Col>
+            </Row>
+
+        )
+    }
 }

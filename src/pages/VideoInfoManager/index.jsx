@@ -10,7 +10,7 @@ export default class VideoInfoManager extends Component {
         {title: 'av号', key: 'av', width: 90, type: 'search'},
         {title: '标题', key: 'name', width: 200, type: 'search', ellipsis: true},
         {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
-        {title: '类型', key: 'type', width: 90, type: 'choose', chooseMap: "videoTypeResource"},
+        {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: "videoTypeResource"},
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
         {title: '发布日期', key: 'pubTime', width: 180, type: 'order'},
         {title: '简介', key: 'description', width: 200, ellipsis: true},

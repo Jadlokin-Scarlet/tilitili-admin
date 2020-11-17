@@ -26,7 +26,7 @@ export default class VideoDataManager extends Component {
         {title: '踩', key: 'dislike', width: 60, type: 'order'},
         {title: '标题', key: 'name', width: 200, type: 'search', ellipsis: true},
         {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
-        {title: '类型', key: 'type', width: 70, type: 'choose', chooseMap: 'videoTypeResource', ellipsis: true},
+        {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: 'videoTypeResource', ellipsis: true},
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
         {title: '发布日期', key: 'pubTime', width: 180},
         {title: '简介', key: 'description', width: 200, ellipsis: true},
@@ -48,7 +48,8 @@ export default class VideoDataManager extends Component {
     }
 
     handleTitleInit = (props, handleUpdated) => {
-        const { filters, selectedRow } = props
+        const { filters, selectedRows } = props;
+        const selectedRow = selectedRows[0] || {};
         const chooseIssue = isNull(filters.issue)? selectedRow.issue: filters.issue;
         return (() =>
             <span>

@@ -7,7 +7,7 @@ import {
     getColumnOrderProps,
     getInputTitle,
     getParagraph,
-    getSmallImg, isBlank, isNotBlank,
+    getSmallImg, isNotBlank,
     isNull
 } from "../../utils/HtmlUtils";
 
