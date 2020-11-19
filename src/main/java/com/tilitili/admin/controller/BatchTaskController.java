@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("api/batchTask")
 @Validated
 @Slf4j
-public class BatchTaskController {
+public class BatchTaskController extends BaseController {
     private final BatchTaskMapper batchTaskMapper;
     private final BatchTaskService batchTaskService;
 
@@ -53,6 +53,13 @@ public class BatchTaskController {
     @ResponseBody
     public BaseModel batchSpiderHiddenVideo() {
         batchTaskService.batchSpiderHiddenVideo();
+        return new BaseModel("添加任务成功", true);
+    }
+
+    @PostMapping("/batchSpiderAllVideo")
+    @ResponseBody
+    public BaseModel batchSpiderAllVideo() {
+        batchTaskService.batchSpiderAllVideo();
         return new BaseModel("添加任务成功", true);
     }
 

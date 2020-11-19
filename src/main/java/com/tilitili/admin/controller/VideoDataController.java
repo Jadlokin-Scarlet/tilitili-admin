@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("api/video/data")
 @Validated
 @Slf4j
-public class VideoDataController {
+public class VideoDataController extends BaseController {
 
     private final VideoDataMapper videoDataMapper;
     private final VideoDataService videoDataService;

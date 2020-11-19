@@ -1,5 +1,6 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.admin.controller.BaseController;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.emnus.TaskStatus;
 import com.tilitili.common.emnus.TaskType;
@@ -11,38 +12,45 @@ import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.BatchTaskMapper;
 import com.tilitili.common.mapper.TaskMapper;
+import com.tilitili.common.mapper.TouhouAllMapper;
 import com.tilitili.common.mapper.VideoInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.tilitili.common.emnus.TaskReason.*;
+import static com.tilitili.common.emnus.TaskStatus.*;
+import static com.tilitili.common.emnus.TaskType.BatchSpiderVideo;
 
 @Service
 public class BatchTaskService {
     private final VideoInfoMapper videoInfoMapper;
     private final BatchTaskMapper batchTaskMapper;
     private final TaskMapper taskMapper;
-    private final TaskService taskService;
     private final TaskManager taskManager;
+    private final TouhouAllMapper touhouAllMapper;
 
     @Autowired
-    public BatchTaskService(VideoInfoMapper videoInfoMapper, BatchTaskMapper batchTaskMapper, TaskMapper taskMapper, TaskService taskService, TaskManager taskManager) {
+    public BatchTaskService(VideoInfoMapper videoInfoMapper, BatchTaskMapper batchTaskMapper, TaskMapper taskMapper, TaskManager taskManager, TouhouAllMapper touhouAllMapper) {
         this.videoInfoMapper = videoInfoMapper;
         this.batchTaskMapper = batchTaskMapper;
         this.taskMapper = taskMapper;
-        this.taskService = taskService;
         this.taskManager = taskManager;
+        this.touhouAllMapper = touhouAllMapper;
     }
 
     public List<BatchTask> list(BatchTaskQuery batchTaskQuery) {
         return batchTaskMapper.list(batchTaskQuery).stream().parallel().peek(batchTask -> {
             Map<Integer, Integer> taskCountMap = taskManager.countByGroupStatus(new TaskQuery().setBatchId(batchTask.getId()));
 
-            long successTaskNumber = taskCountMap.getOrDefault(TaskStatus.SUCCESS.getValue(), 0);
-            long failTaskNumber = taskCountMap.getOrDefault(TaskStatus.FAIL.getValue(), 0) + taskCountMap.getOrDefault(TaskStatus.TIMEOUT.getValue(), 0);
-            long waitTaskNumber = taskCountMap.getOrDefault(TaskStatus.WAIT.getValue(), 0);
+            long successTaskNumber = taskCountMap.getOrDefault(SUCCESS.value, 0);
+            long failTaskNumber = taskCountMap.getOrDefault(FAIL.value, 0) + taskCountMap.getOrDefault(TaskStatus.TIMEOUT.value, 0);
+            long waitTaskNumber = taskCountMap.getOrDefault(WAIT.value, 0);
             Integer totalTaskNumber = taskMapper.count(new TaskQuery().setBatchId(batchTask.getId()));
 
             batchTask.setSuccessTaskNumber(Math.toIntExact(successTaskNumber));
@@ -53,15 +61,24 @@ public class BatchTaskService {
     }
 
     public void testBatchSpiderVideo() {
-        BatchTask batchTask = new BatchTask().setType(TaskType.BatchSpiderVideo.getValue()).setReason(TaskReason.NO_REASON.getValue());
+        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(NO_REASON.value);
         List<Long> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L)).stream().map(VideoInfo::getAv).collect(Collectors.toList());
-        taskService.batchSpiderVideo(batchTask, avList);
+        taskManager.batchSpiderVideo(batchTask, avList);
     }
 
     public void batchSpiderHiddenVideo() {
-        BatchTask batchTask = new BatchTask().setType(TaskType.BatchSpiderVideo.getValue()).setReason(TaskReason.RE_SPIDER_HIDDEN_VIDEO.getValue());
+        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_HIDDEN_VIDEO.value);
         List<Long> avList = videoInfoMapper.listHiddenVideo().stream().map(VideoInfo::getAv).collect(Collectors.toList());
-        taskService.batchSpiderVideo(batchTask, avList);
+        taskManager.batchSpiderVideo(batchTask, avList);
+    }
+
+    public void batchSpiderAllVideo() {
+        List<BatchTask> batchTaskList = list(new BatchTaskQuery().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value));
+        boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
+        Assert.isTrue(isComplete, "上次的还没爬完");
+        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
+        List<Long> avList = touhouAllMapper.selectAllAv();
+        taskManager.batchSpiderVideo(batchTask, avList);
     }
 
 }

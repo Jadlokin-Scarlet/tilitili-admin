@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("api/resources")
 @Validated
 @Slf4j
-public class ResourceController {
+public class ResourceController extends BaseController {
 
     private final ResourceService resourceService;
 

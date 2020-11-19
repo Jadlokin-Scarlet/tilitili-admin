@@ -3,11 +3,9 @@ package com.tilitili.admin.service;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.manager.VideoManager;
 import com.tilitili.common.mapper.VideoDataMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

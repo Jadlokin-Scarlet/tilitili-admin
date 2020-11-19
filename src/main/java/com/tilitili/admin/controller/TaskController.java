@@ -6,8 +6,8 @@ import com.tilitili.common.entity.query.TaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.entity.view.SimpleTaskView;
+import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.TaskMapper;
-import com.tilitili.admin.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -25,12 +24,12 @@ import java.util.List;
 public class TaskController extends BaseController{
 
     private final TaskMapper taskMapper;
-    private final TaskService taskService;
+    private final TaskManager taskManager;
 
     @Autowired
-    public TaskController(TaskMapper taskMapper, TaskService taskService) {
+    public TaskController(TaskMapper taskMapper, TaskManager taskManager) {
         this.taskMapper = taskMapper;
-        this.taskService = taskService;
+        this.taskManager = taskManager;
     }
 
     @GetMapping("")
@@ -51,7 +50,7 @@ public class TaskController extends BaseController{
             simpleTaskView.setReason(TaskReason.NO_REASON.getValue());
         }
 
-        taskService.simpleSpiderVideo(simpleTaskView);
+        taskManager.simpleSpiderVideo(simpleTaskView);
         return new BaseModel("添加任务成功", true);
     }
 

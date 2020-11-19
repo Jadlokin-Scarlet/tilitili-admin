@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/admin")
 @Slf4j
-public class AdminController {
+public class AdminController extends BaseController {
 
     private final AdminService adminService;
 

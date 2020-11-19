@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("api/video/info")
 @Validated
 @Slf4j
-public class VideoInfoController {
+public class VideoInfoController extends BaseController {
 
     private final VideoInfoMapper videoInfoMapper;
 

@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("api/video/info")
 @Validated
 @Slf4j
-public class VideoTagController {
+public class VideoTagController extends BaseController {
 //    private VideoTagMapper;
 }
