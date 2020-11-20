@@ -28,8 +28,9 @@ export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
 export const getVideoDataByCondition = (data) => get('/video/data', data)
 export const reRank = (data) => patch('/video/data/rank', data)
 
-//视频
+//视频数据文件
 export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)
+export const listVideoDataList = (data) => get(`/video/issue/${data.issue}/data`, data)
 
 //自定义爬取
 export const getTaskByCondition = (data) => get('/task', data)
@@ -38,4 +39,4 @@ export const spiderVideo = (data) => post('/task', data)
 //批量爬取
 export const getBatchTaskByCondition = (data) => get('/batchTask', data);
 export const testBatchSpiderVideo = (data) => post('/batchTask/testBatchSpiderVideo', data)
-export const batchSpiderHiddenVideo = (data) => post('/batchTask/batchSpiderHiddenVideo', data)
+export const batchSpiderAllVideo = (data) => post('/batchTask/batchSpiderAllVideo', data)

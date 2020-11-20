@@ -27,7 +27,8 @@ export default class VideoInfoManager extends Component {
     ];
 
     handleTitleInit = (props, handleUpdated) => {
-        const { selectedRow } = props;
+        const { selectedRows } = props;
+        const selectedRow = selectedRows[0] || {}
         return (() =>
             <span>
                 <DeleteVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>

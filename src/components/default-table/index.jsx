@@ -1,16 +1,15 @@
-import React, {Component, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import {Button, Card, Col, Pagination, Row, Table} from 'antd';
 import {
     compose,
-    convertToPrams,
-    defineProperty,
+    convertToPrams, defineProperty,
     emptyFunc,
     getColumnChooseProps,
     getColumnOrderProps,
     getInputTitle,
     getParagraph,
-    getSmallImg, If, isEmpty, isNotNull,
-    isNull, selfFunc
+    getSmallImg, If, isEmpty, isNotNull, isNull,
+    selfFunc
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
 import './index.css'
@@ -30,7 +29,6 @@ export default class DefaultTable extends PureComponent {
             filters: {},
             sorter: {},
 
-            selectedRows: [],
             selectedRowKeys: [],
 
             loading: true,
@@ -58,6 +56,12 @@ export default class DefaultTable extends PureComponent {
         await this.updateDataByCondition(convertToPrams(pagination, filters, sorter));
         this.setState({ filters, sorter, resources })
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("update dom");
+        console.log(prevState);
+        console.log(this.state);
+    }
     
     getResource = async () => {
         if (isEmpty(this.props.needResourcesList)) {
@@ -77,8 +81,27 @@ export default class DefaultTable extends PureComponent {
                     pageSize: data.pageSize,
                     current: data.current
                 },
+                loading: false,
             })
-        } finally {
+            this.rowEventList = data.list.map((record, index) => {
+                const { rowKey=(record, index) => index, onClick=emptyFunc, onDoubleClick=emptyFunc } = this.props;
+                const handleSelectRow = this.handleSelectRow
+
+                function handleClick() {
+                    handleSelectRow(rowKey(record, index), record)
+                    onClick(record, index)
+                }
+
+                function handleDoubleClick() {
+                    onDoubleClick(record, index);
+                }
+
+                return {
+                    onClick: handleClick,
+                    onDoubleClick: handleDoubleClick
+                }
+            })
+        } catch (e) {
             this.setState({
                 loading: false,
             })
@@ -87,18 +110,8 @@ export default class DefaultTable extends PureComponent {
 
     clearSelectedRows = () => {
         this.setState({
-            selectedRows: [],
             selectedRowKeys: [],
         })
-    }
-
-    updateSelectedRows = () => {
-        const { selectedRowKeys=[], list=[] } = this.state;
-        const { rowKey=(record, index) => isNull(record.id, index) } = this.props;
-        const selectedRows = selectedRowKeys.map(selectedRowKey => (
-            list.filter((record, index) => rowKey(record,index) === selectedRowKey)[0]
-        ))
-        this.setState({selectedRows,})
     }
     
     refresh = (
@@ -155,7 +168,6 @@ export default class DefaultTable extends PureComponent {
     handleUpdated = () => {
         this.refreshWithFilters();
         this.setState({visible: false})
-        this.updateSelectedRows();
     }
 
     handleAdded = () => {
@@ -172,35 +184,33 @@ export default class DefaultTable extends PureComponent {
     }
 
 
-    handleSelectRow = (selectedRowKey, selectedRow) => {
+    handleSelectRow = (selectedRowKey) => {
         const { multiple=false } = this.props;
+        const { selectedRowKeys } = this.state;
         if (multiple) {
-            const { selectedRowKeys, selectedRows } = this.state;
             if (selectedRowKeys.includes(selectedRowKey)) {
-                selectedRows.splice(selectedRowKeys.indexOf(selectedRowKey), 1)
                 selectedRowKeys.splice(selectedRowKeys.indexOf(selectedRowKey), 1);
             }else {
-                selectedRows.push(selectedRow);
                 selectedRowKeys.push(selectedRowKey);
             }
             this.setState({
                 selectedRowKeys: selectedRowKeys,
-                selectedRows: selectedRows
             })
         }else {
-            this.setState({
-                selectedRowKeys: [selectedRowKey],
-                selectedRows: [selectedRow]
-            })
+            if (! selectedRowKeys.includes(selectedRowKey)) {
+                this.setState({
+                    selectedRowKeys: [selectedRowKey],
+                })
+            }
         }
     }
 
-    handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-        this.setState({selectedRowKeys, selectedRows});
+    handleRowSelectChange = (selectedRowKeys) => {
+        this.setState({selectedRowKeys});
     };
 
     getColumnsFromProps() {
-        const { filters, sorter, loading, resources } = this.state;
+        const { filters={}, sorter, loading, resources } = this.state || {};
         const { columns=[] } = this.props
 
         return columns.map(columnConfig => {
@@ -243,10 +253,17 @@ export default class DefaultTable extends PureComponent {
         })
     }
 
+    getSelectedRows = () => {
+        const { rowKey=(record, index) => index } = this.props;
+        const { selectedRowKeys, list=[] } = this.state;
+        return  selectedRowKeys.map(selectedRowKey => list.filter((record, index) => rowKey(record, index) === selectedRowKey))
+    }
+
     handleTitleInit = (data) => {
         const { onTitleInit=emptyFunc } = this.props;
-        const { pagination } = this.state;
-        const title = onTitleInit(this.state, this.handleUpdated) || emptyFunc;
+        const { filters, pagination, resources } = this.state;
+        const selectedRows = this.getSelectedRows();
+        const title = onTitleInit({ filters, selectedRows, resources }, this.handleUpdated) || emptyFunc;
         return (
             <Title {...pagination}
                    onPaginationChange={this.handlePaginationChange}
@@ -256,16 +273,7 @@ export default class DefaultTable extends PureComponent {
     }
 
     handleRow = (record, index) => {
-        const { rowKey=(record, index) => index, onClick=emptyFunc, onDoubleClick=emptyFunc } = this.props;
-        return {
-            onClick: async () => {
-                this.handleSelectRow(rowKey(record, index), record)
-                onClick(record, index)
-            },
-            onDoubleClick: async () => {
-                onDoubleClick(record, index);
-            }
-        }
+        return (this.rowEventList || [])[index] || {};
     }
 
     render() {
@@ -285,11 +293,13 @@ export default class DefaultTable extends PureComponent {
         }).endIf()
         return (
             <Card onKeyUp={this.handleKeyUp} tabIndex="-1">
+
                 <Table
-                    {...{ rowKey, size, loading, dataSource, columns }}
+                    {...{ rowKey, size, loading, dataSource }}
                     bordered
                     scroll={{x: 1}}
                     pagination={false}
+                    columns={columns}
                     rowSelection={rowSelection}
                     onChange={this.handleTableChange}
                     onRow={this.handleRow}

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import DefaultTable from "../../components/default-table";
 import {getBatchTaskByCondition} from "../../api";
 import TestBatchSpiderVideo from "./TestBatchSpiderVideo";
-import BatchSpiderHiddenVideo from "./BatchSpiderHiddenVideo";
+import BatchSpiderAllVideo from "./BatchSpiderAllVideo";
 
 export default class BatchSpiderVideoManager extends Component{
 
@@ -23,7 +23,7 @@ export default class BatchSpiderVideoManager extends Component{
         return (() =>
             <span>
                 <TestBatchSpiderVideo onSuccess={handleUpdated}/>
-                <BatchSpiderHiddenVideo onSuccess={handleUpdated}/>
+                <BatchSpiderAllVideo onUpdated={handleUpdated}/>
             </span>
         )
     }
