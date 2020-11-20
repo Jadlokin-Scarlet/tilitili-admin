@@ -77,7 +77,7 @@ public class BatchTaskService {
         boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
-        List<Long> avList = touhouAllMapper.selectAllAv();
+        List<Long> avList = touhouAllMapper.selectAllAv().stream().limit(20).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
