@@ -16,6 +16,7 @@ import com.tilitili.common.mapper.TouhouAllMapper;
 import com.tilitili.common.mapper.VideoInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -58,6 +59,12 @@ public class BatchTaskService {
             batchTask.setWaitTaskNumber(Math.toIntExact(waitTaskNumber));
             batchTask.setTotalTaskNumber(totalTaskNumber);
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteBatchTask(Long batchId) {
+        batchTaskMapper.delete(batchId);
+        taskMapper.deleteByBatchId(batchId);
     }
 
     public void testBatchSpiderVideo() {

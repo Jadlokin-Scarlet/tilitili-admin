@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +34,13 @@ public class BatchTaskController extends BaseController {
         int count = batchTaskMapper.count(query);
         List<BatchTask> batchTaskList = batchTaskService.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), batchTaskList);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public BaseModel deleteBatchTask(@PathVariable Long id) {
+        batchTaskService.deleteBatchTask(id);
+        return new BaseModel("删除成功", true);
     }
 
     @PostMapping("/testBatchSpiderVideo")
