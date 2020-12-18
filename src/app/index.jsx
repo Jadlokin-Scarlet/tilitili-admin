@@ -124,21 +124,15 @@ export default class App extends Component{
                             </Menu.Item>
                         </Menu>
                         <Menu mode="horizontal" style={{float: "right"}} selectable={false}>
-                            {If(isNotNull(this.state.isLogin)).then(() => (
-                                If(this.state.isLogin).then(() => (
-                                    <Menu.Item onClick={this.reqLoginOut}>
-                                        <Icon type="logout" />退出登录
-                                    </Menu.Item>
-                                )).endIf()
-                                //     .else(() => (
-                                //     <Menu.Item>
-                                //         <LoginModal onLoginSuccess={this.login}/>
-                                //     </Menu.Item>
-                                // ))
+                            {If(this.state.isLogin).then(() => (
+                                <Menu.Item onClick={this.reqLoginOut}>
+                                    <Icon type="logout" />退出登录
+                                </Menu.Item>
                             )).endIf()}
                         </Menu>
                     </Header>
-                    <Layout>
+                    {If(isNotNull(this.state.isLogin)).then(() => (
+                        <Layout>
                         <Sider width={200} collapsed={this.state.collapsed}>
                             {If(this.state.isLogin).then(() => <>
                                 <div style={{ width: '100%', textAlign: 'right' }}>
@@ -190,6 +184,7 @@ export default class App extends Component{
                             </Footer>
                         </Layout>
                     </Layout>
+                    )).endIf()}
                 </Layout>
             </HashRouter>
         )

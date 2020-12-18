@@ -41,10 +41,10 @@ export default class LoginModal extends Component{
                     <Col span={6}>
                         <Form layout="horizontal" onSubmit={this.login}>
                             <Form.Item label="用户名" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
-                                <Input value={this.state.userName} onChange={event => this.setState({userName: event.target.value})}/>
+                                <Input value={this.state.userName} onChange={event => this.setState({userName: event.target.value})} type="userName"/>
                             </Form.Item>
                             <Form.Item label="密码" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
-                                <Input value={this.state.password} onChange={event => this.setState({password: event.target.value})}/>
+                                <Input value={this.state.password} onChange={event => this.setState({password: event.target.value})} type="password"/>
                             </Form.Item>
                             <Form.Item>
                                 <Row type="flex" justify="space-around" align="middle">
