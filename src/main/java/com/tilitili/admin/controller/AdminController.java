@@ -6,6 +6,7 @@ import com.tilitili.admin.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -28,13 +29,16 @@ public class AdminController extends BaseController {
         if (admin == null) {
             return new BaseModel("请重新登陆");
         }else {
-            return new BaseModel("已登录", true, admin.getUserName());
+            return new BaseModel("已登录", true);
         }
     }
 
     @PostMapping("/login")
     @ResponseBody
     public BaseModel login(@RequestBody Admin reqAdmin, HttpSession session) {
+        Assert.notNull(reqAdmin, "参数异常");
+        Assert.notNull(reqAdmin.getUserName(), "请输入用户名和密码");
+        Assert.notNull(reqAdmin.getPassword(), "请输入用户名和密码");
         Admin admin = adminService.login(reqAdmin.getUserName(), reqAdmin.getPassword());
         if (admin == null) {
             return new BaseModel("用户名密码错误");

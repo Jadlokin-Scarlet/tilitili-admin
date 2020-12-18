@@ -4,6 +4,7 @@ import com.tilitili.common.entity.Admin;
 import com.tilitili.common.mapper.AdminMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class AdminService {
         if (admin == null) {
             return null;
         }
-        if (!Objects.equals(password, admin.getPassword())) {
+        if (!Objects.equals(DigestUtils.md5DigestAsHex(password.getBytes()), admin.getPassword())) {
             return null;
         }
         return admin;

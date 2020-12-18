@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.DigestUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -98,4 +99,8 @@ public class BatchTaskService {
         List<Long> avList = touhouAllMapper.selectAllAv();
         taskManager.batchSpiderVideo(batchTask, avList);
     }
+
+//    public static void main(String[] args) {
+//        System.out.println(DigestUtils.md5DigestAsHex("admin".getBytes()));
+//    }
 }
