@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import './App.less';
+import './index.less';
 import {Button, Col, Icon, Layout, Menu, Result, Row, Tabs, Typography} from "antd";
 import {For, If, isEmpty, isNotNull, isNull} from "../utils/HtmlUtils";
 import LoginModal from "./LoginModal";
-import {isLogin, reqLoginOut} from "../api";
+import {isLogin, reqLogin, reqLoginOut} from "../api";
 import {HashRouter, Link} from "react-router-dom";
 import {menuList} from "../config/menuConfig";
 const { Header, Content, Sider, Footer } = Layout;
@@ -26,7 +26,7 @@ export default class App extends Component{
         super(props);
         this.state = {
             collapsed: false,
-            userName: undefined,
+            isLogin: null,
             selectedKeyList: [],
         }
     }
@@ -39,16 +39,20 @@ export default class App extends Component{
         isLogin().then(this.login).catch(this.loginOut)
     }
 
-    login = userName => {
-        this.setState({userName});
+    login = () => {
+        this.setState({isLogin: true});
     }
 
     loginOut = () => {
-        this.setState({userName: null});
+        this.setState({isLogin: false});
     }
 
     reqLoginOut = () => {
-        reqLoginOut().then(() => this.setState({userName: null}))
+        reqLoginOut().then(this.loginOut)
+    }
+
+    reqLogin = (username, password) => {
+        reqLogin(username, password).then(this.login).catch(this.loginOut)
     }
 
     toggleCollapsed = () => {
@@ -120,39 +124,40 @@ export default class App extends Component{
                             </Menu.Item>
                         </Menu>
                         <Menu mode="horizontal" style={{float: "right"}} selectable={false}>
-                            {If(this.state.userName !== undefined).then(() => (
-                                If(isNull(this.state.userName)).then(() => (
-                                    <Menu.Item>
-                                        <LoginModal onLoginSuccess={this.login}/>
+                            {If(isNotNull(this.state.isLogin)).then(() => (
+                                If(this.state.isLogin).then(() => (
+                                    <Menu.Item onClick={this.reqLoginOut}>
+                                        <Icon type="logout" />退出登录
                                     </Menu.Item>
-                                )).else(() => (
-                                    <Menu.SubMenu style={{minWidth: "10px"}} title={<Title level={3} className="primary-color" style={{margin: "0px"}}>Hi! {this.state.userName}</Title>}>
-                                        <Menu.Item onClick={this.reqLoginOut}>
-                                            <Icon type="logout" />退出登录
-                                        </Menu.Item>
-                                    </Menu.SubMenu>
-                                ))
+                                )).endIf()
+                                //     .else(() => (
+                                //     <Menu.Item>
+                                //         <LoginModal onLoginSuccess={this.login}/>
+                                //     </Menu.Item>
+                                // ))
                             )).endIf()}
                         </Menu>
                     </Header>
                     <Layout>
                         <Sider width={200} collapsed={this.state.collapsed}>
-                            <div style={{ width: '100%', textAlign: 'right' }}>
-                                <Button onClick={this.toggleCollapsed} type="link" ghost>
-                                    <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
-                                </Button>
-                            </div>
-                            <Menu
-                                mode="inline"
-                                theme={"dark"}
-                                selectedKeys={this.state.selectedKeyList[0]}
-                                style={{borderRight: 0 }}>
-                                {this.createMenu(menuList)}
-                            </Menu>
+                            {If(this.state.isLogin).then(() => <>
+                                <div style={{ width: '100%', textAlign: 'right' }}>
+                                    <Button onClick={this.toggleCollapsed} type="link" ghost>
+                                        <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
+                                    </Button>
+                                </div>
+                                <Menu
+                                    mode="inline"
+                                    theme={"dark"}
+                                    selectedKeys={this.state.selectedKeyList[0]}
+                                    style={{borderRight: 0 }}>
+                                    {this.createMenu(menuList)}
+                                </Menu>
+                            </>).endIf()}
                         </Sider>
                         <Layout>
                             <Content>
-                                <div>
+                                {If(this.state.isLogin).then(() => <>
                                     <Tabs type="editable-card"
                                           style={{marginTop:10,marginLeft:5,marginRight:5,}}
                                           hideAdd={true}
@@ -172,7 +177,9 @@ export default class App extends Component{
                                             title="欢迎来到TiliTili后台!"
                                         />
                                     )).endIf()}
-                                </div>
+                                </>).else(() => <>
+                                    <LoginModal onLogin={this.reqLogin} onRegister={this.reqRegister}/>
+                                </>)}
                             </Content>
                             <Footer style={{backgroundColor: "white"}}>
                                 <Row type="flex" justify="space-around" align="middle">
