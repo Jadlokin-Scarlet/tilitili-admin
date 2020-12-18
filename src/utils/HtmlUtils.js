@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Popover, Typography} from "antd";
+import {Input, Popover, Typography, message, Select} from "antd";
 const { Paragraph } = Typography;
 
 export const isNull = (obj, or) => {
@@ -89,6 +89,18 @@ export const getSmallImg = (loading, hrefConverse, onClick) => {
     }
 }
 
+export const InputSelect = (props) => (
+    <Select value={isNull(props.value)? props.value: props.value.toString()} onChange={props.onChange} onSelect={props.onSelect} showSearch autoClearSearchValue allowClear dropdownMatchSelectWidth optionFilterProp="children" filterOption={inputSelectFilterOption} placeholder={props.placeholder} size={props.size}>
+        {For(props.resource).then((item, index) => (
+            <Select.Option key={index} value={isNull(item.value)? item.value: item.value.toString()}>{isNull(item.text)? item.text: item.text.toString()}</Select.Option>
+        ))}
+    </Select>
+)
+
+export const inputSelectFilterOption = (input, option) => {
+    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+}
+
 export const getInputTitle = (title, index, filteredInfo, onChanged, onChange, style) => ({
     title: <InputTitle
         {...{title, index, filteredInfo, onChanged, onChange, style}}
@@ -139,14 +151,56 @@ export class IfClass {
     }
 }
 
-export const For = (list = []) => ({
-    then: mapFun => list.map(mapFun),
-    if: filterFun => ({
-        then: mapFun => list.filter(filterFun).map(mapFun),
-    }),
-})
+export const For = object => {
+    if (Array.isArray(object)) {
+        return new ForArray(object);
+    }
+    if (typeof object === 'object') {
+        return new ForObject(object);
+    }
+    return new ForArray([]);
+}
+
+class ForArray {
+    constructor(list) {
+        this.list = list;
+    }
+    then(mapFun) {
+        return this.list.map(mapFun)
+    }
+    if(filterFun) {
+        this.list.filter(filterFun)
+        return this;
+    }
+}
+
+class ForObject {
+    constructor(object) {
+        this.object = object;
+    }
+    then(mapFun) {
+        const tmp = {};
+        for (const key of Object.keys(this.object)) {
+            tmp[key] = mapFun(key, this.object[key]);
+        }
+        return tmp;
+    }
+    if(filterFun) {
+        const tmp = {};
+        for (const key of Object.keys(this.object)) {
+            if (filterFun(key, this.object[key])) {
+                tmp[key] = this.object[key];
+            }
+        }
+        this.object = tmp;
+        return this;
+    }
+}
+
 
 export const convertToPrams = (pagination = {}, filters = {}, sorter = {}) => {
+    filters = For(filters).if((key,value) => isNotNull(value))
+        .then((key, value) => value[0]);
     const params = Object.assign({}, filters, pagination);
     if (isNotEmptyObject(sorter)) {
         params.sorter = toLine(sorter.field)
@@ -158,6 +212,21 @@ export const convertToPrams = (pagination = {}, filters = {}, sorter = {}) => {
 
 export const emptyFunc = () => {}
 export const selfFunc = a => a
+
+export const compose = (firstFun = selfFunc, secondFun = selfFunc) => {
+    return (...props) => secondFun(firstFun(...props));
+}
+
+function currying(fn) {
+    return function _currying(...args) {
+        if (args.length >= fn.length) {
+            return fn(...args)
+        }
+        return function (...args2) {
+            return _currying(...args, ...args2)
+        }
+    }
+}
 
 export const defineProperty = (obj, key, value) => {
     return Object.defineProperty(obj, key, {
@@ -171,6 +240,35 @@ export const toLine = (name) => {
     return name.replace(/([A-Z])/g,"_$1").toLowerCase();
 }
 
-export const compose = (firstFun = selfFunc, secondFun = selfFunc) => {
-    return (...props) => secondFun(firstFun(...props));
+export const splitToList = (key, text) => {
+    if (isNotNull(text)) {
+        return text.split(key).map(text => <p key={text} style={{marginBottom: "0em"}}>{text}</p>);
+    }
 }
+
+export const splitToListRender = currying(splitToList)
+
+export const priceRender = currying((unit, text) => {
+    if (isNotNull(text)) {
+        return unit + text
+    }
+})
+
+export const checkResp = data => {
+    if (isNull(data)) {
+        data = {};
+    }
+    if (isNull(data.success)) {
+        data.success = true;
+    }
+    if(!data.success) {
+        message.error(isBlank(data.message, '失败'));
+        return data;
+    } else {
+        return data;
+    }
+}
+
+export const defaultRowKey = (record, index) => index;
+
+export const defaultScroll = {x:1}

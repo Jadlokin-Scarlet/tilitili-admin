@@ -1,88 +1,84 @@
-import React from 'react';
-import { Table } from 'antd';
-import {
-    isNull
-} from "../../utils/HtmlUtils";
+import React, {PureComponent} from 'react';
+import {defaultRowKey, emptyFunc} from "../../utils/HtmlUtils";
+import PureTable from "./PureTable";
 
-class SimpleTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedRowKeys: [],
-        };
+export default class SimpleTable extends PureComponent {
+
+    handleSelectRow = (record, index, callback) => {
+        const {rowKey=defaultRowKey,isMultipleSelect,onSelectRow=emptyFunc} = this.props;
+        const selectedRowKey = rowKey(record, index);
+
+        let {selectedRowKeys,selectedRows} = this.props;
+
+        if (isMultipleSelect !== true) {
+            selectedRowKeys = [selectedRowKey];
+            selectedRows = [record]
+        }else {
+            const j = selectedRowKeys.indexOf(selectedRowKey);
+            if (j === -1) {
+                selectedRows.push(record);
+                selectedRowKeys.push(selectedRowKey);
+            }else {
+                selectedRows.splice(j, 1);
+                selectedRowKeys.splice(j, 1);
+            }
+        }
+        onSelectRow(selectedRowKeys, selectedRows, callback)
     }
 
-    handleRowSelectChange = (selectedRowKeys, selectedRows) => {
-        const { onSelectRow } = this.props;
-        if (onSelectRow) {
-            onSelectRow(selectedRows, selectedRowKeys);
+    handleClick = (record, index) => {
+        const {onClick=emptyFunc} = this.props;
+        this.handleSelectRow(record, index, () => {
+            onClick(record, index);
+        });
+    }
+
+    handleDoubleClick = (record, index) => {
+        const {onDoubleClick=emptyFunc} = this.props;
+        onDoubleClick(record, index)
+    }
+
+    paginationProps = {
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        pageSizeOptions: this.props.pageSizeOptions || ['5', '10', '20', '50', '100'],
+        position: this.props.position,
+        showSizeChanger: true,
+        showQuickJumper: true,
+    }
+
+    onClick = (record, index) => {
+        return {
+            onClick: () => {
+                setTimeout(this.handleClick.bind(this, record, index), 0);
+            },
+            onDoubleClick: () => {
+                setTimeout(this.handleDoubleClick.bind(this, record, index), 0);
+            }
         }
-        this.setState({ selectedRowKeys });
-    };
+    }
 
     render() {
-        const { selectedRowKeys } = this.state;
-        const { data, rowKey, scroll, size, isShowRowSelection, type, ...rest } = this.props;
-        const { list = [], totalRows, pageSize, currentPage } = data;
-        const pagination = {
-            total: totalRows,
-            pageSize: pageSize,
-            current: currentPage
-        };
-        const paginationProps = {
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-            pageSizeOptions: this.props.pageSizeOptions || ['5', '10', '20', '50', '100'],
-            position: this.props.position,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            ...pagination,
-        };
+        const { data, rowKey, scroll, size} = this.props;
+        const { list, total, pageSize, current } = data;
 
-        const rowSelection = {
-            type: type?type:'radio',
-            selectedRowKeys: this.props.selectedRowKeys || selectedRowKeys,
-            onChange: this.handleRowSelectChange,
-            getCheckboxProps: record => ({
-                disabled: record.disabled,
-            }),
-        };
+        this.paginationProps.pageSize = pageSize;
+        this.paginationProps.total = total;
+        this.paginationProps.current = current;
 
         return (
-            <div>
-                <Table
-                    onRow={(record, index) => {
-                        return {
-                            onClick: () => {
-                                this.handleRowSelectChange(
-                                    [isNull(rowKey , (record, index) => index)(record, index)],
-                                    [record]);
-                                if (this.props.onClick) {
-                                    this.props.onClick(record, index)
-                                }
-                            },
-                            onDoubleClick: () => {
-                                this.handleRowSelectChange(
-                                    [isNull(rowKey , (record, index) => index)(record, index)],
-                                    [record]);
-                                if (this.props.onDoubleClick) {
-                                    this.props.onDoubleClick(record, index);
-                                }
-                            }
-                        }
-                    }}
-                    bordered
-                    rowKey={rowKey || ((record, index) => index)}
-                    rowSelection={isShowRowSelection ? rowSelection : null}
-                    size={size}
-                    scroll={scroll}
-                    dataSource={list}
-                    pagination={paginationProps}
-                    {...rest}
-                />
-
-            </div>
+            <PureTable
+                columns={this.props.columns}
+                bordered
+                rowKey={rowKey || defaultRowKey}
+                size={size}
+                scroll={scroll}
+                dataSource={list}
+                pagination={this.paginationProps}
+                loading={this.props.loading}
+                onChange={this.props.onChange}
+                rowClassName={this.props.rowClassName}
+                onRow={this.onClick}
+            />
         );
     }
 }
-
-export default SimpleTable;

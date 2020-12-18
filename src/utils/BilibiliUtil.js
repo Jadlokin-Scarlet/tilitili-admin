@@ -20,3 +20,6 @@ export const bvToAv = bv => {
     }
     return av
 }
+
+export const bilibiliVideoUrlConverse = av => `https://www.bilibili.com/video/av${av}`;
+export const bilibiliVideoIframeUrlConverse = av => `//player.bilibili.com/player.html?danmaku=0&high_quality=1&aid=${av}`;

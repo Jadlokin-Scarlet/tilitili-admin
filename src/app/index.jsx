@@ -159,9 +159,9 @@ export default class App extends Component{
                                           onChange={this.handleSelected.bind(this)}
                                           activeKey={this.state.selectedKeyList[0]}
                                           onEdit={this.onEdit}>
-                                        {For (selectedList).then(selected => (
+                                        {For (selectedList).then((selected, index) => (
                                             <Tabs.TabPane tab={selected.title} key={selected.key} closable={true}>
-                                                <selected.component selectedTab={selected} />
+                                                <selected.component selectedTab={selected} isHidden={index !== 0} />
                                             </Tabs.TabPane>
                                         ))}
                                     </Tabs>

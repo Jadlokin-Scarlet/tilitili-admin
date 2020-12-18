@@ -24,9 +24,57 @@ code {
   padding: 0 !important;
 }
 
+.padding-3 {
+  padding: 3px !important;
+}
+
+/*table选择行的背景颜色*/
+.ant-table-tbody > tr.ant-table-row-selected td {
+  background-color: #f0f2f5 !important;
+}
+.selected-row-color > td {
+  background-color: #fff6e4 !important;
+}
+
+/*choose下拉框里的行间距*/
+.ant-table-selection-column, .ant-dropdown-menu-item {
+  padding-bottom: 2px !important;
+  padding-top: 2px !important;
+}
+.ant-select-dropdown-menu-item {
+  padding-bottom: 2px !important;
+  padding-top: 2px !important;
+}
+
+/*表格表头里的input提示字体样式*/
+.ant-table-column-title input::placeholder {
+  color: rgba(0, 0, 0, 0.51);
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.1em;
+}
+.ant-table-column-title .ant-select-selection__placeholder {
+  color: rgba(0, 0, 0, 0.51);
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.1em;
+}
+/*表格表头里的select input宽度样式*/
+.ant-table-column-title  div.ant-select {
+  display: block;
+}
+/*input清空按钮样式*/
 .ant-input-affix-wrapper .ant-input:not(:last-child) {
   padding-right: 11px !important;
 }
 .ant-input-affix-wrapper span.ant-input-suffix {
   right: 1px;
+}
+
+.margin-bottom-8 {
+  margin-bottom: 8px;
+}
+
+.margin-left-8 {
+  margin-left: 8px;
 }
