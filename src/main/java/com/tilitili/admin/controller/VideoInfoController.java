@@ -4,10 +4,9 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.admin.service.VideoInfoService;
 import com.tilitili.common.mapper.VideoInfoMapper;
-import com.tilitili.admin.service.VideInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -21,10 +20,12 @@ import java.util.List;
 @Slf4j
 public class VideoInfoController extends BaseController {
 
+    private final VideoInfoService videoInfoService;
     private final VideoInfoMapper videoInfoMapper;
 
     @Autowired
-    public VideoInfoController(VideoInfoMapper videoInfoMapper) {
+    public VideoInfoController(VideoInfoService videoInfoService, VideoInfoMapper videoInfoMapper) {
+        this.videoInfoService = videoInfoService;
         this.videoInfoMapper = videoInfoMapper;
     }
 
@@ -38,13 +39,19 @@ public class VideoInfoController extends BaseController {
 
     @DeleteMapping("/{av}/isDelete/true")
     public BaseModel deleteVideo(@PathVariable Long av) {
-        videoInfoMapper.delete(av);
+        videoInfoService.delete(av);
         return new BaseModel("成功删除", true);
     }
 
     @PatchMapping("/{av}/isDelete/false")
     public BaseModel recoveryVideo(@PathVariable Long av) {
-        videoInfoMapper.recovery(av);
+        videoInfoService.recovery(av);
+        return new BaseModel("成功恢复", true);
+    }
+
+    @PatchMapping("/{av}/startTime/{startTime}")
+    public BaseModel updateStartTime(@PathVariable Long av, @PathVariable Long startTime) {
+        videoInfoService.updateStartTime(av, startTime);
         return new BaseModel("成功恢复", true);
     }
 
