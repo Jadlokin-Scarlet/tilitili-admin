@@ -5,7 +5,7 @@ import {updateStartTime} from "../../api";
 
 const formConfig = [
     {label: '节选开始点', key: 'startTime', type: 'inputNumber'},
-    {key: 'av',type: 'bilibiliVideo', submit: false},
+    {key: 'av',type: 'bilibiliVideo'},
 ]
 
 export default class UpdateStartTime extends Component {
