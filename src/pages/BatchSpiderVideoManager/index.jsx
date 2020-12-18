@@ -4,6 +4,7 @@ import {getBatchTaskByCondition} from "../../api";
 import TestBatchSpiderVideo from "./TestBatchSpiderVideo";
 import BatchSpiderAllVideo from "./BatchSpiderAllVideo";
 import BatchSpiderAllVideoTag from "./BatchSpiderAllVideoTag";
+import DeleteBatchTask from "./DeleteBatchTask";
 
 export default class BatchSpiderVideoManager extends Component{
 
@@ -21,9 +22,12 @@ export default class BatchSpiderVideoManager extends Component{
     ];
 
     handleButtonsInit = (that) => {
-        const { handleUpdated } = that
+        const { handleUpdated, state } = that
+        const { selectedRows } = state;
+        const selectedRow = selectedRows[0] || {};
         return (
             <>
+                <DeleteBatchTask selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <TestBatchSpiderVideo onSuccess={handleUpdated}/>
                 <BatchSpiderAllVideo onUpdated={handleUpdated}/>
                 <BatchSpiderAllVideoTag onUpdated={handleUpdated}/>

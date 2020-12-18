@@ -42,3 +42,4 @@ export const getBatchTaskByCondition = (data) => get('/batchTask', data);
 export const testBatchSpiderVideo = (data) => post('/batchTask/testBatchSpiderVideo', data)
 export const batchSpiderAllVideo = (data) => post('/batchTask/batchSpiderAllVideo', data)
 export const batchSpiderAllVideoTag = (data) => post('/batchTask/batchSpiderAllVideoTag', data)
+export const deleteBatchTag = (id) => del(`/batchTask/${id}`)
