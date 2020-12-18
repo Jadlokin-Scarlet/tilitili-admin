@@ -6,9 +6,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("api/video/info")
+@RequestMapping("api/video/tag")
 @Validated
 @Slf4j
 public class VideoTagController extends BaseController {
 //    private VideoTagMapper;
+
 }

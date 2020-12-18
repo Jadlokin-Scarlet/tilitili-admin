@@ -45,7 +45,7 @@ public class BatchTaskService {
     }
 
     public List<BatchTask> list(BatchTaskQuery batchTaskQuery) {
-        return batchTaskMapper.list(batchTaskQuery).stream().parallel().peek(batchTask -> {
+        return batchTaskMapper.list(batchTaskQuery).parallelStream().peek(batchTask -> {
             Map<Integer, Integer> taskCountMap = taskManager.countByGroupStatus(new TaskQuery().setBatchId(batchTask.getId()));
 
             long successTaskNumber = taskCountMap.getOrDefault(SUCCESS.value, 0);
@@ -77,8 +77,18 @@ public class BatchTaskService {
         boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
-        List<Long> avList = touhouAllMapper.selectAllAv().stream().limit(20).collect(Collectors.toList());
+        List<Long> avList = touhouAllMapper.selectAllAv();
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
+    public void batchSpiderAllVideoTag() {
+        Integer type = BatchSpiderVideo.value;
+        Integer reason = RE_SPIDER_All_VIDEO_TAG.value;
+        List<BatchTask> batchTaskList = list(new BatchTaskQuery().setType(type).setReason(reason));
+        boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
+        Assert.isTrue(isComplete, "上次的还没爬完");
+        BatchTask batchTask = new BatchTask().setType(type).setReason(reason);
+        List<Long> avList = touhouAllMapper.selectAllAv();
+        taskManager.batchSpiderVideo(batchTask, avList);
+    }
 }

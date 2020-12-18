@@ -1,24 +1,21 @@
 package com.tilitili.admin.controller;
 
 import com.tilitili.admin.service.BatchTaskService;
-import com.tilitili.common.emnus.TaskStatus;
 import com.tilitili.common.entity.BatchTask;
-import com.tilitili.common.entity.Task;
 import com.tilitili.common.entity.query.BatchTaskQuery;
-import com.tilitili.common.entity.query.TaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.BatchTaskMapper;
-import com.tilitili.common.mapper.TaskMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("api/batchTask")
@@ -60,6 +57,13 @@ public class BatchTaskController extends BaseController {
     @ResponseBody
     public BaseModel batchSpiderAllVideo() {
         batchTaskService.batchSpiderAllVideo();
+        return new BaseModel("添加任务成功", true);
+    }
+
+    @PostMapping("/batchSpiderAllVideoTag")
+    @ResponseBody
+    public BaseModel batchSpiderAllVideoTag() {
+        batchTaskService.batchSpiderAllVideoTag();
         return new BaseModel("添加任务成功", true);
     }
 

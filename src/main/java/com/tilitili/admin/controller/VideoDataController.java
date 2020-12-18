@@ -46,6 +46,7 @@ public class VideoDataController extends BaseController {
             return new BaseModel("只有最新一期能重排");
         }
         videoDataService.reRank(issue);
+//        videoDataMapper.listIssue().forEach(videoDataService::reRank);
         return new BaseModel("成功", true);
     }
 
