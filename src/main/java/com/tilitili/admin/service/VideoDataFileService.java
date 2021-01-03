@@ -31,7 +31,7 @@ public class VideoDataFileService {
     public String getVideoDataFile(int issue) {
         String head = String.join("\t", fields) + "\n";
         String body = listForDataFile(issue).stream()
-                .map(video -> video.toString(fields))
+                .map(video -> video.toDataFileLine(fields))
                 .collect(Collectors.joining("\n"));
         return head + body;
     }
@@ -55,6 +55,10 @@ public class VideoDataFileService {
                 video.setIsLen(videoData.getRank(), his.getRank(), moreHis.getRank());
             }else {
                 video.setIsLen(0);
+            }
+
+            if (video.getPubTime() != null && video.getPubTime().contains(" ")) {
+                video.setPubTime(video.getPubTime().split(" ")[0]);
             }
 
             return video;

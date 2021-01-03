@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -34,13 +35,21 @@ public class VideoDataFileItem implements Serializable {
 	private Integer hisRank;
 	private Integer isLen;
 
-	public String toString(List<String> fields) {
-		final BeanMap beanMap = new BeanMap(this);
+	private String bv;
+
+	public String toDataFileLine(List<String> fields) {
+		BeanMap beanMap = new BeanMap(this);
 		return fields.stream()
-				.peek(field -> Assert.notNull(beanMap.get(field), "av=" + beanMap.get("av") + ",field=" + field + ", value is null"))
-				.map(beanMap::get)
-				.map(Object::toString)
+				.map(field -> toDataFileItem(field, beanMap.get(field)))
 				.collect(Collectors.joining("\t"));
+	}
+
+	public String toDataFileItem(String field, Object value) {
+		Assert.notNull(value, "av=" + av + ",field=" + field + ", value is null");
+		if (Objects.equals(field, "pubTime")) {
+			return pubTime.split(" ")[0];
+		}
+		return value.toString();
 	}
 
 	public VideoDataFileItem setIsLen(Integer isLen) {

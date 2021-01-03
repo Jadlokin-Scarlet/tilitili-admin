@@ -9,6 +9,7 @@ import com.tilitili.common.mapper.VideoInfoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,21 +39,27 @@ public class VideoInfoController extends BaseController {
     }
 
     @DeleteMapping("/{av}/isDelete/true")
+    @ResponseBody
     public BaseModel deleteVideo(@PathVariable Long av) {
         videoInfoService.delete(av);
         return new BaseModel("成功删除", true);
     }
 
     @PatchMapping("/{av}/isDelete/false")
+    @ResponseBody
     public BaseModel recoveryVideo(@PathVariable Long av) {
         videoInfoService.recovery(av);
         return new BaseModel("成功恢复", true);
     }
 
-    @PatchMapping("/{av}/startTime/{startTime}")
-    public BaseModel updateStartTime(@PathVariable Long av, @PathVariable Long startTime) {
-        videoInfoService.updateStartTime(av, startTime);
-        return new BaseModel("成功恢复", true);
+    @PatchMapping("")
+    @ResponseBody
+    public BaseModel updateStartTime(@RequestBody VideoInfo videoInfo) {
+        Assert.notNull(videoInfo, "参数异常");
+        Assert.notNull(videoInfo.getAv(), "参数异常");
+        Assert.notNull(videoInfo.getStartTime(), "参数异常");
+        videoInfoService.updateStartTime(videoInfo.getAv(), videoInfo.getStartTime());
+        return new BaseModel("更新成功", true);
     }
 
 }
