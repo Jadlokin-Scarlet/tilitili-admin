@@ -169,7 +169,7 @@ class ForArray {
         return this.list.map(mapFun)
     }
     if(filterFun) {
-        this.list.filter(filterFun)
+        this.list = this.list.filter(filterFun)
         return this;
     }
 }
@@ -271,4 +271,4 @@ export const checkResp = data => {
 
 export const defaultRowKey = (record, index) => index;
 
-export const defaultScroll = {x:1}
+export const defaultScroll = {x:1,y:true}

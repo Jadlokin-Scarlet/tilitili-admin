@@ -4,7 +4,7 @@ import {isEmptyObject} from "../../utils/HtmlUtils";
 import {updateStartTime} from "../../api";
 
 const formConfig = [
-    {label: '节选开始点', key: 'startTime', type: 'inputNumber'},
+    {label: '节选开始点', key: 'startTime', type: 'inputNumber', suffix: '秒'},
     {key: 'av',type: 'bilibiliVideo'},
 ]
 

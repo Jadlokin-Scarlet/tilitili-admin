@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Col, DatePicker, Form, Input, InputNumber, message, Row, Select} from "antd";
-import {checkResp, defineProperty, emptyFunc, For, If, InputSelect, isNotNull, isNull} from "../../utils/HtmlUtils";
+import {defineProperty, emptyFunc, For, If, InputSelect, isNotNull, isNull} from "../../utils/HtmlUtils";
 import DragModal from "../drag-modal/DragModal";
 import {bilibiliVideoIframeUrlConverse} from "../../utils/BilibiliUtil";
 const { TextArea } = Input;
@@ -87,13 +87,10 @@ export default class DefaultModalButton extends Component {
         }
         try {
             this.setState({loading: true});
-            const data = await this.props.updateApi(params).then(checkResp);
-            if(data.success) {
-                message.success(isNull(data.message, '成功'));
-                onSuccess(data);
-                if (isNull(this.props.modalRender)) {
-                    this.closeModal();
-                }
+            const data = await this.props.updateApi(params);
+            onSuccess(data);
+            if (isNull(this.props.modalRender)) {
+                this.closeModal();
             }
         }finally {
             this.setState({loading: false});
@@ -153,7 +150,7 @@ export default class DefaultModalButton extends Component {
 export const converseToForm = ({formConfig=[], params={}, resource:resources={}, col=1, onChange=emptyFunc}) => (
     <Form labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} layout="horizontal" size='small'>
         <Row gutter={24}>
-            {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max}, index) => (
+            {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max,suffix}, index) => (
                 <Col span={24 / col} key={index} style={{ display: index < formConfig.length ? 'block' : 'none' }}>
                     <Form.Item label={label} key={index} style={formConfig.length > 5? {margin: 0}: {}}>
                         {If(type === 'input').then(() => (
@@ -171,7 +168,7 @@ export const converseToForm = ({formConfig=[], params={}, resource:resources={},
                         )).elseIf(type === 'textArea').then(() => (
                             <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder}/>
                         )).elseIf(type === 'inputNumber').then(() => (
-                            <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max}/>
+                            <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max} suffix={suffix}/>
                         )).elseIf(type === 'bilibiliVideo' && isNotNull(params.av)).then(() => (
                             <iframe src={bilibiliVideoIframeUrlConverse(params.av)}
                                 title="video"

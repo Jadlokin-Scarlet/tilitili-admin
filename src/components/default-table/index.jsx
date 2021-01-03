@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
-import {Button, Card, Row, Tag, message, Select} from "antd";
+import {Button, Card, Row, Tag, message} from "antd";
 import {
     checkResp,
     compose,
     defaultRowKey, defaultScroll,
     defineProperty,
-    emptyFunc, For,
+    emptyFunc,
     getParagraph,
     If,
     Img,
-    inputSelectFilterOption,
     isEmpty,
     isNotEmpty,
     isNotNull,
@@ -21,6 +20,7 @@ import {getResources} from "../../api";
 import './index.css'
 import SimpleTable from "../simple-table";
 import CacheInput from "../cache-input";
+import SelectInput from "../select-input/SelectInput";
 export default class DefaultTable extends Component {
 
     constructor(props) {
@@ -51,12 +51,11 @@ export default class DefaultTable extends Component {
         this.setState({columns: this.props.columnsConfig.map(this.newColumn)})
         if (isNull(this.props.onResourceLoaded)) {
             this.getResources();
-            this.refreshWithDefaultPrams();
+            this.refreshWithPrams();
         }else {
-            await this.getResources(() => {
-                this.props.onResourceLoaded(this.state.resources, () => {
-                    this.refreshWithDefaultPrams();
-                });
+            const resources = await this.getResources();
+            this.props.onResourceLoaded(resources, () => {
+                this.updateFilters(this.props.defaultFilters, this.handleUpdated)
             });
         }
     }
@@ -96,14 +95,13 @@ export default class DefaultTable extends Component {
 
     getResources = async callback => {
         const needResourcesList = this.props.needResourcesList || [];
-        const otherResources = (this.props.onResourcesInit || emptyFunc)() || {};
+        const resources = (this.props.onResourcesInit || emptyFunc)() || {};
         if (isNotEmpty(needResourcesList)) {
-            const resources = await getResources({needResourcesList}).then(checkResp)
+            const otherResources = await getResources({needResourcesList}).then(checkResp)
             Object.assign(resources, otherResources);
-            this.setState({resources, resourcesLoading: false}, callback)
-        }else {
-            this.setState({resources: otherResources, resourcesLoading: false}, callback)
         }
+        this.setState({resources, resourcesLoading: false}, callback)
+        return resources;
     }
 
     updateSelectedRow = data => {
@@ -385,25 +383,36 @@ export default class DefaultTable extends Component {
 
     newChooseInput = (column, columnConfig) => {
         const {resources} = this.state;
-        const resource = resources[columnConfig.chooseMap];
+        let resource = resources[columnConfig.chooseMap];
+
+        if (Array.isArray(resource)) {
+            resource = [{text: '全部', value: "----"}, ...resource]
+        }
+
+        const handleSelectInputChange = value => {
+            if (value === "----") {
+                value = null
+            }
+            this.setFilter(columnConfig.key, [value]);
+        };
+        const handleSelectInputChanged = value => {
+            if (value === "----") {
+                value = null
+            }
+            this.setFilter(columnConfig.key, [value], this.handleUpdated);
+        };
 
         column.className = "no-padding";
         column.title = (
-            <div style={{width: `${columnConfig.width}px`}}>
-                <Select showSearch autoClearSearchValue dropdownMatchSelectWidth optionFilterProp="children" size="small"
-                        value={columnConfig.title}
-                        placeholder={columnConfig.title}
-                        onChange={value=>this.setFilter(columnConfig.key, [value])}
-                        onSelect={value => this.setFilter(columnConfig.key, [value], this.handleUpdated)}
-                        filterOption={inputSelectFilterOption}
-                >
-                    {For(resource).then((item, index) => (
-                        <Select.Option key={index} value={isNull(item.value)? item.value: item.value.toString()}>
-                            {isNull(item.text)? item.text: item.text.toString()}
-                        </Select.Option>
-                    ))}
-                </Select>
-            </div>
+            <SelectInput
+                size="small"
+                width={columnConfig.width}
+                placeholder={columnConfig.title}
+                value={columnConfig.title}
+                onChange={handleSelectInputChange}
+                onSelect={handleSelectInputChanged}
+                filters={resource}
+            />
         );
 
         this.newChooseRenderColumn(column, columnConfig);

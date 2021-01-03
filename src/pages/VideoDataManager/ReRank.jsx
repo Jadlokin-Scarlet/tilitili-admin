@@ -9,7 +9,7 @@ export default class ReRank extends Component{
     }
     render() {
         return (
-            <SimpleModalButton buttonStyle={{marginLeft: "8px"}} title="重排排名" onOk={this.reRank} disabled={isNull(this.props.issue)}>
+            <SimpleModalButton title="重排排名" onOk={this.reRank} disabled={isNull(this.props.issue)}>
                 <span>确定重排排名吗?将根据得分修改第{this.props.issue}期的排名。</span>
             </SimpleModalButton>
         )

@@ -23,7 +23,7 @@ export const getResources = (data) => get('/resources', data)
 export const getVideoInfoByCondition = (data) => get('/video/info', data)
 export const deleteVideo = (av) => del(`/video/info/${av}/isDelete/true`)
 export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
-export const updateStartTime = data => patch(`/video/info/${data.av}/startTime/${data.startTime}`)
+export const updateStartTime = data => patch(`/video/info`, data)
 
 //视频数据
 export const getVideoDataByCondition = (data) => get('/video/data', data)

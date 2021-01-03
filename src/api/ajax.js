@@ -60,18 +60,18 @@ function handleGet(promise) {
     return new Promise((resolve, reject) => {
         promise.then(req => {
             if (isNull(req.data)) {
-                message.error("请求失败")
+                message.error( "请求异常")
                 reject(req)
             }
             const data = req.data;
             if (data.success) {
                 resolve(data.data)
             } else {
-                message.error(data.message);
+                message.error(isNull(data.message, "请求失败"));
                 reject(req)
             }
         }).catch(reason => {
-            message.error(reason.message);
+            message.error(isNull(reason.message, "请求异常"));
             reject(reason)
         });
     })
@@ -81,19 +81,19 @@ function handlePost(promise) {
     return new Promise((resolve, reject) => {
         promise.then(req => {
             if (isNull(req.data)) {
-                message.error("请求失败")
+                message.error( "请求异常")
                 reject(req)
             }
             const data = req.data;
             if (data.success) {
-                message.success(data.message)
+                message.success(isNull(data.message, "请求成功"))
                 resolve(data.data)
             } else {
-                message.error(data.message);
+                message.error(isNull(data.message, "请求失败"));
                 reject(req)
             }
         }).catch(reason => {
-            message.error(reason.message);
+            message.error(isNull(reason.message, "请求异常"));
             reject(reason)
         });
     })

@@ -18,6 +18,7 @@ export default class VideoDataManager extends Component {
 
     columnsConfig = [
         {title: 'av号', key: 'av', width: 100, type: 'search'},
+        {title: 'bv号', key: 'bv', width: 140, type: 'search'},
         {title: '期数', key: 'issue', width: 75, type: 'chooseInput', chooseMap: 'videoIssueResource'},
         {title: '播放量', key: 'view', width: 100, type: 'sorter'},
         {title: '评论', key: 'reply', width: 100, type: 'sorter'},
@@ -35,10 +36,9 @@ export default class VideoDataManager extends Component {
         {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: 'videoTypeResource', ellipsis: true},
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
         {title: '发布日期', key: 'pubTime', width: 180},
-        {title: '简介', key: 'description', width: 200, ellipsis: true},
+        {title: '简介', key: 'description', width: 200, ellipsis: '\n'},
         {title: '是否已删除', key: 'isDelete', width: 110, type: 'choose', chooseMap: 'isDeleteList'},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'statusList'},
-        {title: 'bv号', key: 'bv', width: 140, type: 'search'},
         {title: '搬运', key: 'copyright', width: 70, type: 'choose', chooseMap: 'copyrightList'},
     ];
 
@@ -56,7 +56,7 @@ export default class VideoDataManager extends Component {
         return (
             <>
                 <ReRank issue={chooseIssue} onSuccess={handleUpdated}/>
-                <Button type="primary" href={downloadDataTxtUrl(chooseIssue)} target="_Blank" style={{marginLeft: "8px"}}>
+                <Button href={downloadDataTxtUrl(chooseIssue)} target="_Blank" style={{marginLeft: "8px"}}>
                     检查data文件
                 </Button>
             </>
