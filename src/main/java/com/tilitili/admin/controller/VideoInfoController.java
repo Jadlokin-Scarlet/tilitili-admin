@@ -57,8 +57,20 @@ public class VideoInfoController extends BaseController {
     public BaseModel updateStartTime(@RequestBody VideoInfo videoInfo) {
         Assert.notNull(videoInfo, "参数异常");
         Assert.notNull(videoInfo.getAv(), "参数异常");
-        Assert.notNull(videoInfo.getStartTime(), "参数异常");
-        videoInfoService.updateStartTime(videoInfo.getAv(), videoInfo.getStartTime());
+        if (videoInfo.getStartTime() != null) {
+            videoInfoService.updateStartTime(videoInfo.getAv(), videoInfo.getStartTime());
+        }else if (videoInfo.getExternalOwner() != null) {
+            videoInfoMapper.updateExternalOwner(videoInfo.getAv(), videoInfo.getExternalOwner());
+        }else {
+            return new BaseModel("参数异常", true);
+        }
+        return new BaseModel("更新成功", true);
+    }
+
+    @PatchMapping("/{av}/externalOwner/{externalOwner}")
+    @ResponseBody
+    public BaseModel updateExternalOwner(@PathVariable Long av, @PathVariable String externalOwner) {
+        videoInfoMapper.updateExternalOwner(av, externalOwner);
         return new BaseModel("更新成功", true);
     }
 

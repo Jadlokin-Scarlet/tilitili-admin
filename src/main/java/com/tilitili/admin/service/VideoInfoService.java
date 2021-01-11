@@ -1,5 +1,6 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.mapper.VideoDataMapper;
 import com.tilitili.common.mapper.VideoInfoMapper;
@@ -22,12 +23,14 @@ public class VideoInfoService {
     @Transactional
     public void delete(Long av) {
         videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(true));
+        videoDataMapper.updateRank(new VideoData().setAv(av).setIssue(videoDataMapper.getNewIssue()).setRank(0));
         videoDataService.reRank(videoDataMapper.getNewIssue());
     }
 
     @Transactional
     public void recovery(Long av) {
         videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(false));
+        videoDataMapper.updateRank(new VideoData().setAv(av).setIssue(videoDataMapper.getNewIssue()).setRank(0));
         videoDataService.reRank(videoDataMapper.getNewIssue());
     }
 

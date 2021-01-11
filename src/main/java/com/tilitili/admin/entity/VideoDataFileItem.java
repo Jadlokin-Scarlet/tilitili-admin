@@ -21,7 +21,7 @@ public class VideoDataFileItem implements Serializable {
 	private String img;
 	private String type;
 	private String owner;
-	private Boolean copyright;
+	private Integer copyright;
 	private String pubTime;
 	private Long startTime;
 
@@ -35,7 +35,14 @@ public class VideoDataFileItem implements Serializable {
 	private Integer hisRank;
 	private Integer isLen;
 
+	//不导出至视频的数据
 	private String bv;
+	private Integer page;
+	private Boolean isPointWarning;
+	private Long viewPoint;
+	private String a;
+	private String b;
+	private Long checkPoint;
 
 	public String toDataFileLine(List<String> fields) {
 		BeanMap beanMap = new BeanMap(this);
@@ -63,4 +70,53 @@ public class VideoDataFileItem implements Serializable {
 		return setIsLen(isLen? 1 : 0);
 	}
 
+	public VideoDataFileItem setView(Integer view) {
+		this.view = view;
+		return this;
+	}
+
+	public VideoDataFileItem setView(Long view) {
+		this.view = view.intValue();
+		return this;
+	}
+
+	public VideoDataFileItem setReply(Integer reply) {
+		this.reply = reply;
+		return this;
+	}
+
+	public VideoDataFileItem setReply(Long reply) {
+		this.reply = reply.intValue();
+		return this;
+	}
+
+	public VideoDataFileItem setFavorite(Integer favorite) {
+		this.favorite = favorite;
+		return this;
+	}
+
+	public VideoDataFileItem setFavorite(Long favorite) {
+		this.favorite = favorite.intValue();
+		return this;
+	}
+
+	public VideoDataFileItem setCoin(Integer coin) {
+		this.coin = coin;
+		return this;
+	}
+
+	public VideoDataFileItem setCoin(Long coin) {
+		this.coin = coin.intValue();
+		return this;
+	}
+
+	public VideoDataFileItem setPage(Integer page) {
+		this.page = page;
+		return this;
+	}
+
+	public VideoDataFileItem setPage(Long page) {
+		this.page = page.intValue();
+		return this;
+	}
 }
