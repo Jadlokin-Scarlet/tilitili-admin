@@ -272,3 +272,14 @@ export const checkResp = data => {
 export const defaultRowKey = (record, index) => index;
 
 export const defaultScroll = {x:1,y:true}
+
+export const dateFormat = date => {
+    if (date < 60) {
+        return date + '秒';
+    }
+    return `${Math.floor(date / 60)}分${date % 60}秒`
+}
+
+export const toString = (obj) => {
+    return isNull(obj)? obj: obj.toString();
+}

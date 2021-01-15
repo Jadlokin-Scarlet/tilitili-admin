@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Col, DatePicker, Form, Input, InputNumber, message, Row, Select} from "antd";
-import {defineProperty, emptyFunc, For, If, InputSelect, isNotNull, isNull} from "../../utils/HtmlUtils";
+import {defineProperty, emptyFunc, For, If, InputSelect, isNotNull, isNull, toString} from "../../utils/HtmlUtils";
 import DragModal from "../drag-modal/DragModal";
 import {bilibiliVideoIframeUrlConverse} from "../../utils/BilibiliUtil";
 const { TextArea } = Input;
@@ -13,7 +13,7 @@ const { TextArea } = Input;
  * key：表单字段名
  * disabled：是否可编辑
  * placeholder：没有输入值时的提示语
- * resource：用于各种select的资源，text为中文，value为key
+ * resources：用于各种select的资源，text为中文，value为key
  * min：用于inputNumber，限制数字最小值
  * max：用于inputNumber，限制数字最大值
  *
@@ -114,7 +114,7 @@ export default class DefaultModalButton extends Component {
     }
 
     render() {
-        const { resource={}, formConfig=[], col=1 } = this.props
+        const { resources={}, formConfig=[], col=1 } = this.props
         const params = this.state;
         const onChange = this.handleChange;
         return (
@@ -139,7 +139,7 @@ export default class DefaultModalButton extends Component {
                     {If(isNotNull(this.props.modalRender)).then(() => (
                         this.props.modalRender(this.state)
                     )).else(() => (
-                        converseToForm({formConfig, params, resource, col, onChange})
+                        converseToForm({formConfig, params, resources, col, onChange})
                     ))}
                 </DragModal>
             </span>
@@ -147,7 +147,7 @@ export default class DefaultModalButton extends Component {
     }
 }
 
-export const converseToForm = ({formConfig=[], params={}, resource:resources={}, col=1, onChange=emptyFunc}) => (
+export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, onChange=emptyFunc}) => (
     <Form labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} layout="horizontal" size='small'>
         <Row gutter={24}>
             {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max,suffix}, index) => (
@@ -158,9 +158,9 @@ export const converseToForm = ({formConfig=[], params={}, resource:resources={},
                         )).elseIf(type === 'inputSelect').then(() => (
                             <InputSelect resource={resources[resource]} value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}/>
                         )).elseIf(type === 'select').then(() => (
-                            <Select value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}>
+                            <Select value={toString(params[key])} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}>
                                 {For(resources[resource]).then((item, index) => (
-                                    <Select.Option key={index} value={item.value}>{item.text}</Select.Option>
+                                    <Select.Option key={index} value={toString(item.value)}>{item.text}</Select.Option>
                                 ))}
                             </Select>
                         )).elseIf(type === 'datePicker').then(() => (

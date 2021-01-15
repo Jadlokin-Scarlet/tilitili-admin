@@ -24,6 +24,7 @@ export const getVideoInfoByCondition = (data) => get('/video/info', data)
 export const deleteVideo = (av) => del(`/video/info/${av}/isDelete/true`)
 export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
 export const updateStartTime = data => patch(`/video/info`, data)
+export const updateExternalOwner = data => patch(`/video/info`, data)
 
 //视频数据
 export const getVideoDataByCondition = (data) => get('/video/data', data)
@@ -31,7 +32,7 @@ export const reRank = (data) => patch('/video/data/rank', data)
 
 //视频数据文件
 export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)
-export const listVideoDataTxt = (data) => get(`/video/issue/${data.issue}/data`, data)
+export const listVideoDataTxt = (data) => get(`/video/data/file`, data)
 
 //自定义爬取
 export const getTaskByCondition = (data) => get('/task', data)
@@ -43,3 +44,7 @@ export const testBatchSpiderVideo = (data) => post('/batchTask/testBatchSpiderVi
 export const batchSpiderAllVideo = (data) => post('/batchTask/batchSpiderAllVideo', data)
 export const batchSpiderAllVideoTag = (data) => post('/batchTask/batchSpiderAllVideoTag', data)
 export const deleteBatchTag = (id) => del(`/batchTask/${id}`)
+
+//标签管理
+export const getTagByCondition = (data) => get('/tag', data)
+export const updateTag = (data) => patch('/tag', data)

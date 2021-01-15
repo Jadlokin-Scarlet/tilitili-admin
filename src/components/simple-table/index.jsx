@@ -48,11 +48,15 @@ export default class SimpleTable extends PureComponent {
 
     onClick = (record, index) => {
         return {
-            onClick: () => {
-                setTimeout(this.handleClick.bind(this, record, index), 0);
+            onClick: e => {
+                if (['TD', 'DIV'].includes(e.target.tagName)) {
+                    setTimeout(this.handleClick.bind(this, record, index), 0);
+                }
             },
-            onDoubleClick: () => {
-                setTimeout(this.handleDoubleClick.bind(this, record, index), 0);
+            onDoubleClick: e => {
+                if (['TD', 'DIV'].includes(e.target.tagName)) {
+                    setTimeout(this.handleDoubleClick.bind(this, record, index), 0);
+                }
             }
         }
     }

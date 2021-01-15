@@ -12,6 +12,7 @@ export default class VideoInfoManager extends Component {
         {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
         {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: "videoTypeResource"},
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
+        {title: '原作者', key: 'externalOwner', width: 100, ellipsis: true},
         {title: '发布日期', key: 'pubTime', width: 180, type: 'sorter'},
         {title: '简介', key: 'description', width: 200, ellipsis: '\n'},
         {title: '是否已删除', key: 'isDelete', width: 110, type: 'choose', chooseMap: 'isDeleteList'},

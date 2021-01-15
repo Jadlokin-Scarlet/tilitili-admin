@@ -14,7 +14,7 @@ import {
     isNotNull,
     isNull,
     splitToList,
-    convertToPrams
+    convertToPrams, selfFunc, isEmptyObject
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
 import './index.css'
@@ -206,7 +206,10 @@ export default class DefaultTable extends Component {
     }
 
     handleTableChange = (pagination, filters, sorter) => {
+        const {total, pageSize, current} = pagination;
+        pagination = {total, pageSize, current};
         filters = Object.assign(this.state.filters, filters);
+        sorter = isEmptyObject(sorter)? this.props.defaultSorter: sorter;
         this.setParams(pagination, filters, sorter)
         this.getDataByCondition(pagination, filters, sorter);
     }
@@ -311,7 +314,8 @@ export default class DefaultTable extends Component {
                 )
             }
         }else if (isNotNull(columnConfig.afterRender)) {
-            column.render = compose(column.render, columnConfig.afterRender);
+            const oldRender = column.render || selfFunc;
+            column.render = (text, record) => columnConfig.afterRender(oldRender(text, record), record)
         }
 
         return column
@@ -348,6 +352,8 @@ export default class DefaultTable extends Component {
                     if (item.value.toString() === key.toString()) {
                         if (isNotNull(item.tag)) {
                             return this.newTag(item.text, item.tag);
+                        }else if (item.renderHidden === true) {
+                            return '';
                         }else {
                             return item.text;
                         }
