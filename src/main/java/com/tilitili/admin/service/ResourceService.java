@@ -1,5 +1,6 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.common.emnus.TagType;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.emnus.TaskStatus;
 import com.tilitili.common.emnus.TaskType;
@@ -23,6 +24,7 @@ public class ResourceService {
         resourceMap.put("TaskTypeResource", TaskType::getResource);
         resourceMap.put("TaskStatusResource", TaskStatus::getResource);
         resourceMap.put("TaskReasonResource", TaskReason::getResource);
+        resourceMap.put("TagTypeResource", TagType::getResource);
     }
 
     public List<Resource> getResource(String resourceName) {
