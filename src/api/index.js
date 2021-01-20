@@ -37,6 +37,7 @@ export const listVideoDataTxt = (data) => get(`/video/data/file`, data)
 //自定义爬取
 export const getTaskByCondition = (data) => get('/task', data)
 export const spiderVideo = (data) => post('/task', data)
+export const updateTaskStatus = (data) => patch('/task', data)
 
 //批量爬取
 export const getBatchTaskByCondition = (data) => get('/batchTask', data);
@@ -48,3 +49,13 @@ export const deleteBatchTag = (id) => del(`/batchTask/${id}`)
 //标签管理
 export const getTagByCondition = (data) => get('/tag', data)
 export const updateTag = (data) => patch('/tag', data)
+
+//视频标签管理
+export const getVideoTagByCondition = (data) => get('/video/tag', data)
+
+//视频下发资源管理
+export const getFlag = (data) => get('/resources/flag', data)
+export const updateFlag = (data) => patch('/resources/flag', data);
+
+//作者管理
+export const getOwnerByCondition = (data) => get('/owner', data)

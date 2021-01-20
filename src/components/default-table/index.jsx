@@ -316,6 +316,10 @@ export default class DefaultTable extends Component {
         }else if (isNotNull(columnConfig.afterRender)) {
             const oldRender = column.render || selfFunc;
             column.render = (text, record) => columnConfig.afterRender(oldRender(text, record), record)
+        }else if (isNotNull(columnConfig.href)) {
+            const oldRender = column.render || selfFunc;
+            const afterRender = (value, record) => <a href={columnConfig.href(value, record)} target="_Blank" rel="noopener noreferrer">{value}</a>
+            column.render = (text, record) => afterRender(oldRender(text, record), record)
         }
 
         return column

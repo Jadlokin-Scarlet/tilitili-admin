@@ -75,12 +75,13 @@ export default class SpiderVideo extends Component{
             av: null,
             bv: null,
             url: null,
-            reason: 1,
+            reason: 6,
         })
     }
 
     render() {
         const { choose, av, bv, url, reason } = this.state;
+        const { TaskReasonResource } = this.props.resources;
         return (
             <SimpleModalButton buttonText="发起自定义爬取" onShowModal={this.handleShowModal} onOk={this.spiderVideo}>
                 <Form labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} layout="horizontal">
@@ -105,8 +106,8 @@ export default class SpiderVideo extends Component{
                         </Form.Item>
                     ))}
                     <Form.Item label="原因">
-                        <Select value={reason}  disabled>
-                            {For(this.props.TaskReasonResource).then((taskReason, index) => (
+                        <Select value={reason} disabled>
+                            {For(TaskReasonResource).then((taskReason, index) => (
                                 <Select.Option key={index} value={taskReason.value}>{taskReason.text}</Select.Option>
                             ))}
                         </Select>

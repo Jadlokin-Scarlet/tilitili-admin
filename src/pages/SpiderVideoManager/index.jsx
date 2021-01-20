@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import DefaultTable from "../../components/default-table";
 import {getTaskByCondition} from "../../api";
 import SpiderVideo from "./SpiderVideo";
+import UpdateStatus from "./UpdateStatus";
 
 export default class SpiderVideoManager extends Component {
     columnsConfig = [
@@ -17,11 +18,12 @@ export default class SpiderVideoManager extends Component {
 
     handleButtonsInit = (that) => {
         const { state, handleUpdated } = that
-        const { resources } = state
+        const { resources, selectedRows } = state
         const { TaskReasonResource } = resources;
-        return (
+        return <>
             <SpiderVideo onSuccess={handleUpdated} TaskReasonResource={TaskReasonResource}/>
-        )
+            <UpdateStatus onSuccess={handleUpdated} selectedRows={selectedRows} resources={resources}/>
+        </>
     }
 
     handleResourcesInit = () => ({
@@ -31,6 +33,7 @@ export default class SpiderVideoManager extends Component {
     render() {
         return (
             <DefaultTable
+                isMultipleSelect={true}
                 needResourcesList={['TaskTypeResource', 'TaskReasonResource']}
                 defaultPageSize={20}
                 defaultFilters={{type: [0]}}
