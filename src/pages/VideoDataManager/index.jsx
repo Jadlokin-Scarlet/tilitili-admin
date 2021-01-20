@@ -21,7 +21,7 @@ export default class VideoDataManager extends Component {
     }
 
     columnsConfig = [
-        {title: 'av号', key: 'av', width: 100, type: 'search'},
+        {title: 'av号', key: 'av', width: 100, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
         {title: 'bv号', key: 'bv', width: 140, type: 'search'},
         {title: '期数', key: 'issue', width: 75, type: 'chooseInput', chooseMap: 'videoIssueResource'},
         {title: '播放量', key: 'view', width: 100, type: 'sorter'},

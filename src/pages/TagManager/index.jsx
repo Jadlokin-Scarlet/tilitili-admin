@@ -5,7 +5,7 @@ import UpdateTag from "./UpdateTag";
 
 export default class TagManager extends Component {
     columnsConfig = [
-        {title: 'id', key: 'id', width: 90, type: 'search'},
+        {title: 'id', key: 'id', width: 90, type: 'search', href: id => 'https://t.bilibili.com/topic/'+id},
         {title: 'Tag名', key: 'name', width: 200, type: 'search', ellipsis: true},
         {title: '标签封面', key: 'cover', type: 'image'},
         {title: '介绍', key: 'content', width: 700, ellipsis: '\n'},

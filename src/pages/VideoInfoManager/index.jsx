@@ -7,7 +7,7 @@ import DefaultTable from "../../components/default-table";
 export default class VideoInfoManager extends Component {
 
     columnsConfig = [
-        {title: 'av号', key: 'av', width: 90, type: 'search'},
+        {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
         {title: '标题', key: 'name', width: 200, type: 'search', ellipsis: true},
         {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
         {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: "videoTypeResource"},

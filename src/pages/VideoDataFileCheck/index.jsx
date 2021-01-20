@@ -64,7 +64,7 @@ export default class VideoDataFileCheck extends Component {
     }
 
     columnsConfig = [
-        {title: 'av号', key: 'av', width: 110},
+        {title: 'av号', key: 'av', width: 110, href: av => "https://www.bilibili.com/video/av" + av},
         {title: '标题', key: 'name', width: 200, ellipsis: true},
         {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
         {title: '类型', key: 'type', width: 120},

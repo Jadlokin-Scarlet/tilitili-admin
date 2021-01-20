@@ -7,7 +7,7 @@ import UpdateStatus from "./UpdateStatus";
 export default class SpiderVideoManager extends Component {
     columnsConfig = [
         {title: 'id', key: 'id', width: 90, type: 'search'},
-        {title: 'av号', key: 'av', width: 90, type: 'search'},
+        {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'TaskStatusResource'},
         {title: '类型', key: 'type', width: 140, type: 'choose', chooseMap: 'TaskTypeResource'},
         {title: '备注', key: 'remark', width: 200, ellipsis: true},
