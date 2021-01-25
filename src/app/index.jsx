@@ -28,6 +28,7 @@ export default class App extends Component{
             collapsed: false,
             isLogin: null,
             selectedKeyList: [],
+            selectedFirstKey: "/rank",
         }
     }
 
@@ -68,6 +69,10 @@ export default class App extends Component{
         }
         selectedKeyList.unshift(selectedKey);
         this.setState({selectedKeyList})
+    }
+
+    handleSelectedFirstKey = (selectedFirstKey) => {
+        this.setState({selectedFirstKey})
     }
 
     remove = (targetKey) => {
@@ -116,12 +121,19 @@ export default class App extends Component{
             <HashRouter>
                 <Layout style={{minHeight: "100vh"}}>
                     <Header style={{background: "white", height: 'auto'}}>
-                        <Menu mode="horizontal" style={{float: "left"}} selectable={false}>
-                            <Menu.Item>
-                                <Title level={2} strong={false} style={{margin: "0px"}} className="primary-color">
-                                    管理后台
-                                </Title>
-                            </Menu.Item>
+                        <div style={{float: "left", width: "150px"}}>
+                            <Title level={2} strong={false} style={{margin: "0px"}} className="primary-color">
+                                管理后台
+                            </Title>
+                        </div>
+                        <Menu mode="horizontal" className="header-menu" selectedKeys={this.state.selectedFirstKey} style={{width: '40%', float: 'left'}}>
+                            {If(isNotNull(this.state.isLogin) && this.state.isLogin).then(()=>(
+                                For (menuList).then(menu => (
+                                    <Menu.Item key={menu.key} title={menu.title} onClick={()=>this.handleSelectedFirstKey(menu.key)}>
+                                        <span>{menu.title}</span>
+                                    </Menu.Item>
+                                ))
+                            )).endIf()}
                         </Menu>
                         <Menu mode="horizontal" style={{float: "right"}} selectable={false}>
                             {If(this.state.isLogin).then(() => (
@@ -133,19 +145,18 @@ export default class App extends Component{
                     </Header>
                     {If(isNotNull(this.state.isLogin)).then(() => (
                         <Layout>
-                        <Sider width={200} collapsed={this.state.collapsed}>
+                        <Sider width={200} collapsed={this.state.collapsed} theme="light">
                             {If(this.state.isLogin).then(() => <>
                                 <div style={{ width: '100%', textAlign: 'right' }}>
-                                    <Button onClick={this.toggleCollapsed} type="link" ghost>
+                                    <Button onClick={this.toggleCollapsed} type="link">
                                         <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
                                     </Button>
                                 </div>
                                 <Menu
                                     mode="inline"
-                                    theme={"dark"}
                                     selectedKeys={this.state.selectedKeyList[0]}
                                     style={{borderRight: 0 }}>
-                                    {this.createMenu(menuList)}
+                                    {this.createMenu(menuList.filter(menu => menu.key === this.state.selectedFirstKey)[0].children)}
                                 </Menu>
                             </>).endIf()}
                         </Sider>
