@@ -1,6 +1,7 @@
 package com.tilitili.admin.controller;
 
 import com.tilitili.admin.entity.VideoDataFileItem;
+import com.tilitili.admin.entity.VideoDataFileItemV2;
 import com.tilitili.admin.service.VideoDataFileService;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.query.VideoDataQuery;
@@ -37,6 +38,13 @@ public class VideoDataFileController extends BaseController {
     @ResponseBody
     public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
         List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
+        return PageModel.of(videoDataFileItemList.size(), videoDataFileItemList.size(), 1, videoDataFileItemList);
+    }
+
+    @GetMapping("/data/fileV2")
+    @ResponseBody
+    public BaseModel getVideoDataListV2(VideoDataQuery videoDataQuery) {
+        List<VideoDataFileItemV2> videoDataFileItemList = videoDataFileService.listForDataFileV2(videoDataQuery);
         return PageModel.of(videoDataFileItemList.size(), videoDataFileItemList.size(), 1, videoDataFileItemList);
     }
 

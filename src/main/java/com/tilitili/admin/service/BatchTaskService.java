@@ -1,9 +1,6 @@
 package com.tilitili.admin.service;
 
-import com.tilitili.admin.controller.BaseController;
-import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.emnus.TaskStatus;
-import com.tilitili.common.emnus.TaskType;
 import com.tilitili.common.entity.BatchTask;
 import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.BatchTaskQuery;
@@ -18,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.DigestUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -70,13 +66,13 @@ public class BatchTaskService {
 
     public void testBatchSpiderVideo() {
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(NO_REASON.value);
-        List<Long> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L)).stream().map(VideoInfo::getAv).collect(Collectors.toList());
+        List<String> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L)).stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
     public void batchSpiderHiddenVideo() {
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_HIDDEN_VIDEO.value);
-        List<Long> avList = videoInfoMapper.listHiddenVideo().stream().map(VideoInfo::getAv).collect(Collectors.toList());
+        List<String> avList = videoInfoMapper.listHiddenVideo().stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
@@ -85,7 +81,7 @@ public class BatchTaskService {
         boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
-        List<Long> avList = touhouAllMapper.selectAllAv();
+        List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
@@ -96,11 +92,8 @@ public class BatchTaskService {
         boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(type).setReason(reason);
-        List<Long> avList = touhouAllMapper.selectAllAv();
+        List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 
-//    public static void main(String[] args) {
-//        System.out.println(DigestUtils.md5DigestAsHex("admin".getBytes()));
-//    }
 }

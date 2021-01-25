@@ -16,4 +16,36 @@ public class StringUtil {
         String[] strList = listStr.split(",");
         return Stream.of(strList).map(Long::valueOf).collect(Collectors.toList());
     }
+
+    public static String bigNumberFormat(String number) {
+        if (number == null) {
+            return null;
+        }
+        String result = "";
+        if (number.length() > 6) {
+            result += number.substring(0, number.length() - 6);
+            result += ",";
+            result += number.substring(number.length() - 6, number.length() - 3);
+            result += ",";
+            result += number.substring(number.length() - 3);
+        } else if (number.length() > 3) {
+            result += number.substring(0, number.length() - 3);
+            result += ",";
+            result += number.substring(number.length() - 3);
+        } else {
+            result += number;
+        }
+        return result;
+    }
+
+    public static String bigNumberFormat(Long number) {
+        return bigNumberFormat(number.toString());
+    }
+
+    public static String bigNumberFormat(Integer number) {
+        return bigNumberFormat(number.toString());
+    }
+
+
+
 }

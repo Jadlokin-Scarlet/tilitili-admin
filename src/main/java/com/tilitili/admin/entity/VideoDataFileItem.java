@@ -21,6 +21,7 @@ public class VideoDataFileItem implements Serializable {
 	private String img;
 	private String type;
 	private String owner;
+	private String externalOwner;
 	private Integer copyright;
 	private String pubTime;
 	private Long startTime;
