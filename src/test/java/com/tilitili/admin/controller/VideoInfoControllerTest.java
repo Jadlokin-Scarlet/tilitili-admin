@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -28,6 +29,12 @@ public class VideoInfoControllerTest {
     public void listVideoByCondition() {
         BaseModel res = videoInfoController.getVideoInfoByCondition(new VideoInfoQuery());
         log.info(new GsonBuilder().setPrettyPrinting().create().toJson(res));
+    }
+
+    public static void main(String[] args) {
+        Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5);
+        System.out.println(stream.filter(integer -> (integer & 1) == 1).count());
+        System.out.println(stream.filter(integer -> (integer & 1) == 0).count());
     }
 
 }

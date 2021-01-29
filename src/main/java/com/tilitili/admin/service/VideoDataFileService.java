@@ -47,10 +47,9 @@ public class VideoDataFileService {
 
     public List<VideoDataFileItemV2> listForDataFileV2(VideoDataQuery videoDataQuery) {
         videoDataQuery.setIsDelete(false).setStatus(0);
-        videoDataQuery.setPageSize(100).setSorter("point", "desc");
+        videoDataQuery.setSorter("point", "desc");
         return videoDataMapper.list(videoDataQuery).stream().parallel().map(videoData -> {
             VideoDataFileItemV2 video = new VideoDataFileItemV2();
-            BeanUtils.copyProperties(videoData, video);
 
             VideoData oldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 1);
             VideoData moreOldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 2);
@@ -74,33 +73,40 @@ public class VideoDataFileService {
 
             long point =  (viewPoint1000 + reply * a1000 + (favorite + coin) * 500) * b1000 / 1000000;
 
-            // 设置数据为落差
+            video.setAv(videoData.getAv());
+            video.setAvStr("av " + videoData.getAv());
+            video.setName(videoData.getName());
+            video.setImg(videoData.getImg());
+            video.setType(videoData.getType());
+            video.setOwner(videoData.getOwner());
+            video.setExternalOwner(videoData.getExternalOwner());
+            // 是否搬运
+            video.setCopyright(videoData.getCopyright()? "true": "false");
+            // 视频里时间格式为yyyy-mm-dd
+            if (video.getPubTime() != null && video.getPubTime().contains(" ")) {
+                video.setPubTime("投稿日期 " + video.getPubTime().split(" ")[0]);
+            }
+            video.setStartTime(videoData.getStartTime().toString());
+            // 数据为落差数据
             video.setFavorite("收藏 " + bigNumberFormat(favorite));
             video.setCoin("硬币 " + bigNumberFormat(coin));
             video.setView("播放 " + bigNumberFormat(view));
             video.setReply("评论 " + bigNumberFormat(reply));
-            video.setPage(Long.valueOf(page).intValue());
+            video.setPoint(bigNumberFormat(videoData.getPoint()) + "PT");
+            video.setRank(videoData.getRank().toString());
+            // 历史排名和是否长期
+            video.setHisRank("上周" + oldVideo.getRank() + "位");
+            video.setIsLen(videoData.getRank(), oldVideo.getRank(), moreOldVideo.getRank());
 
+            video.setBv(videoData.getBv());
             // 计算过程记录
+            video.setPage(Long.valueOf(page).intValue());
             video.setA(MathUtil.formatByScale(a100, 2));
             video.setB(MathUtil.formatByScale(b1000, 3));
             video.setViewPoint(viewPoint);
             video.setCheckPoint(point);
             // 新旧计算的得分差距大于旧得分的10%的发出警告
             video.setIsPointWarning(Math.abs(point - videoData.getPoint()) > videoData.getPoint() / 10);
-
-            // 历史排名和是否长期
-            video.setHisRank("上周" + oldVideo.getRank() + "位");
-            video.setIsLen(videoData.getRank(), oldVideo.getRank(), moreOldVideo.getRank());
-
-            // 视频里时间格式为yyyy-mm-dd
-            if (video.getPubTime() != null && video.getPubTime().contains(" ")) {
-                video.setPubTime("投稿日期 " + video.getPubTime().split(" ")[0]);
-            }
-
-            // 是否搬运
-            video.setCopyright(videoData.getCopyright()? "true": "false");
-            video.setAvStr("av " + videoData.getAv());
 
             return video;
         }).collect(Collectors.toList());

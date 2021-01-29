@@ -45,7 +45,7 @@ public class VideoDataFileController extends BaseController {
     @ResponseBody
     public BaseModel getVideoDataListV2(VideoDataQuery videoDataQuery) {
         List<VideoDataFileItemV2> videoDataFileItemList = videoDataFileService.listForDataFileV2(videoDataQuery);
-        return PageModel.of(videoDataFileItemList.size(), videoDataFileItemList.size(), 1, videoDataFileItemList);
+        return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
     }
 
 //    @GetMapping("/av/{av}")
