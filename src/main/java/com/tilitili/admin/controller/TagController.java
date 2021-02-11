@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.count.TagCount;
 import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.TagQuery;
 import com.tilitili.common.entity.view.BaseModel;
@@ -44,5 +45,4 @@ public class TagController {
         tagMapper.update(tag);
         return new BaseModel("更新tag成功", true);
     }
-
 }

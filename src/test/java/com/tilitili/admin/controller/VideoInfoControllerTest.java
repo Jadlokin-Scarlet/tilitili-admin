@@ -13,6 +13,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -31,10 +35,5 @@ public class VideoInfoControllerTest {
         log.info(new GsonBuilder().setPrettyPrinting().create().toJson(res));
     }
 
-    public static void main(String[] args) {
-        Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5);
-        System.out.println(stream.filter(integer -> (integer & 1) == 1).count());
-        System.out.println(stream.filter(integer -> (integer & 1) == 0).count());
-    }
 
 }

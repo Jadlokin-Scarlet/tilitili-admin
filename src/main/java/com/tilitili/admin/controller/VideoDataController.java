@@ -4,7 +4,7 @@ import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.mapper.VideoDataMapper;
+import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.admin.service.VideoDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,33 +20,33 @@ import java.util.List;
 @Slf4j
 public class VideoDataController extends BaseController {
 
-    private final VideoDataMapper videoDataMapper;
+    private final VideoDataManager videoDataManager;
     private final VideoDataService videoDataService;
 
     @Autowired
-    public VideoDataController(VideoDataMapper videoDataMapper, VideoDataService videoDataService) {
-        this.videoDataMapper = videoDataMapper;
+    public VideoDataController(VideoDataManager videoDataManager, VideoDataService videoDataService) {
+        this.videoDataManager = videoDataManager;
         this.videoDataService = videoDataService;
     }
 
     @GetMapping("")
     @ResponseBody
     public BaseModel getVideoDataByCondition(VideoDataQuery query) {
-        int count = videoDataMapper.count(query);
-        List<VideoData> videoDataList = videoDataMapper.list(query);
+        int count = videoDataManager.count(query);
+        List<VideoData> videoDataList = videoDataManager.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoDataList);
     }
 
     @PatchMapping("/rank")
     @ResponseBody
     public BaseModel reRank(@RequestBody Integer issue) {
-        int newIssue = videoDataMapper.listIssue().stream()
+        int newIssue = videoDataManager.listIssue().stream()
                 .mapToInt(Integer::intValue).max().getAsInt();
         if (issue != newIssue) {
             return new BaseModel("只有最新一期能重排");
         }
         videoDataService.reRank(issue);
-//        videoDataMapper.listIssue().forEach(videoDataService::reRank);
+//        videoDataManager.listIssue().forEach(videoDataService::reRank);
         return new BaseModel("成功", true);
     }
 

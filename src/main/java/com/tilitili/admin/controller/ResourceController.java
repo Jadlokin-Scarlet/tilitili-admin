@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.common.emnus.ResourcesType;
 import com.tilitili.common.entity.Resource;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
@@ -41,6 +42,17 @@ public class ResourceController extends BaseController {
     @GetMapping("/flag")
     @ResponseBody
     public BaseModel getFlag() {
+        DispatchResourcesView flagResource = resourceService.getFlagResources();
+        flagResource.setMusicName("曲名: " + flagResource.getMusicName());
+        flagResource.setMusicOwner("社团: " + flagResource.getMusicOwner());
+        flagResource.setMusicCard("专辑: " + flagResource.getMusicCard());
+        flagResource.setMusicSource("原曲: " + flagResource.getMusicSource());
+        return new BaseModel("success", true, flagResource);
+    }
+
+    @GetMapping("/adminFlag")
+    @ResponseBody
+    public BaseModel getAdminFlag() {
         DispatchResourcesView flagResource = resourceService.getFlagResources();
         return new BaseModel("success", true, flagResource);
     }

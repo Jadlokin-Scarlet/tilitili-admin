@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.count.TagCount;
 import com.tilitili.admin.service.VideoTagService;
 import com.tilitili.common.entity.VideoTag;
 import com.tilitili.common.entity.query.VideoTagQuery;
@@ -36,6 +37,14 @@ public class VideoTagController extends BaseController {
         int count = videoTagRelationMapper.countVideoTag(query);
         List<VideoTag> videoTagList = videoTagService.listVideoTag(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoTagList);
+    }
+
+    @GetMapping("/count")
+    @ResponseBody
+    public BaseModel getTagCount() {
+        TagCount tagCount = new TagCount();
+        tagCount.setTopTagList(videoTagService.listTopTagCount());
+        return BaseModel.success(tagCount);
     }
 
 }

@@ -1,6 +1,11 @@
 package com.tilitili.admin.entity;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.tilitili.common.entity.view.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.beanutils.BeanMap;
 import org.springframework.util.Assert;
@@ -16,34 +21,94 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Accessors(chain=true)
 public class VideoDataFileItem implements Serializable {
+	@JsonView(VideoView.class)
 	private Long av;
+	@JsonView(VideoView.class)
 	private String name;
+	@JsonView(VideoView.class)
 	private String img;
+	@JsonView(AdminView.class)
 	private String type;
+	@JsonView(AdminView.class)
 	private String owner;
-	private String externalOwner;
-	private Integer copyright;
+	@JsonView(AdminView.class)
+	private String subOwner;
+	@JsonView(AdminView.class)
+	private Boolean copyright;
+	@JsonView(AdminView.class)
 	private String pubTime;
+	@JsonView(VideoView.class)
 	private Long startTime;
 
+	@JsonView(AdminView.class)
 	private Integer view;
+	@JsonView(AdminView.class)
 	private Integer reply;
+	@JsonView(AdminView.class)
 	private Integer favorite;
+	@JsonView(AdminView.class)
 	private Integer coin;
+	@JsonView(AdminView.class)
 	private Integer point;
+	@JsonView(AdminView.class)
 	private Integer rank;
 
+	@JsonView(VideoView.class)
 	private Integer hisRank;
-	private Integer isLen;
+	@JsonView(VideoView.class)
+	private Boolean isUp;
+	@JsonView(VideoView.class)
+	private Boolean isLen;
+
+	//视频中的占位字段
+	@JsonView(VideoView.class)
+	private String avStr;
+	@JsonView(AdminView.class)
+	private String nameStr;
+	@JsonView(VideoView.class)
+	private String typeStr;
+	@JsonView(VideoView.class)
+	private String ownerStr;
+	@JsonView(VideoView.class)
+	private String subOwnerStr;
+	@JsonView(VideoView.class)
+	private String pubTimeStr;
+
+	@JsonView(VideoView.class)
+	private String viewStr;
+	@JsonView(VideoView.class)
+	private String replyStr;
+	@JsonView(VideoView.class)
+	private String favoriteStr;
+	@JsonView(VideoView.class)
+	private String coinStr;
+	@JsonView(VideoView.class)
+	private String pointStr;
+	@JsonView(VideoView.class)
+	private String rankStr;
+
+	@JsonView(VideoView.class)
+	private String hisRankStr;
 
 	//不导出至视频的数据
+	@JsonView(AdminView.class)
 	private String bv;
+	@JsonView(AdminView.class)
 	private Integer page;
+	@JsonView(AdminView.class)
 	private Boolean isPointWarning;
+	@JsonView(AdminView.class)
 	private Long viewPoint;
+	@JsonView(AdminView.class)
 	private String a;
+	@JsonView(AdminView.class)
 	private String b;
+	@JsonView(AdminView.class)
 	private Long checkPoint;
+
+	public interface VideoView extends BaseModel.BaseView {}
+
+	public interface AdminView extends VideoView {}
 
 	public String toDataFileLine(List<String> fields) {
 		BeanMap beanMap = new BeanMap(this);
@@ -60,64 +125,10 @@ public class VideoDataFileItem implements Serializable {
 		return value.toString();
 	}
 
-	public VideoDataFileItem setIsLen(Integer isLen) {
-		this.isLen = isLen;
-		return this;
-	}
-
 	public VideoDataFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
 		boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0;
 		isLen &= rank <= 30 && hisRank <= 30 && moreHisRank <=30;
-		return setIsLen(isLen? 1 : 0);
+		return setIsLen(isLen);
 	}
 
-	public VideoDataFileItem setView(Integer view) {
-		this.view = view;
-		return this;
-	}
-
-	public VideoDataFileItem setView(Long view) {
-		this.view = view.intValue();
-		return this;
-	}
-
-	public VideoDataFileItem setReply(Integer reply) {
-		this.reply = reply;
-		return this;
-	}
-
-	public VideoDataFileItem setReply(Long reply) {
-		this.reply = reply.intValue();
-		return this;
-	}
-
-	public VideoDataFileItem setFavorite(Integer favorite) {
-		this.favorite = favorite;
-		return this;
-	}
-
-	public VideoDataFileItem setFavorite(Long favorite) {
-		this.favorite = favorite.intValue();
-		return this;
-	}
-
-	public VideoDataFileItem setCoin(Integer coin) {
-		this.coin = coin;
-		return this;
-	}
-
-	public VideoDataFileItem setCoin(Long coin) {
-		this.coin = coin.intValue();
-		return this;
-	}
-
-	public VideoDataFileItem setPage(Integer page) {
-		this.page = page;
-		return this;
-	}
-
-	public VideoDataFileItem setPage(Long page) {
-		this.page = page.intValue();
-		return this;
-	}
 }
