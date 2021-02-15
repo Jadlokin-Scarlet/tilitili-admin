@@ -283,3 +283,5 @@ export const dateFormat = date => {
 export const toString = (obj) => {
     return isNull(obj)? obj: obj.toString();
 }
+
+export const ignoreError = ignore => {}

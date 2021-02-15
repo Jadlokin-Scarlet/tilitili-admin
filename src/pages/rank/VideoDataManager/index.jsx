@@ -10,6 +10,7 @@ import DefaultTable from "../../../components/default-table";
 import UpdateStartTime from "../VideoDataFileCheck/UpdateStartTime";
 import UpdateExternalOwner from "./UpdateExternalOwner";
 import DeleteVideo from "../VideoInfoManager/DeleteVideo";
+import UpdateIsCopyWarning from "./UpdateIsCopyWarning";
 
 export default class VideoDataManager extends Component {
 
@@ -32,7 +33,7 @@ export default class VideoDataManager extends Component {
         {title: '得分', key: 'point', width: 100, type: 'sorter'},
         {title: '排名', key: 'rank', width: 70},
         {title: '标题', key: 'name', width: 200, type: 'search', ellipsis: true},
-        {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
+        {title: '封面', key: 'img', type: 'image', href: (value, row) => "https://www.bilibili.com/video/av" + row.av},
         {title: '类型', key: 'type', width: 120, type: 'choose', chooseMap: 'videoTypeResource', ellipsis: true},
         {title: '作者', key: 'owner', width: 100, type: 'search', ellipsis: true},
         {title: '原作者', key: 'externalOwner', width: 100, ellipsis: true},
@@ -46,6 +47,7 @@ export default class VideoDataManager extends Component {
         {title: '简介', key: 'description', width: 200, ellipsis: '\n'},
         {title: '是否已删除', key: 'isDelete', width: 110, type: 'choose', chooseMap: 'isDeleteList'},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'statusList'},
+        {title: '是否疑似搬运', key: 'isCopyWarning', width: 110, type: 'chooseRender', chooseMap: 'isCopyWarningList'}
     ];
 
     handleResourceLoaded = (resources, callback) => {
@@ -65,6 +67,7 @@ export default class VideoDataManager extends Component {
                 <UpdateStartTime selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <UpdateExternalOwner selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
                 <DeleteVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <UpdateIsCopyWarning selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
                 <Button href={downloadDataTxtUrl(chooseIssue)} target="_Blank" style={{marginLeft: "8px"}}>
                     检查data文件
                 </Button>
@@ -76,6 +79,7 @@ export default class VideoDataManager extends Component {
         isDeleteList: [ {value: false, text: '正常', renderHidden: true}, {value: true, text: '已删除'}],
         statusList: [{value: 0, text: '正常', renderHidden: true}, {value: 62002, text: '稿件不可见'}, {value: -404, text: '啥都木有'}],
         copyrightList: [{value: false, text: '原创', renderHidden: true}, {value: true, text: '搬运'}],
+        isCopyWarningList: [{value: false, text: '否', renderHidden: true}, {value: true, text: '疑似搬运'}],
     })
 
     render() {

@@ -4,7 +4,7 @@ import DefaultTable from "../../../components/default-table";
 import UpdateStartTime from "./UpdateStartTime";
 import CopyBvToClipboard from "./CopyBvToClipboard";
 import UpdateExternalOwner from "../VideoDataManager/UpdateExternalOwner";
-import {dateFormat} from "../../../utils/HtmlUtils";
+import {dateFormat, isBlank} from "../../../utils/HtmlUtils";
 import CheckPoint from "./CheckPoint";
 
 export default class VideoDataFileCheck extends Component {
@@ -35,8 +35,9 @@ export default class VideoDataFileCheck extends Component {
     }
 
     handleResourcesInit = () => ({
-        isLenList: [{value: 1, text: '是'}, {value: 0, text: ''}],
-        copyrightList: [{value: 0, text: ''}, {value: 1, text: '搬运'}],
+        isLenList: [{value: true, text: '长期'}, {value: false, text: '非长期', renderHidden: true}],
+        copyrightList: [{value: false, text: '原创', renderHidden: true}, {value: true, text: '搬运'}],
+        isUpList: [{value: true, text: '↑'}, {value: false, text: '↓'}],
     })
 
     pointRender = (point, record) => {
@@ -46,6 +47,8 @@ export default class VideoDataFileCheck extends Component {
             return point;
         }
     }
+    // 主榜中还没填原作者的搬运视频标红
+    handleRowClassName = (row, index) => row.rank <= 30 && row.copyright && isBlank(row.externalOwner)? " row-error ": "";
 
     render() {
         return (
@@ -59,27 +62,30 @@ export default class VideoDataFileCheck extends Component {
                 onButtonsInit={this.handleButtonsInit}
                 onResourcesInit={this.handleResourcesInit}
                 onResourceLoaded={this.handleResourceLoaded}
+                onRowClassName={this.handleRowClassName}
             />
         )
     }
 
     columnsConfig = [
-        {title: 'av号', key: 'av', width: 110, href: av => "https://www.bilibili.com/video/av" + av},
-        {title: '标题', key: 'name', width: 200, ellipsis: true},
-        {title: '封面', key: 'img', type: 'image', href: row => "https://www.bilibili.com/video/av" + row.av},
-        {title: '类型', key: 'type', width: 120},
-        {title: '作者', key: 'owner', width: 125, ellipsis: true},
-        {title: '搬运', key: 'copyright', width: 70, type: 'choose', chooseMap: 'copyrightList'},
-        {title: '发布日期', key: 'pubTime', width: 110},
+        {title: 'av槽', key: 'avStr', width: 120, href: (value, row) => "https://www.bilibili.com/video/av" + row.av},
+        {title: '标题槽', key: 'nameStr', width: 200, ellipsis: true},
+        {title: '封面', key: 'img', type: 'image', href: (value, row) => "https://www.bilibili.com/video/av" + row.av},
+        {title: '类型槽', key: 'typeStr', width: 120},
+        {title: '作者槽', key: 'ownerStr', width: 125, ellipsis: true},
+        {title: '副作者槽', key: 'subOwnerStr', width: 150, ellipsis: true},
+        // {title: '搬运', key: 'copyright', width: 70, type: 'choose', chooseMap: 'copyrightList'},
+        {title: '发布日期槽', key: 'pubTimeStr', width: 180},
         {title: '节选', key: 'startTime', width: 100, afterRender: dateFormat},
-        {title: '播放量差', key: 'view', width: 100},
-        {title: '评论差', key: 'reply', width: 90},
-        {title: '收藏差', key: 'favorite', width: 90},
-        {title: '硬币差', key: 'coin', width: 90},
-        {title: '得分', key: 'point', width: 90, afterRender: this.pointRender},
-        {title: '排名', key: 'rank', width: 65},
-        {title: '历史排名', key: 'hisRank', width: 90, afterRender: hisRank => hisRank === 0? '': hisRank},
-        {title: '是否长期', key: 'isLen', width: 90, type: 'chooseRender', chooseMap: 'isLenList'},
+        {title: '播放量槽', key: 'viewStr', width: 120},
+        {title: '评论槽', key: 'replyStr', width: 100},
+        {title: '收藏槽', key: 'favoriteStr', width: 100},
+        {title: '硬币槽', key: 'coinStr', width: 100},
+        {title: '得分槽', key: 'pointStr', width: 100, afterRender: this.pointRender},
+        {title: '排名槽', key: 'rankStr', width: 65},
+        {title: '历史排名槽', key: 'hisRankStr', width: 90, afterRender: value => value === 0? '': value},
+        {title: '是否提升排名', key: 'isUp', width: 110, type: 'chooseRender', chooseMap: 'isUpList'},
+        {title: '是否长期槽', key: 'isLen', width: 90, type: 'chooseRender', chooseMap: 'isLenList'},
     ];
 
 }

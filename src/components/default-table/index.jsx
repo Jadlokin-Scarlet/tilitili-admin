@@ -14,7 +14,7 @@ import {
     isNotNull,
     isNull,
     splitToList,
-    convertToPrams, selfFunc, isEmptyObject
+    convertToPrams, selfFunc, isEmptyObject, isBlank
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
 import './index.css'
@@ -232,7 +232,8 @@ export default class DefaultTable extends Component {
         this.setState({visible})
     }
 
-    handleRowClassName = (row, index) => "row-" + (this.props.rowKey || defaultRowKey)(row, index);
+    handleRowClassName = (row, index) => "row-" + (this.props.rowKey || defaultRowKey)(row, index)
+        + ((this.props.onRowClassName || emptyFunc)(row, index) || "");
 
 
     render() {
@@ -384,7 +385,7 @@ export default class DefaultTable extends Component {
             If(isNull(columnConfig.href)).then(() =>
                 <Img loading={loading} style={{height: '37px', maxWidth: '60px'}} alt='-' src={converseUrl(src, 60)}/>
             ).else(() =>
-                <a href={columnConfig.href(row)} target="_Blank" rel="noopener noreferrer">
+                <a href={columnConfig.href(src, row)} target="_Blank" rel="noopener noreferrer">
                     <Img loading={loading} style={{ height: '37px', maxWidth: '60px' }} src={converseUrl(src, 60)} alt="-"/>
                 </a>
             )

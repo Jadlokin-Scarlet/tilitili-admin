@@ -78,3 +78,7 @@ code {
 .margin-left-8 {
   margin-left: 8px;
 }
+
+.row-error {
+  background-color: #ffe1e1;
+}

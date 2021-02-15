@@ -8,7 +8,7 @@ import {del, get, patch, post} from "./ajax"
 
 let BASE_URL = 'http://localhost:8083/api'
 if (process.env.NODE_ENV !== "development") {
-    BASE_URL = 'http://47.100.66.36:8083/api'
+    BASE_URL = 'http://api.admin.tilitili.club'
 }
 
 // 登录
@@ -23,16 +23,17 @@ export const getResources = (data) => get('/resources', data)
 export const getVideoInfoByCondition = (data) => get('/video/info', data)
 export const deleteVideo = (av) => del(`/video/info/${av}/isDelete/true`)
 export const recoveryVideo = (av) => patch(`/video/info/${av}/isDelete/false`)
-export const updateStartTime = data => patch(`/video/info`, data)
-export const updateExternalOwner = data => patch(`/video/info`, data)
+export const updateStartTime = data => patch(`/video/info/startTime`, data)
+export const updateExternalOwner = data => patch(`/video/info/externalOwner`, data)
+export const updateIsCopyWarning = data => patch(`/video/info/isCopyWarning`, data)
 
 //视频数据
 export const getVideoDataByCondition = (data) => get('/video/data', data)
 export const reRank = (data) => patch('/video/data/rank', data)
 
 //视频数据文件
-export const downloadDataTxtUrl = (issue) => (BASE_URL + `/video/issue/${issue}/data.txt`)
-export const listVideoDataTxt = (data) => get(`/video/data/file`, data)
+export const downloadDataTxtUrl = () => (BASE_URL + `/video/data/file`)
+export const listVideoDataTxt = (data) => get(`/video/data/adminFile`, data)
 
 //自定义爬取
 export const getTaskByCondition = (data) => get('/task', data)
@@ -54,8 +55,14 @@ export const updateTag = (data) => patch('/tag', data)
 export const getVideoTagByCondition = (data) => get('/video/tag', data)
 
 //视频下发资源管理
-export const getFlag = (data) => get('/resources/flag', data)
+export const getFlag = (data) => get('/resources/adminFlag', data)
 export const updateFlag = (data) => patch('/resources/flag', data);
 
 //作者管理
 export const getOwnerByCondition = (data) => get('/owner', data)
+
+//视频信息数据
+export const getVideoInfoCount = (data) => get('/video/info/count', data);
+
+//视频tag数据
+export const getTopTagCount = (data) => get('/tag/count', data);

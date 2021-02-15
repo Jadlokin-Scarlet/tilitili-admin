@@ -12,6 +12,8 @@ const formConfig = [
     {label: 'ed专辑', key: 'musicCard', type: 'input'},
     {label: 'ed图片', key: 'musicImage', type: 'input'},
     {label: 'ed原曲', key: 'musicSource', type: 'input'},
+    {label: '期数', key: 'v', type: 'input', disabled: true},
+    {label: '制作时间', key: 'markTime', type: 'input', disabled: true},
 ]
 
 const resources = {
@@ -60,9 +62,9 @@ export default class VideoResourceManager extends Component  {
         const params = this.state;
         const onChange = this.handleChange;
         return (
-            <Card style={{width: '30%'}}>
+            <Card style={{width: '60%'}}>
                 <Spin spinning={this.state.loading}>
-                    {converseToForm({formConfig, params, resources, onChange})}
+                    {converseToForm({formConfig, params, resources, onChange, col: 2})}
                     <Row type="flex" justify="space-around" align="middle" >
                         <Col span={3}>
                             <Button type="primary" onClick={this.handleRefresh}>刷新</Button>

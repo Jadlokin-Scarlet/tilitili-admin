@@ -1,9 +1,6 @@
 import React, {Component} from "react";
 import DefaultTable from "../../../components/default-table";
 import {getBatchTaskByCondition} from "../../../api";
-import TestBatchSpiderVideo from "./TestBatchSpiderVideo";
-import BatchSpiderAllVideo from "./BatchSpiderAllVideo";
-import BatchSpiderAllVideoTag from "./BatchSpiderAllVideoTag";
 import DeleteBatchTask from "./DeleteBatchTask";
 
 export default class BatchSpiderVideoManager extends Component{
@@ -28,9 +25,6 @@ export default class BatchSpiderVideoManager extends Component{
         return (
             <>
                 <DeleteBatchTask selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <TestBatchSpiderVideo onSuccess={handleUpdated}/>
-                <BatchSpiderAllVideo onUpdated={handleUpdated}/>
-                <BatchSpiderAllVideoTag onUpdated={handleUpdated}/>
             </>
         )
     }
