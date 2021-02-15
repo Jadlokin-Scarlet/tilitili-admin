@@ -7,20 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.beanutils.BeanMap;
-import org.springframework.util.Assert;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
-public class VideoDataFileItem implements Serializable {
+public class VideoDataFileItem {
 	@JsonView(VideoView.class)
 	private Long av;
 	@JsonView(VideoView.class)
@@ -32,7 +25,7 @@ public class VideoDataFileItem implements Serializable {
 	@JsonView(AdminView.class)
 	private String owner;
 	@JsonView(AdminView.class)
-	private String subOwner;
+	private String externalOwner;
 	@JsonView(AdminView.class)
 	private Boolean copyright;
 	@JsonView(AdminView.class)
@@ -109,21 +102,6 @@ public class VideoDataFileItem implements Serializable {
 	public interface VideoView extends BaseModel.BaseView {}
 
 	public interface AdminView extends VideoView {}
-
-	public String toDataFileLine(List<String> fields) {
-		BeanMap beanMap = new BeanMap(this);
-		return fields.stream()
-				.map(field -> toDataFileItem(field, beanMap.get(field)))
-				.collect(Collectors.joining("\t"));
-	}
-
-	public String toDataFileItem(String field, Object value) {
-		Assert.notNull(value, "av=" + av + ",field=" + field + ", value is null");
-		if (Objects.equals(field, "pubTime")) {
-			return pubTime.split(" ")[0];
-		}
-		return value.toString();
-	}
 
 	public VideoDataFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
 		boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0;

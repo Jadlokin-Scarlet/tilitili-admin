@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class VideoInfoCount {
+public class VideoInfoCountResponse {
     private List<NewVideoCount> newVideoCountList;
 }
 

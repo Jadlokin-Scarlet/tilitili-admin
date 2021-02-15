@@ -9,7 +9,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,29 +20,15 @@ public class VideoDataFileService {
 
     private final VideoDataManager videoDataManager;
 
-//    private final List<String> fields = Arrays.asList(
-//            "av", "name", "img", "type", "owner",
-//            "copyright", "pubTime", "startTime", "view", "reply",
-//            "favorite", "coin", "point", "rank", "hisRank", "isLen"
-//    );
-
     @Autowired
     public VideoDataFileService(VideoDataManager videoDataManager) {
         this.videoDataManager = videoDataManager;
     }
 
-//    public String getVideoDataFile(int issue) {
-//        String head = String.join("\t", fields) + "\n";
-//        String body = listForDataFile(new VideoDataQuery().setIssue(issue)).stream()
-//                .map(video -> video.toDataFileLine(fields))
-//                .collect(Collectors.joining("\n"));
-//        return head + body;
-//    }
-
     public List<VideoDataFileItem> listForDataFile(VideoDataQuery videoDataQuery) {
         videoDataQuery.setIsDelete(false).setStatus(0);
         videoDataQuery.setSorter("point", "desc");
-        return videoDataManager.list(videoDataQuery).stream().map(videoData -> {
+        return videoDataManager.list(videoDataQuery).parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
             VideoData oldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 1);
             VideoData moreOldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 2);
@@ -108,10 +93,13 @@ public class VideoDataFileService {
                         video.setOwnerStr(videoData.getOwner());
                     }else {
                         video.setOwnerStr(videoData.getExternalOwner());
+                        video.setSubOwnerStr("搬运:"+videoData.getOwner());
                     }
-                    video.setSubOwnerStr("搬运:"+videoData.getOwner());
                 }else {
                     video.setOwnerStr(videoData.getOwner());
+                    if (videoData.getIsCopyWarning()) {
+                        video.setSubOwnerStr("疑似搬运");
+                    }
                 }
                 video.setIsUp(oldVideo.getRank() == 0 || videoData.getRank() <= oldVideo.getRank());
             }else {

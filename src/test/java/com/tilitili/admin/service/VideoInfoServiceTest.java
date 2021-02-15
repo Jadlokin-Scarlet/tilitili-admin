@@ -1,6 +1,7 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.StartApplication;
+import com.tilitili.admin.entity.count.VideoInfoCountRequest;
 import com.tilitili.admin.entity.count.sub.NewVideoCount;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,8 @@ class VideoInfoServiceTest extends TestCase {
     private VideoInfoService videoInfoService;
     @Test
     void getNewVideoData() {
-        List<NewVideoCount> newVideoCountList = videoInfoService.getNewVideoCount();
+        VideoInfoCountRequest request = new VideoInfoCountRequest().setTime(14);
+        List<NewVideoCount> newVideoCountList = videoInfoService.getNewVideoCount(request);
         System.out.println(newVideoCountList);
     }
 }
