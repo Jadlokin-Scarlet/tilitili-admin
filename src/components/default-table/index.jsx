@@ -14,7 +14,7 @@ import {
     isNotNull,
     isNull,
     splitToList,
-    convertToPrams, selfFunc, isEmptyObject, isBlank
+    convertToPrams, selfFunc, isEmptyObject
 } from "../../utils/HtmlUtils";
 import {getResources} from "../../api";
 import './index.css'

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {getResources, getVideoInfoCount} from "../../../api";
-import {checkResp, For, ignoreError} from "../../../utils/HtmlUtils";
+import {checkResp, ignoreError} from "../../../utils/HtmlUtils";
 import NewVideoCount from "./NewVideoCount";
-import {Button, Card, Form, Row, Select} from "antd";
+import {Button, Card} from "antd";
 import {converseToForm} from "../../../components/default-modal-button/DefaultModalButton";
 
 const formConfig = [

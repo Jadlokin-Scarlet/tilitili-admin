@@ -26,6 +26,6 @@ export const menuList = [
     ]},
     {key: "/data", title: "数据后台", children: [
         {title: "视频信息数据", key: "/video/info/count", icon: "bar-chart", component: VideoInfoCount},
-        // {title: "视频Tag数据", key: "/tag/count", icon: "bar-chart", component: TopTagCount}
+        {title: "视频Tag数据", key: "/tag/count", icon: "bar-chart", component: TopTagCount}
     ]}
 ]

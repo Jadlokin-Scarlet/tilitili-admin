@@ -1,7 +1,7 @@
-import {Card, Spin} from "antd";
-import {isEmpty} from "../../../utils/HtmlUtils";
-import {Chart, Interval, Legend, Line, Point, Tooltip} from "bizcharts";
 import React from "react";
+import {Spin} from "antd";
+import {Chart, Interval, Legend, Line, Point, Tooltip} from "bizcharts";
+import {isEmpty} from "../../../utils/HtmlUtils";
 
 export default function newVideoCount(props) {
     const {newVideoCountList} = props
