@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.count.VideoDataCountResponse;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
@@ -35,6 +36,14 @@ public class VideoDataController extends BaseController {
         int count = videoDataManager.count(query);
         List<VideoData> videoDataList = videoDataManager.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoDataList);
+    }
+
+    @GetMapping("/count")
+    @ResponseBody
+    public BaseModel getVideoDataCount(VideoDataQuery query) {
+        VideoDataCountResponse videoDataCountResponse = new VideoDataCountResponse();
+        videoDataCountResponse.setVideoDataAddCountList(videoDataService.getVideoDataCount(query));
+        return BaseModel.success(videoDataCountResponse);
     }
 
     @PatchMapping("/rank")

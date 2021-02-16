@@ -1,8 +1,9 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.count.sub.TopTagCount;
-import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.VideoTag;
+import com.tilitili.common.entity.dto.TagRelationGroup;
+import com.tilitili.common.entity.query.BaseQuery;
 import com.tilitili.common.entity.query.VideoTagQuery;
 import com.tilitili.common.mapper.TagMapper;
 import com.tilitili.common.mapper.VideoTagRelationMapper;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class VideoTagService {
@@ -32,9 +32,12 @@ public class VideoTagService {
         }).collect(Collectors.toList());
     }
 
-    public List<TopTagCount> listTopTagCount() {
-//        videoTagRelationMapper.groupByTag();
-        return null;
+    public List<TopTagCount> listTopTagCount(VideoTagQuery query) {
+        query.setTagType(0);
+        List<TagRelationGroup> groupList = videoTagRelationMapper.groupByTag(query);
+        return groupList.parallelStream().map(group ->
+                new TopTagCount().setTag(group.getTag()).setNumber(group.getNumber())
+        ).collect(Collectors.toList());
     }
 
 }

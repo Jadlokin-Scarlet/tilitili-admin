@@ -41,9 +41,9 @@ public class VideoTagController extends BaseController {
 
     @GetMapping("/count")
     @ResponseBody
-    public BaseModel getTagCount() {
+    public BaseModel getTagCount(VideoTagQuery query) {
         TagCount tagCount = new TagCount();
-        tagCount.setTopTagList(videoTagService.listTopTagCount());
+        tagCount.setTopTagList(videoTagService.listTopTagCount(query));
         return BaseModel.success(tagCount);
     }
 
