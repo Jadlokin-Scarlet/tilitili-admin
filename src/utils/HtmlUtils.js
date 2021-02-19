@@ -271,7 +271,7 @@ export const checkResp = data => {
 
 export const defaultRowKey = (record, index) => index;
 
-export const defaultScroll = {x:1,y:true}
+export const defaultScroll = {x:1,y: true}
 
 export const dateFormat = date => {
     if (date < 60) {

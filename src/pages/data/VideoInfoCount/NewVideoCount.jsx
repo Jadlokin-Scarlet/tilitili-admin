@@ -1,6 +1,6 @@
 import React from "react";
 import {Spin} from "antd";
-import {Chart, Interval, Legend, Line, Point, Tooltip} from "bizcharts";
+import {Chart, Interval, Legend, Line, Tooltip} from "bizcharts";
 import {isEmpty} from "../../../utils/HtmlUtils";
 
 export default function newVideoCount(props) {
@@ -49,12 +49,12 @@ export default function newVideoCount(props) {
                     size={3}
                     shape="smooth"
                 />
-                <Point
-                    position="time*newVideoAdd"
-                    color={colors[1]}
-                    size={3}
-                    shape="circle"
-                />
+                {/*<Point*/}
+                {/*    position="time*newVideoAdd"*/}
+                {/*    color={colors[1]}*/}
+                {/*    size={3}*/}
+                {/*    shape="circle"*/}
+                {/*/>*/}
             </Chart>
         </Spin>
     )

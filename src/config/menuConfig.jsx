@@ -9,6 +9,8 @@ import VideoResourceManager from "../pages/rank/VideoResourceManager";
 import OwnerManager from "../pages/tilitili/OwnerManager";
 import VideoInfoCount from "../pages/data/VideoInfoCount";
 import TopTagCount from "../pages/data/TopTagCount";
+import VideoDataCount from "../pages/data/VideoDataCount";
+import AllRecommendManager from "../pages/recommend/AllRecommendManager";
 
 export const menuList = [
     {key: "/rank", title: "排行榜后台", children: [
@@ -19,6 +21,9 @@ export const menuList = [
         { title: "批量爬取", key: "/rank/batchSpiderVideoManager", icon: "bug", component: BatchSpiderVideoManager},
         { title: "视频资源下发管理", key: "/rank/videoResourceManager", icon: "arrow-down", component: VideoResourceManager},
     ]},
+    {key: "/recommend", title: "推荐刊后台", children: [
+        { title: "推荐池管理", key: "/recommend/AllRecommendManager", icon: "funnel-plot", component: AllRecommendManager},
+    ]},
     {key: "/tilitili", title: "视频站后台", children: [
         { title: "作者管理", key: "/tilitili/ownerManager", icon: "user", component: OwnerManager},
         { title: "标签管理", key: "/tilitili/tagManager", icon: "tag", component: TagManager},
@@ -26,6 +31,7 @@ export const menuList = [
     ]},
     {key: "/data", title: "数据后台", children: [
         {title: "视频信息数据", key: "/video/info/count", icon: "bar-chart", component: VideoInfoCount},
-        {title: "视频Tag数据", key: "/tag/count", icon: "bar-chart", component: TopTagCount}
+        {title: "视频Tag数据", key: "/tag/count", icon: "bar-chart", component: TopTagCount},
+        {title: "视频数据统计", key: "/video/data/count", icon: "bar-chart", component: VideoDataCount},
     ]}
 ]

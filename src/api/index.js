@@ -65,4 +65,12 @@ export const getOwnerByCondition = (data) => get('/owner', data)
 export const getVideoInfoCount = (data) => get('/video/info/count', data);
 
 //视频tag数据
-export const getTopTagCount = (data) => get('/tag/count', data);
+export const getTagCount = (data) => get('/video/tag/count', data);
+
+//视频数据统计
+export const getVideoDataCount = (data) => get('/video/data/count', data);
+
+//推荐池
+export const getRecommendByCondition = data => get('/recommend', data);
+export const addRecommend = data => post('/recommend', data);
+export const updateDeleteRecommend = data => patch('/recommend', data);

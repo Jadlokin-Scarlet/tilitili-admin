@@ -78,7 +78,6 @@ export default class DefaultTable extends Component {
             try {
                 data = await this.props.getDataApi(params).then(checkResp);
             }catch (e) {
-                message.error("请求异常")
                 this.setState({dataLoading: false});
             }
             if (reqId === this.state.reqId) {
@@ -249,7 +248,7 @@ export default class DefaultTable extends Component {
         })
 
         return (
-            <Card onKeyUp={this.handleKeyUp} tabIndex="-1">
+            <Card onKeyUp={this.handleKeyUp} tabIndex="-1" size="small">
                 <Row type="flex" className="margin-bottom-8">
                     <Button type="primary" onClick={this.handleReset} className="margin-left-8" disabled={loading}>重置</Button>
                     <Button type="primary" onClick={this.handleRefresh} className="margin-left-8" disabled={loading}>刷新</Button>

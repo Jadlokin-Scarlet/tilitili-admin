@@ -21,7 +21,7 @@ export default function VideoInfoCount(props) {
     // const [videoType, setVideoType] = useState('全部');
     const [resources, setResources] = useState({});
 
-    resources.timeList = [{value: 7, text: '一周'},{value: 14, text: '两周'},{value: 30, text: '三十天'},{value: 60, text: '六十天'},]
+    resources.timeList = [{value: 7, text: '一周'},{value: 14, text: '两周'},{value: 30, text: '一月'},{value: 60, text: '两月'},{value: 180, text: '半年'},{value: 360, text: '一年'},{value: 720, text: '两年'},{value: 1800, text: '五年'},]
 
     const {time, videoType} = params
 
@@ -40,7 +40,7 @@ export default function VideoInfoCount(props) {
     }, []);
 
     const handleChange = filters => {
-        setParams(Object.assign(params, filters));
+        setParams(Object.assign({}, params, filters));
     }
 
     const handleRefresh = () => {

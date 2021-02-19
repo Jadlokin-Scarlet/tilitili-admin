@@ -60,18 +60,20 @@ function handleGet(promise) {
     return new Promise((resolve, reject) => {
         promise.then(req => {
             if (isNull(req.data)) {
-                message.error( "请求异常")
+                message.error( "请求失败")
                 reject(req)
             }
             const data = req.data;
             if (data.success) {
                 resolve(data.data)
+            } else if (data.message === "请重新登录") {
+                window.location.reload();
             } else {
                 message.error(isNull(data.message, "请求失败"));
                 reject(req)
             }
         }).catch(reason => {
-            message.error(isNull(reason.message, "请求异常"));
+            message.error(isNull(reason.message, "请求异常2"));
             reject(reason)
         });
     })
@@ -88,6 +90,8 @@ function handlePost(promise) {
             if (data.success) {
                 message.success(isNull(data.message, "请求成功"))
                 resolve(data.data)
+            } else if (data.message === "请重新登录") {
+                window.location.reload();
             } else {
                 message.error(isNull(data.message, "请求失败"));
                 reject(req)
