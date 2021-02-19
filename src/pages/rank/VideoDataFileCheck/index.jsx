@@ -80,7 +80,7 @@ export default class VideoDataFileCheck extends Component {
         {title: '播放量槽', key: 'viewStr', width: 120},
         {title: '评论槽', key: 'replyStr', width: 100},
         {title: '收藏槽', key: 'favoriteStr', width: 100},
-        {title: '硬币槽', key: 'coinStr', width: 100},
+        {title: '硬币槽', key: 'coinStr', width: 110},
         {title: '得分槽', key: 'pointStr', width: 100, afterRender: this.pointRender},
         {title: '排名槽', key: 'rankStr', width: 65},
         {title: '历史排名槽', key: 'hisRankStr', width: 90, afterRender: value => value === 0? '': value},
