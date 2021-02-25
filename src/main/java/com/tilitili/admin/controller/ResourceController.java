@@ -1,10 +1,14 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.common.emnus.ResourcesType;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.tilitili.admin.entity.VideoDataFileItem;
+import com.tilitili.admin.service.VideoDataFileService;
 import com.tilitili.common.entity.Resource;
+import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.DispatchResourcesView;
+import com.tilitili.common.entity.view.PageModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("api/resources")
@@ -23,10 +26,12 @@ import java.util.Map;
 public class ResourceController extends BaseController {
 
     private final ResourceService resourceService;
+    private final VideoDataFileService videoDataFileService;
 
     @Autowired
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService) {
         this.resourceService = resourceService;
+        this.videoDataFileService = videoDataFileService;
     }
 
     @GetMapping("")
@@ -57,10 +62,12 @@ public class ResourceController extends BaseController {
         return new BaseModel("success", true, flagResource);
     }
 
-    @GetMapping("/flag.txt")
+    @GetMapping("/videoDataFile")
     @ResponseBody
-    public String getFlagText() {
-        return resourceService.getFlagFileResources();
+    @JsonView(VideoDataFileItem.VideoView.class)
+    public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
+        List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
+        return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
     }
 
     @PatchMapping("/flag")

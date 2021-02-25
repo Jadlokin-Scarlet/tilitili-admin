@@ -32,19 +32,6 @@ public class VideoDataFileController extends BaseController {
         this.videoDataFileService = videoDataFileService;
     }
 
-//    @GetMapping("/issue/{issue}/data.txt")
-//    public ResponseEntity<String> getVideoDataFile(@PathVariable int issue) {
-//        return ResponseEntity.ok(videoDataFileService.getVideoDataFile(issue));
-//    }
-
-    @GetMapping("/data/file")
-    @ResponseBody
-    @JsonView(VideoDataFileItem.VideoView.class)
-    public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
-        List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
-        return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
-    }
-
     @GetMapping("/data/adminFile")
     @ResponseBody
     @JsonView(VideoDataFileItem.AdminView.class)
@@ -52,12 +39,5 @@ public class VideoDataFileController extends BaseController {
         List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
         return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
     }
-
-//    @GetMapping("/av/{av}")
-//    public BaseModel listVideo(@PathVariable Long av, VideoQuery videoQuery) {
-//        videoQuery.setAv(av);
-//        List<Video> videoList = videoService.listVideo(videoQuery);
-//        return PageModel.of(0, videoQuery.getPageSize(), videoQuery.getCurrent(), videoList);
-//    }
 
 }

@@ -6,6 +6,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.mapper.AdminMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -32,6 +33,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         HttpSession session = request.getSession();
         Admin admin = (Admin)session.getAttribute("admin");
+
+        //登陆和资源下放不用登陆
+        String url = request.getRequestURL().toString();
+        String method = request.getMethod();
+        if (url.contains("/admin") || (url.contains("/resources") && HttpMethod.GET.matches(method))) {
+            return true;
+        }
 
         //未登录
         if (admin == null){

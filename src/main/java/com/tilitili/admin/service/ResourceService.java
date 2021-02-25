@@ -3,6 +3,7 @@ package com.tilitili.admin.service;
 import com.tilitili.common.emnus.*;
 import com.tilitili.common.entity.Resource;
 import com.tilitili.common.entity.view.DispatchResourcesView;
+import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.ResourcesMapper;
 import com.tilitili.common.manager.VideoDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class ResourceService {
     private final Map<String, Supplier<List<Resource>>> resourceMap = new HashMap<>();
 
     @Autowired
-    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, VideoDataManager videoDataManager) {
+    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, VideoDataManager videoDataManager, RecommendService recommendService) {
         this.resourcesMapper = resourcesMapper;
         this.videoDataManager = videoDataManager;
         resourceMap.put("videoTypeResource", typeService::getTypeResource);
@@ -31,6 +32,7 @@ public class ResourceService {
         resourceMap.put("TaskStatusResource", TaskStatus::getResource);
         resourceMap.put("TaskReasonResource", TaskReason::getResource);
         resourceMap.put("TagTypeResource", TagType::getResource);
+        resourceMap.put("RecommendIssueResource", recommendService::listIssue);
     }
 
     public List<Resource> getResource(String resourceName) {
