@@ -4,6 +4,7 @@ import {addRecommend} from "../../../api";
 
 const formConfig = [
     {label: 'av', key: 'av', type: 'input'},
+    {label: 'bv', key: 'bv', type: 'input'},
     {label: '推荐语', key: 'text', type: 'textArea'},
 ]
 

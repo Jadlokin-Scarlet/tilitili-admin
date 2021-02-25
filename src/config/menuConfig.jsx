@@ -10,7 +10,8 @@ import OwnerManager from "../pages/tilitili/OwnerManager";
 import VideoInfoCount from "../pages/data/VideoInfoCount";
 import TopTagCount from "../pages/data/TopTagCount";
 import VideoDataCount from "../pages/data/VideoDataCount";
-import AllRecommendManager from "../pages/recommend/AllRecommendManager";
+import RecommendPoolManager from "../pages/recommend/RecommendPoolManager";
+import UseRecommendManager from "../pages/recommend/UseRecommendManager";
 
 export const menuList = [
     {key: "/rank", title: "排行榜后台", children: [
@@ -22,7 +23,8 @@ export const menuList = [
         { title: "视频资源下发管理", key: "/rank/videoResourceManager", icon: "arrow-down", component: VideoResourceManager},
     ]},
     {key: "/recommend", title: "推荐刊后台", children: [
-        { title: "推荐池管理", key: "/recommend/AllRecommendManager", icon: "funnel-plot", component: AllRecommendManager},
+        { title: "推荐池", key: "/recommend/RecommendPoolManager", icon: "funnel-plot", component: RecommendPoolManager},
+        { title: "推荐归档", key: "/recommend/UseRecommendManager", icon: "folder-open", component: UseRecommendManager},
     ]},
     {key: "/tilitili", title: "视频站后台", children: [
         { title: "作者管理", key: "/tilitili/ownerManager", icon: "user", component: OwnerManager},

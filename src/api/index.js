@@ -71,6 +71,10 @@ export const getTagCount = (data) => get('/video/tag/count', data);
 export const getVideoDataCount = (data) => get('/video/data/count', data);
 
 //推荐池
-export const getRecommendByCondition = data => get('/recommend', data);
+export const getRecommendPoolByCondition = data => get('/recommend/pool', data);
 export const addRecommend = data => post('/recommend', data);
 export const updateDeleteRecommend = data => patch('/recommend', data);
+export const useRecommend = data => patch('/recommend/status', data);
+
+//推荐归档
+export const getUseRecommendByCondition = data => get('/recommend', data);

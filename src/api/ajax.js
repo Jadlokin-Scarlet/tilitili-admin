@@ -29,8 +29,15 @@ if (process.env.NODE_ENV !== "development") {
 //     return Promise.reject(err)
 // })
 
+
+const service = axios.create({
+    baseURL: BASE,
+    crossDomain: true,
+    withCredentials: true,
+})
+
 export function get(url,data={}) {
-    return handleGet(axios.get(BASE + url, {
+    return handleGet(service.get(url, {
         params: data,
         headers:{"Content-Type": "application/json"},
         paramsSerializer: function(params) {
@@ -40,19 +47,19 @@ export function get(url,data={}) {
 }
 
 export function post(url, data = {}) {
-    return handlePost(axios.post(BASE + url, data, {
+    return handlePost(service.post(url, data, {
         headers:{"Content-Type": "application/json"}
     }))
 }
 
 export function del(url, data = {}) {
-    return handlePost(axios.delete(BASE + url, data, {
+    return handlePost(service.delete(url, data, {
         headers:{"Content-Type": "application/json"}
     }))
 }
 
 export function patch(url, data = {}) {
-    return handlePost(axios.patch(BASE + url, data, {
+    return handlePost(service.patch(url, data, {
         headers:{"Content-Type": "application/json"}
     }))
 }
