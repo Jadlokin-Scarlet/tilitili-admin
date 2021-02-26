@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.tilitili.admin.utils.BilibiliUtil.converseAvToBv;
+
 @Slf4j
 @Controller
 @RequestMapping("/api/recommend")
@@ -54,6 +56,10 @@ public class RecommendController extends BaseController {
     @PostMapping("")
     @ResponseBody
     public BaseModel addRecommend(@RequestBody Recommend recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
+        if (recommend.getBv() != null) {
+            recommend.setAv(converseAvToBv(recommend.getBv()));
+        }
+
         Asserts.notNull(recommend.getAv(), "av号");
         Asserts.notNull(admin.getUserName(), "操作人");
 

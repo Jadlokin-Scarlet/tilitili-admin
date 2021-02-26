@@ -32,6 +32,8 @@ public class VideoDataFileItem {
 	private String pubTime;
 	@JsonView(VideoView.class)
 	private Long startTime;
+	@JsonView(AdminView.class)
+	private Long duration;
 
 	@JsonView(AdminView.class)
 	private Integer view;
