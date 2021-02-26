@@ -6,6 +6,7 @@ import CopyBvToClipboard from "./CopyBvToClipboard";
 import UpdateExternalOwner from "../VideoDataManager/UpdateExternalOwner";
 import {dateFormat, isBlank} from "../../../utils/HtmlUtils";
 import CheckPoint from "./CheckPoint";
+import CopyButtonToClipboard from "./CopyButtonToClipboard";
 
 export default class VideoDataFileCheck extends Component {
 
@@ -29,6 +30,7 @@ export default class VideoDataFileCheck extends Component {
         const list = data.list || []
         return (<>
             <CopyBvToClipboard list={list}/>
+            <CopyButtonToClipboard list={list}/>
             <UpdateStartTime selectedRow={selectedRow} onSuccess={handleUpdated}/>
             <UpdateExternalOwner selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
         </>)

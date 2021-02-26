@@ -5,6 +5,7 @@ import RecommendVideo from "./RecommendVideo";
 import DeleteRecommend from "./DeleteRecommend";
 import UseRecommend from "./UseRecommend";
 import SpiderVideo from "./SpiderVideo";
+import UpdateRecommend from "./UpdateRecommend";
 
 export default class RecommendPoolManager extends Component {
     columnsConfig = [
@@ -25,6 +26,7 @@ export default class RecommendPoolManager extends Component {
         const selectedRow = selectedRows[0] || {};
         return (
             <>
+                <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <RecommendVideo onSuccess={handleUpdated}/>
                 <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>

@@ -150,8 +150,8 @@ export default class DefaultModalButton extends Component {
 export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, onChange=emptyFunc}) => (
     <Form labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} layout="horizontal" size='small'>
         <Row gutter={24}>
-            {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max,suffix}, index) => (
-                <Col span={24 / col} key={index} style={{ display: index < formConfig.length ? 'block' : 'none' }}>
+            {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max,suffix,autoSize,col:itemCol=1}, index) => (
+                <Col span={24 * itemCol / col} key={index} style={{ display: index < formConfig.length ? 'block' : 'none' }}>
                     <Form.Item label={label} key={index} style={formConfig.length > 5? {margin: 0}: {}}>
                         {If(type === 'input').then(() => (
                             <Input value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder}/>
@@ -166,7 +166,7 @@ export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, o
                         )).elseIf(type === 'datePicker').then(() => (
                             <DatePicker value={params[key]} showTime={true} onChange={value => onChange(defineProperty({}, key, value))} />
                         )).elseIf(type === 'textArea').then(() => (
-                            <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder}/>
+                            <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} autoSize={autoSize}/>
                         )).elseIf(type === 'inputNumber').then(() => (
                             <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max} suffix={suffix}/>
                         )).elseIf(type === 'bilibiliVideo' && isNotNull(params.av)).then(() => (

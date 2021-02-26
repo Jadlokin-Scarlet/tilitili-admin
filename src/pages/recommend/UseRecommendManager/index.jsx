@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import DefaultTable from "../../../components/default-table";
 import {getUseRecommendByCondition} from "../../../api";
+import SpiderVideo from "./SpiderVideo";
 
 export default class UseRecommendManager extends Component {
     columnsConfig = [
@@ -16,7 +17,15 @@ export default class UseRecommendManager extends Component {
         {title: '推荐时间', key: 'createTime', width: 180},
     ];
 
-    handleButtonsInit = () => {
+    handleButtonsInit = (that) => {
+        const { state, handleUpdated } = that
+        const { selectedRows } = state
+        const selectedRow = selectedRows[0] || {};
+        return (
+            <>
+                <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
+            </>
+        )
     }
     handleResourcesInit = () => ({
         // statusList: [{text: '正常', value: 0, renderHidden: true}, {text: '废弃', value: -1}, {text: '已使用', value: 1}],
