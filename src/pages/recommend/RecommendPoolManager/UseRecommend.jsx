@@ -11,8 +11,10 @@ const formConfig = [
 export default class UseRecommend extends Component {
 
     modalRender = state => {
+        const {recommendIssueResource=[]} = this.props.resources;
+        const newIssue = recommendIssueResource[0]?.value;
         return <p>
-            {`确定使用推荐: ${state.name}`}
+            {`确定使用推荐至第${newIssue}期: ${state.name}`}
         </p>
     }
 

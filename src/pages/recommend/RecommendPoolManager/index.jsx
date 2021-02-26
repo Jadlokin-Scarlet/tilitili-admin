@@ -6,6 +6,7 @@ import DeleteRecommend from "./DeleteRecommend";
 import UseRecommend from "./UseRecommend";
 import SpiderVideo from "./SpiderVideo";
 import UpdateRecommend from "./UpdateRecommend";
+import {dateFormat} from "../../../utils/HtmlUtils";
 
 export default class RecommendPoolManager extends Component {
     columnsConfig = [
@@ -13,6 +14,7 @@ export default class RecommendPoolManager extends Component {
         {title: '作品名', key: 'name', width: 300, ellipsis: true},
         {title: '推荐人', key: 'operator', width: 100, ellipsis: true},
         {title: '推荐语', key: 'text', width: 300, ellipsis: true},
+        {title: '选区', key: 'startTime', width: 100, afterRender: dateFormat},
         {title: 'UP主', key: 'owner', width: 100, ellipsis: true},
         {title: '原作者', key: 'externalOwner', width: 100, ellipsis: true},
         {title: '视频类型', key: 'type', width: 130, ellipsis: true},
@@ -22,14 +24,14 @@ export default class RecommendPoolManager extends Component {
 
     handleButtonsInit = (that) => {
         const { state, handleUpdated } = that
-        const { selectedRows } = state
+        const { selectedRows, resources } = state
         const selectedRow = selectedRows[0] || {};
         return (
             <>
                 <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <RecommendVideo onSuccess={handleUpdated}/>
                 <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
                 <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
             </>
         )
@@ -41,6 +43,7 @@ export default class RecommendPoolManager extends Component {
     render() {
         return (
             <DefaultTable
+                needResourcesList={['recommendIssueResource']}
                 defaultPageSize={20}
                 defaultSorter={{field: 'id', order: 'descend'}}
                 rowKey={record => record.id}

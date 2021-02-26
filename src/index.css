@@ -67,7 +67,7 @@ code {
 .ant-input-affix-wrapper .ant-input:not(:last-child) {
   padding-right: 11px !important;
 }
-.ant-input-affix-wrapper span.ant-input-suffix {
+.ant-table-column-title span.ant-input-suffix {
   right: 1px;
 }
 

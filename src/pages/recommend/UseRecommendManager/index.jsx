@@ -6,7 +6,7 @@ import SpiderVideo from "./SpiderVideo";
 export default class UseRecommendManager extends Component {
     columnsConfig = [
         {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
-        {title: '期数', key: 'issue', width: 90, type: 'choose', chooseMap: 'RecommendIssueResource'},
+        {title: '期数', key: 'issue', width: 90, type: 'choose', chooseMap: 'recommendIssueResource'},
         {title: '作品名', key: 'name', width: 300, ellipsis: true},
         {title: '推荐人', key: 'operator', width: 100, ellipsis: true},
         {title: 'UP主', key: 'owner', width: 100, ellipsis: true},
@@ -34,7 +34,7 @@ export default class UseRecommendManager extends Component {
     render() {
         return (
             <DefaultTable
-                needResourcesList={['RecommendIssueResource']}
+                needResourcesList={['recommendIssueResource']}
                 defaultPageSize={20}
                 defaultSorter={{field: 'id', order: 'descend'}}
                 rowKey={record => record.id}

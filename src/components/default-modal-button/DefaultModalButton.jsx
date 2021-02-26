@@ -154,7 +154,7 @@ export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, o
                 <Col span={24 * itemCol / col} key={index} style={{ display: index < formConfig.length ? 'block' : 'none' }}>
                     <Form.Item label={label} key={index} style={formConfig.length > 5? {margin: 0}: {}}>
                         {If(type === 'input').then(() => (
-                            <Input value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder}/>
+                            <Input value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} suffix={suffix}/>
                         )).elseIf(type === 'inputSelect').then(() => (
                             <InputSelect resource={resources[resource]} value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}/>
                         )).elseIf(type === 'select').then(() => (

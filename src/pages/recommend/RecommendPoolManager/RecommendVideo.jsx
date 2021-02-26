@@ -5,6 +5,8 @@ import {addRecommend} from "../../../api";
 const formConfig = [
     {label: 'av', key: 'av', type: 'input'},
     {label: 'bv', key: 'bv', type: 'input'},
+    {label: '开始展示时间', key: 'startTime', type: 'input', suffix: '秒'},
+    {label: '原作者', key: 'externalOwner', type: 'input'},
     {label: '推荐语', key: 'text', type: 'textArea', col: 2, autoSize: {minRows: 5}},
 ]
 
