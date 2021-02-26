@@ -32,7 +32,7 @@ public class ResourceService {
         resourceMap.put("TaskStatusResource", TaskStatus::getResource);
         resourceMap.put("TaskReasonResource", TaskReason::getResource);
         resourceMap.put("TagTypeResource", TagType::getResource);
-        resourceMap.put("RecommendIssueResource", recommendService::listIssue);
+        resourceMap.put("recommendIssueResource", recommendService::listIssue);
     }
 
     public List<Resource> getResource(String resourceName) {

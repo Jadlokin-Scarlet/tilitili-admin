@@ -3,11 +3,13 @@ package com.tilitili.admin.controller;
 import com.tilitili.admin.service.RecommendService;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.Recommend;
+import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.mapper.RecommendMapper;
+import com.tilitili.common.mapper.VideoInfoMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,14 @@ public class RecommendController extends BaseController {
     private final RecommendMapper recommendMapper;
     private final RecommendService recommendService;
     private final ResourcesManager resourcesManager;
+    private final VideoInfoMapper videoInfoMapper;
 
     @Autowired
-    public RecommendController(RecommendMapper recommendMapper, RecommendService recommendService, ResourcesManager resourcesManager) {
+    public RecommendController(RecommendMapper recommendMapper, RecommendService recommendService, ResourcesManager resourcesManager, VideoInfoMapper videoInfoMapper) {
         this.recommendMapper = recommendMapper;
         this.recommendService = recommendService;
         this.resourcesManager = resourcesManager;
+        this.videoInfoMapper = videoInfoMapper;
     }
 
     @GetMapping("")
@@ -77,6 +81,17 @@ public class RecommendController extends BaseController {
     public BaseModel updateRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
 
+        recommendMapper.update(recommend);
+        videoInfoMapper.updateExternalOwner(recommend.getAv(), recommend.getExternalOwner());
+
+        return new BaseModel("更新成功",true);
+    }
+
+    @PatchMapping("/status/-1")
+    @ResponseBody
+    public BaseModel updateDeleteRecommend(@RequestBody Recommend recommend) {
+        Asserts.notNull(recommend.getId(), "av号");
+
         Recommend updateRecommend = new Recommend();
         updateRecommend.setId(recommend.getId());
         updateRecommend.setStatus(-1);
@@ -85,7 +100,7 @@ public class RecommendController extends BaseController {
         return new BaseModel("废弃成功",true);
     }
 
-    @PatchMapping("/status")
+    @PatchMapping("/status/1")
     @ResponseBody
     public BaseModel useRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
