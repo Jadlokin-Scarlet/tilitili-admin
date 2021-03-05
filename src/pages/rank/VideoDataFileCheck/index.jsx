@@ -7,6 +7,7 @@ import UpdateExternalOwner from "../VideoDataManager/UpdateExternalOwner";
 import {dateFormat, isBlank} from "../../../utils/HtmlUtils";
 import CheckPoint from "./CheckPoint";
 import CopyButtonToClipboard from "./CopyButtonToClipboard";
+import ChooseIssue from "./ChooseIssue";
 
 export default class VideoDataFileCheck extends Component {
 
@@ -24,11 +25,12 @@ export default class VideoDataFileCheck extends Component {
     }
 
     handleButtonsInit = (that) => {
-        const { state, handleUpdated } = that
-        const { selectedRows, data, resources } = state
+        const { state, updateFilters, handleUpdated } = that
+        const { selectedRows, data, resources, filters, dataLoading } = state
         const selectedRow = selectedRows[0] || {};
         const list = data.list || []
         return (<>
+            <ChooseIssue disabled={dataLoading} onChange={filters => updateFilters(filters, handleUpdated)} filters={filters}/>
             <CopyBvToClipboard list={list}/>
             <CopyButtonToClipboard list={list}/>
             <UpdateStartTime selectedRow={selectedRow} onSuccess={handleUpdated}/>

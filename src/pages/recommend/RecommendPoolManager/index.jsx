@@ -29,10 +29,10 @@ export default class RecommendPoolManager extends Component {
         return (
             <>
                 <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <RecommendVideo onSuccess={handleUpdated}/>
                 <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
-                <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
             </>
         )
     }

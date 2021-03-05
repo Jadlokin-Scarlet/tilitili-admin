@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import './index.less';
 import {Button, Col, Icon, Layout, Menu, Result, Row, Tabs, Typography} from "antd";
 import {For, If, isEmpty, isNotNull, isNull} from "../utils/HtmlUtils";
+import TweenOne from 'rc-tween-one';
+import QueueAnim from 'rc-queue-anim';
 import LoginModal from "./LoginModal";
 import {isLogin, reqLogin, reqLoginOut} from "../api";
 import {HashRouter, Link} from "react-router-dom";
@@ -145,56 +147,57 @@ export default class App extends Component{
                     </Header>
                     {If(isNotNull(this.state.isLogin)).then(() => (
                         <Layout>
-                        <Sider width={200} collapsed={this.state.collapsed} theme="light">
-                            {If(this.state.isLogin).then(() => <>
-                                <div style={{ width: '100%', textAlign: 'right' }}>
-                                    <Button onClick={this.toggleCollapsed} type="link">
-                                        <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
-                                    </Button>
-                                </div>
-                                <Menu
-                                    mode="inline"
-                                    selectedKeys={this.state.selectedKeyList[0]}
-                                    style={{borderRight: 0 }}>
-                                    {this.createMenu(menuList.filter(menu => menu.key === this.state.selectedFirstKey)[0].children)}
-                                </Menu>
-                            </>).endIf()}
-                        </Sider>
-                        <Layout>
-                            <Content>
+                            <Sider width={200} collapsed={this.state.collapsed} theme="light">
                                 {If(this.state.isLogin).then(() => <>
-                                    <Tabs type="editable-card"
-                                          style={{marginTop:10,marginLeft:5,marginRight:5,}}
-                                          hideAdd={true}
-                                          onChange={this.handleSelected.bind(this)}
-                                          activeKey={this.state.selectedKeyList[0]}
-                                          onEdit={this.onEdit}>
-                                        {For (selectedList).then((selected, index) => (
-                                            <Tabs.TabPane tab={selected.title} key={selected.key} closable={true}>
-                                                <selected.component selectedTab={selected} isHidden={index !== 0} />
-                                            </Tabs.TabPane>
-                                        ))}
-                                    </Tabs>
-                                    {If (isEmpty(this.state.selectedKeyList)).then(() => (
-                                        <Result
-                                            style={{ marginTop: 100 }}
-                                            icon={<img alt='' src='/min-logo.png'/>}
-                                            title="欢迎来到TiliTili后台!"
-                                        />
-                                    )).endIf()}
-                                </>).else(() => <>
-                                    <LoginModal onLogin={this.reqLogin} onRegister={this.reqRegister}/>
-                                </>)}
-                            </Content>
-                            <Footer style={{backgroundColor: "white"}}>
-                                <Row type="flex" justify="space-around" align="middle">
-                                    <Col>
-                                        <a href="http://beian.miit.gov.cn/" target="_Blank" rel="noopener noreferrer">浙ICP备2020037336号</a>
-                                    </Col>
-                                </Row>
-                            </Footer>
+                                    <div style={{ width: '100%', textAlign: 'right' }}>
+                                        <Button onClick={this.toggleCollapsed} type="link">
+                                            <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
+                                        </Button>
+                                    </div>
+                                    <QueueAnim duration={[200, 0]} interval={[50, 0]} type={['left']} component={Menu} componentProps={{mode: "inline", selectedKeys: this.state.selectedKeyList[0], style: {borderRight: 0}}}>
+                                    {/*<Menu mode="inline" selectedKeys={this.state.selectedKeyList[0]} style={{borderRight: 0 }}>*/}
+                                        {this.createMenu(menuList.filter(menu => menu.key === this.state.selectedFirstKey)[0].children)}
+                                    {/*</Menu>*/}
+                                    </QueueAnim>
+                                </>).endIf()}
+                            </Sider>
+                            <Layout>
+                                <Content>
+                                    {If(this.state.isLogin).then(() => <>
+                                        <Tabs type="editable-card"
+                                              style={{marginTop:10,marginLeft:5,marginRight:5,}}
+                                              hideAdd={true}
+                                              onChange={this.handleSelected.bind(this)}
+                                              activeKey={this.state.selectedKeyList[0]}
+                                              onEdit={this.onEdit}>
+                                            {For (selectedList).then((selected, index) => (
+                                                <Tabs.TabPane tab={selected.title} key={selected.key} closable={true}>
+                                                    <TweenOne reverse={index !== 0} animation={{y: 0, opacity: 1, duration: 200}} style={{ transform: 'translateY(-10px)' , opacity: 0}}>
+                                                        <selected.component selectedTab={selected} isHidden={index !== 0} />
+                                                    </TweenOne>
+                                                </Tabs.TabPane>
+                                            ))}
+                                        </Tabs>
+                                        {If (isEmpty(this.state.selectedKeyList)).then(() => (
+                                            <Result
+                                                style={{ marginTop: 100 }}
+                                                icon={<img alt='' src='/min-logo.png'/>}
+                                                title="欢迎来到TiliTili后台!"
+                                            />
+                                        )).endIf()}
+                                    </>).else(() => <>
+                                        <LoginModal onLogin={this.reqLogin} onRegister={this.reqRegister}/>
+                                    </>)}
+                                </Content>
+                                <Footer style={{backgroundColor: "white"}}>
+                                    <Row type="flex" justify="space-around" align="middle">
+                                        <Col>
+                                            <a href="http://beian.miit.gov.cn/" target="_Blank" rel="noopener noreferrer">浙ICP备2020037336号</a>
+                                        </Col>
+                                    </Row>
+                                </Footer>
+                            </Layout>
                         </Layout>
-                    </Layout>
                     )).endIf()}
                 </Layout>
             </HashRouter>

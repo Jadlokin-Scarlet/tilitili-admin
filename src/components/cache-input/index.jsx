@@ -38,11 +38,12 @@ export default class CacheInput extends Component {
     }
 
     render() {
-        const {placeholder, value, width} = this.props;
+        const {placeholder, value, width, size="small", disabled=false} = this.props;
         const {cacheValue, isEdit} = this.state;
         return (
             <Input
-                size="small"
+                disabled={disabled}
+                size={size}
                 allowClear
                 placeholder={placeholder}
                 value={isEdit? cacheValue: value}

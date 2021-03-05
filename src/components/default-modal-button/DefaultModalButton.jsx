@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Col, DatePicker, Form, Input, InputNumber, message, Row, Select} from "antd";
-import {defineProperty, emptyFunc, For, If, InputSelect, isNotNull, isNull, toString} from "../../utils/HtmlUtils";
+import {defineProperty, emptyFunc, For, If, InputSelect, isBlank, isNotNull, isNull} from "../../utils/HtmlUtils";
 import DragModal from "../drag-modal/DragModal";
 import {bilibiliVideoIframeUrlConverse} from "../../utils/BilibiliUtil";
 const { TextArea } = Input;
@@ -29,7 +29,7 @@ export default class DefaultModalButton extends Component {
             loading: false,
         }
         for (const config of this.props.formConfig || []) {
-            this.state[config.key] = config.value;
+            this.state[config.key] = config.value || null;
         }
     }
 
@@ -59,6 +59,7 @@ export default class DefaultModalButton extends Component {
             for (const config of formConfig) {
                 const selectedIndex = isNull(config.selectedIndex)? config.key: config.selectedIndex;
                 newState[config.key] = isNull(config.value)? selectedRow[selectedIndex]: config.value;
+                newState[config.key] = isBlank(newState[config.key])? null: newState[config.key];
             }
             this.showModal();
             this.setState(newState);
@@ -71,11 +72,18 @@ export default class DefaultModalButton extends Component {
         const { onSuccess=emptyFunc, formConfig=[] } = this.props;
         const params = {};
         for (const config of formConfig) {
-            if (config.submit !== false) {
+            const isTheGroup = isNull(config.groupBy) || For(config.groupBy).every((key, value) => this.state[key] === value);
+            if (config.submit !== false && isTheGroup) {
                 if (config.type === 'datePicker') {
                     if (isNotNull(params[config.key] = this.state[config.key])) {
                         params[config.key] = this.state[config.key].format('YYYY-MM-DD hh:mm:ss');
                     }
+                }else if(config.type === 'list') {
+                    for (const childConfig of config.childConfig) {
+                        params[childConfig.key + 'List'] = this.state[config.key].map(item => item[childConfig.key]);
+                    }
+                }else if (isNotNull(config.mode)) {
+                    params[config.key] = Array.isArray(this.state[config.key])? this.state[config.key].join(","): this.state[config.key]
                 }else {
                     params[config.key] = this.state[config.key];
                 }
@@ -110,7 +118,10 @@ export default class DefaultModalButton extends Component {
     }
 
     handleChange = state => {
-        this.setState(state)
+        const newState = For (state).then((key, value) => {
+            return isBlank(value)? null: value;
+        })
+        this.setState(newState)
     }
 
     render() {
@@ -147,40 +158,54 @@ export default class DefaultModalButton extends Component {
     }
 }
 
-export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, onChange=emptyFunc}) => (
+export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, size='default', onChange=emptyFunc, onSubmit=emptyFunc}) => (
     <Form labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} layout="horizontal" size='small'>
         <Row gutter={24}>
-            {For(formConfig).if(config => !config.hidden).then(({label,type,key,disabled,placeholder,resource,min,max,suffix,autoSize,col:itemCol=1}, index) => (
-                <Col span={24 * itemCol / col} key={index} style={{ display: index < formConfig.length ? 'block' : 'none' }}>
-                    <Form.Item label={label} key={index} style={formConfig.length > 5? {margin: 0}: {}}>
-                        {If(type === 'input').then(() => (
-                            <Input value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} suffix={suffix}/>
-                        )).elseIf(type === 'inputSelect').then(() => (
-                            <InputSelect resource={resources[resource]} value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}/>
-                        )).elseIf(type === 'select').then(() => (
-                            <Select value={toString(params[key])} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}>
-                                {For(resources[resource]).then((item, index) => (
-                                    <Select.Option key={index} value={toString(item.value)}>{item.text}</Select.Option>
-                                ))}
-                            </Select>
-                        )).elseIf(type === 'datePicker').then(() => (
-                            <DatePicker value={params[key]} showTime={true} onChange={value => onChange(defineProperty({}, key, value))} />
-                        )).elseIf(type === 'textArea').then(() => (
-                            <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} autoSize={autoSize}/>
-                        )).elseIf(type === 'inputNumber').then(() => (
-                            <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max} suffix={suffix}/>
-                        )).elseIf(type === 'bilibiliVideo' && isNotNull(params.av)).then(() => (
-                            <iframe src={bilibiliVideoIframeUrlConverse(params.av)}
-                                title="video"
-                                allowFullScreen="allowfullscreen"
-                                width="492"
-                                height={window.innerHeight * 492 / window.innerWidth}
-                                sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts">
-                            </iframe>
-                        )).endIf()}
-                    </Form.Item>
-                </Col>
-            ))}
+            {For(formConfig).if(config => !config.hidden).flatThen(config => (
+                If(config.type === 'list').then(() => (
+                    For (params[config.key]).flatThen((param, jndex) => (
+                        For (config.childConfig).then((config) => (
+                            converseToFormItem(config, param, resources, col, size, config.key + '-' + jndex + '-' + config.key, onChange, onSubmit)
+                        )).filter(isNotNull)
+                    ))
+                )).else(() => (
+                    converseToFormItem(config, params, resources, col, size, config.key, onChange, onSubmit)
+                ))
+            )).filter(isNotNull)}
         </Row>
     </Form>
+)
+
+const converseToFormItem = ({label,type,key,disabled,placeholder,resource,min,max,groupBy,mode,suffix,autoSize,col:itemCol=1}, params={}, resources={}, col=1, size='default', listKey=Math.random(), onChange=emptyFunc, onSubmit=emptyFunc) => (
+    If(isNull(groupBy) || For(groupBy).every((key, value) => params[key] === value)).then(() => (
+        <Col span={24 * itemCol / col} key={listKey}>
+            <Form.Item label={label} style={size === 'small'? {margin: 0}: {}}>
+                {If(type === 'input').then(() => (
+                    <Input value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} suffix={suffix}/>
+                )).elseIf(type === 'inputSelect').then(() => (
+                    <InputSelect resource={resources[resource]} value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}/>
+                )).elseIf(type === 'select').then(() => (
+                    <Select value={(params[key])} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))}>
+                        {For(resources[resource]).then((item, index) => (
+                            <Select.Option key={index} value={(item.value)}>{item.text}</Select.Option>
+                        ))}
+                    </Select>
+                )).elseIf(type === 'datePicker').then(() => (
+                    <DatePicker value={params[key]} showTime={true} onChange={value => onChange(defineProperty({}, key, value))} />
+                )).elseIf(type === 'textArea').then(() => (
+                    <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} autoSize={autoSize}/>
+                )).elseIf(type === 'inputNumber').then(() => (
+                    <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max} suffix={suffix}/>
+                )).elseIf(type === 'bilibiliVideo' && isNotNull(params.av)).then(() => (
+                    <iframe src={bilibiliVideoIframeUrlConverse(params.av)}
+                            title="video"
+                            allowFullScreen="allowfullscreen"
+                            width="492"
+                            height={window.innerHeight * 492 / window.innerWidth}
+                            sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts">
+                    </iframe>
+                )).endIf()}
+            </Form.Item>
+        </Col>
+    )).endIf()
 )

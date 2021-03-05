@@ -172,6 +172,9 @@ class ForArray {
         this.list = this.list.filter(filterFun)
         return this;
     }
+    flatThen(mapFun) {
+        return this.list.flatMap(mapFun);
+    }
 }
 
 class ForObject {
@@ -194,6 +197,13 @@ class ForObject {
         }
         this.object = tmp;
         return this;
+    }
+    every(fun) {
+        let answer = true
+        for (const key of Object.keys(this.object)) {
+            answer &= fun(key, this.object[key]);
+        }
+        return answer;
     }
 }
 

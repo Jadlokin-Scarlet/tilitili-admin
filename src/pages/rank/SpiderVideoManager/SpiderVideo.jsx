@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import SimpleModalButton from "../../../components/simple-modal-button";
 import {Form, Input, message, Select} from "antd";
-import {emptyFunc, For, If, isBlank, isNotNull} from "../../../utils/HtmlUtils";
+import {emptyFunc, For, If, isBlank, isNotBlank, isNotNull} from "../../../utils/HtmlUtils";
 import {bvToAv} from "../../../utils/BilibiliUtil";
 import {spiderVideo} from "../../../api";
 
@@ -20,6 +20,10 @@ export default class SpiderVideo extends Component{
     spiderVideo = async () => {
         const { onSuccess=emptyFunc } = this.props;
         let { choose, av, bv, url, reason } = this.state;
+
+        if (isNotBlank(url) && url.includes("?")) {
+            url = url.split("?")[0];
+        }
 
         if (choose === "av" && isNotNull(av)) {
             if (isNaN(Number(av))) {

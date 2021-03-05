@@ -12,6 +12,7 @@ import TopTagCount from "../pages/data/TopTagCount";
 import VideoDataCount from "../pages/data/VideoDataCount";
 import RecommendPoolManager from "../pages/recommend/RecommendPoolManager";
 import UseRecommendManager from "../pages/recommend/UseRecommendManager";
+import RecommendVideoManager from "../pages/recommend/RecommendVIdeoManager";
 
 export const menuList = [
     {key: "/rank", title: "排行榜后台", children: [
@@ -25,6 +26,7 @@ export const menuList = [
     {key: "/recommend", title: "推荐刊后台", children: [
         { title: "推荐池", key: "/recommend/RecommendPoolManager", icon: "funnel-plot", component: RecommendPoolManager},
         { title: "推荐归档", key: "/recommend/UseRecommendManager", icon: "folder-open", component: UseRecommendManager},
+        { title: "推荐刊配置", key: "/recommend/RecommendVideoManager", icon: "play-square", component: RecommendVideoManager}
     ]},
     {key: "/tilitili", title: "视频站后台", children: [
         { title: "作者管理", key: "/tilitili/ownerManager", icon: "user", component: OwnerManager},
