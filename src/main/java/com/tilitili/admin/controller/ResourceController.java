@@ -3,7 +3,7 @@ package com.tilitili.admin.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.service.VideoDataFileService;
-import com.tilitili.common.entity.Resource;
+import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;

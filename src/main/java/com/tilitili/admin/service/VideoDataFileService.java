@@ -26,7 +26,7 @@ public class VideoDataFileService {
     }
 
     public List<VideoDataFileItem> listForDataFile(VideoDataQuery videoDataQuery) {
-        videoDataQuery.setIsDelete(false).setStatus(0);
+        videoDataQuery.setHasRank(true);
         videoDataQuery.setSorter("point", "desc");
         return videoDataManager.list(videoDataQuery).parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();

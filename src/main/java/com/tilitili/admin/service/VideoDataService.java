@@ -1,7 +1,7 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.count.sub.VideoDataAddCount;
-import com.tilitili.common.entity.Resource;
+import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.VideoDataGroup;
 import com.tilitili.common.entity.query.VideoDataQuery;
