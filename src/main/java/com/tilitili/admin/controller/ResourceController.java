@@ -1,14 +1,20 @@
 package com.tilitili.admin.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
+import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.VideoDataFileService;
+import com.tilitili.common.entity.Recommend;
+import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.mapper.RecommendVideoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,11 +33,15 @@ public class ResourceController extends BaseController {
 
     private final ResourceService resourceService;
     private final VideoDataFileService videoDataFileService;
+    private final RecommendService recommendService;
+    private final RecommendVideoMapper recommendVideoMapper;
 
     @Autowired
-    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService) {
+    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendVideoMapper recommendVideoMapper) {
         this.resourceService = resourceService;
         this.videoDataFileService = videoDataFileService;
+        this.recommendService = recommendService;
+        this.recommendVideoMapper = recommendVideoMapper;
     }
 
     @GetMapping("")
@@ -68,6 +78,17 @@ public class ResourceController extends BaseController {
     public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
         List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
         return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
+    }
+
+    @GetMapping("/recommend")
+    @ResponseBody
+    public BaseModel getRecommend(RecommendQuery query) {
+        if (query.getIssueId() == null) {
+            RecommendVideo recommendVideo = recommendVideoMapper.getNew();
+            query.setIssueId(recommendVideo.getId());
+        }
+        List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
+        return PageModel.of(recommendList.size(), query.getPageSize(), Math.min(query.getCurrent(), recommendList.size()), recommendList);
     }
 
     @PatchMapping("/flag")

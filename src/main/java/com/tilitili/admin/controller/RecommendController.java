@@ -4,6 +4,7 @@ import com.tilitili.admin.service.RecommendService;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
@@ -123,6 +124,9 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel useRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
+
+        VideoInfo videoInfo = videoInfoMapper.getByAv(recommend.getAv());
+        Asserts.notNull(videoInfo, "视频信息", "请发起爬取");
 
         RecommendVideo recommendVideo = recommendVideoMapper.getNew();
 

@@ -6,6 +6,7 @@ import com.tilitili.common.entity.query.RecommendVideoQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.RecommendVideoMapper;
+import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +39,18 @@ public class RecommendVideoController extends BaseController {
         recommendVideoMapper.insert(recommendVideo);
         return BaseModel.success();
     }
+
+    @PatchMapping("")
+    @ResponseBody
+    public BaseModel updateRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
+        Asserts.notNull(recommendVideo.getId(), "id");
+        RecommendVideo newVideo = recommendVideoMapper.getNew();
+        Asserts.checkEquals(recommendVideo.getId(), newVideo.getId(), "只有最新一期可以编辑");
+        if (recommendVideo.getType() == 1) {
+            recommendVideo.setIssue(-1);
+        }
+        recommendVideoMapper.update(recommendVideo);
+        return BaseModel.success();
+    }
+
 }

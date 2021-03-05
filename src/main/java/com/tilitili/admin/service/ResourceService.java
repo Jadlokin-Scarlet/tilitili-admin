@@ -1,9 +1,12 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.common.emnus.*;
+import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.ResourcesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
