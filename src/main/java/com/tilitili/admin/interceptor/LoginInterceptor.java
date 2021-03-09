@@ -54,6 +54,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
+        if (oldAdmin.getType() == 2 && ! HttpMethod.GET.matches(method)) {
+            this.returnResp(response,new BaseModel("暂无权限"));
+            return false;
+        }
+
         return true;
     }
 

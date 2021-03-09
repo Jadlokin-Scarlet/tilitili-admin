@@ -35,16 +35,6 @@ public class RecommendService {
 
     public List<Recommend> list(RecommendQuery query) {
         return recommendMapper.list(query).parallelStream().peek(recommend -> {
-            VideoInfo videoInfo = videoInfoMapper.getByAv(recommend.getAv());
-            if (videoInfo != null) {
-                BeanUtils.copyProperties(videoInfo, recommend);
-                if (videoInfo.getStatus() != 0) {
-                    List<Task> taskList = taskMapper.list(new TaskQuery().setValue(videoInfo.getAv().toString()));
-                    Task task = taskList.get(taskList.size() - 1);
-                    recommend.setName(task.getRemark());
-                }
-            }
-
             if (recommend.getIssueId() != null) {
                 RecommendVideo recommendVideo = recommendVideoMapper.getById(recommend.getIssueId());
                 recommend.setIssueName(recommendVideo.getName());
@@ -60,12 +50,10 @@ public class RecommendService {
             String text = recommend.getText();
             Integer startTime = recommend.getStartTime();
 
-            VideoInfo videoInfo = videoInfoMapper.getByAv(recommend.getAv());
-
-            String name = videoInfo.getName();
-            String owner = videoInfo.getOwner();
-            String externalOwner = videoInfo.getExternalOwner();
-            String type = videoInfo.getType();
+            String name = recommend.getName();
+            String owner = recommend.getOwner();
+            String externalOwner = recommend.getExternalOwner();
+            String type = recommend.getType();
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAvStr(av.toString());
