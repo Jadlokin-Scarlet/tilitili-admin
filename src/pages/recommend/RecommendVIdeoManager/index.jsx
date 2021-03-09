@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import DefaultTable from "../../../components/default-table";
 import {getRecommendVideoByCondition} from "../../../api";
 import AddRecommendVideo from "./AddRecommendVideo";
+import UpdateRecommendVideo from "./UpdateRecommendVideo";
 
 export default class RecommendVideoManager extends Component {
     columnsConfig = [
@@ -15,9 +16,11 @@ export default class RecommendVideoManager extends Component {
 
     handleButtonsInit = (that) => {
         const { state, handleUpdated } = that
-        const { resources } = state
+        const { resources, selectedRows } = state
+        const selectedRow = selectedRows[0] || {};
         return <>
             <AddRecommendVideo resources={resources} onSuccess={handleUpdated}/>
+            <UpdateRecommendVideo resources={resources} selectedRow={selectedRow} onSuccess={handleUpdated}/>
         </>
     }
 

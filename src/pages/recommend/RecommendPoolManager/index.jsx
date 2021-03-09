@@ -20,6 +20,7 @@ export default class RecommendPoolManager extends Component {
         {title: '视频类型', key: 'type', width: 130, ellipsis: true},
         {title: '投稿时间', key: 'pubTime', width: 180},
         {title: '推荐时间', key: 'createTime', width: 180},
+        {title: '视频状态', key: 'videoStatus', width: 100, type: 'choose', chooseMap: 'videoStatusList'},
     ];
 
     handleButtonsInit = (that) => {
@@ -37,6 +38,7 @@ export default class RecommendPoolManager extends Component {
         )
     }
     handleResourcesInit = () => ({
+        videoStatusList: [{value: 0, text: '正常', renderHidden: true}, {value: 62002, text: '稿件不可见'}, {value: -404, text: '啥都木有'}],
         // statusList: [{text: '正常', value: 0, renderHidden: true}, {text: '废弃', value: -1}, {text: '已使用', value: 1}],
     })
 
@@ -46,6 +48,7 @@ export default class RecommendPoolManager extends Component {
                 needResourcesList={['recommendIssueResource']}
                 defaultPageSize={20}
                 defaultSorter={{field: 'id', order: 'descend'}}
+                defaultFilters={{videoStatus: [0]}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
                 getDataApi={getRecommendPoolByCondition}

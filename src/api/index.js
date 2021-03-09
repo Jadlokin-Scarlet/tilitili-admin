@@ -85,3 +85,4 @@ export const addRecommendToNow = data => post('/recommend', data);
 //推荐刊配置
 export const getRecommendVideoByCondition = data => get('/recommendVideo', data)
 export const addRecommendVideo = data => post('/recommendVideo', data)
+export const updateRecommendVideo = data => patch('/recommendVideo', data);
