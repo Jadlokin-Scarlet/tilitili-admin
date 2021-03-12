@@ -76,6 +76,12 @@ public class RecommendController extends BaseController {
         Recommend oldRecommend = recommendMapper.getByAv(recommend.getAv());
         Asserts.checkNull(oldRecommend, "该视频推荐已存在");
 
+        if (recommend.getIssue() != null) {
+            RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
+            recommend.setIssueId(recommendVideo.getId());
+            recommend.setStatus(1);
+        }
+
         recommendMapper.insert(recommend);
         return new BaseModel("推荐成功",true);
     }
@@ -125,7 +131,10 @@ public class RecommendController extends BaseController {
     public BaseModel useRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
 
-        VideoInfo videoInfo = videoInfoMapper.getByAv(recommend.getAv());
+        Recommend oldRecommend = recommendMapper.getById(recommend.getId());
+        Asserts.notNull(oldRecommend, "推荐信息");
+
+        VideoInfo videoInfo = videoInfoMapper.getByAv(oldRecommend.getAv());
         Asserts.notNull(videoInfo, "视频信息", "请发起爬取");
 
         RecommendVideo recommendVideo = recommendVideoMapper.getNew();
