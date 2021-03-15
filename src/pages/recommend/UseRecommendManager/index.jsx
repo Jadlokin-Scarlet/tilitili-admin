@@ -8,6 +8,12 @@ import UnUseRecommend from "./UnUseRecommend";
 import {dateFormat} from "../../../utils/HtmlUtils";
 
 export default class UseRecommendManager extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            defaultFilters: {},
+        }
+    }
     columnsConfig = [
         {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
         {title: '所在刊', key: 'issueId', width: 150, ellipsis: true, type: 'choose', chooseMap: 'recommendIssueResource'},
@@ -18,9 +24,17 @@ export default class UseRecommendManager extends Component {
         {title: '投稿时间', key: 'pubTime', width: 180},
         {title: '视频类型', key: 'type', width: 130, ellipsis: true},
         {title: '推荐语', key: 'text', width: 300, ellipsis: true},
-        {title: '选区', key: 'startTime', width: 100, afterRender: dateFormat},
+        {title: '选区开始', key: 'startTime', width: 100, afterRender: dateFormat},
+        {title: '选区结束', key: 'endTime', width: 100, afterRender: dateFormat},
+        {title: '排序值', key: 'sortNum', width: 65},
         {title: '推荐时间', key: 'createTime', width: 180},
     ];
+
+    handleResourceLoaded = (resources, callback) => {
+        const { recommendIssueResource } = resources;
+        const newIssue = Math.max(...recommendIssueResource.map(resources => resources.value));
+        this.setState({defaultFilters: Object.assign({issueId: [newIssue]}, this.state.defaultFilters)}, callback)
+    }
 
     handleButtonsInit = (that) => {
         const { state, handleUpdated } = that
@@ -43,11 +57,13 @@ export default class UseRecommendManager extends Component {
         return (
             <DefaultTable
                 needResourcesList={['recommendIssueResource']}
+                defaultFilters={this.state.defaultFilters}
                 defaultPageSize={20}
-                defaultSorter={{field: 'id', order: 'descend'}}
+                defaultSorter={{field: 'sortNum', order: 'descend'}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
                 getDataApi={getUseRecommendByCondition}
+                onResourceLoaded={this.handleResourceLoaded}
                 onButtonsInit={this.handleButtonsInit}
                 onResourcesInit={this.handleResourcesInit}
             />

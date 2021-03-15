@@ -176,7 +176,7 @@ export const converseToForm = ({formConfig=[], params={}, resources={}, col=1, s
     </Form>
 )
 
-const converseToFormItem = ({label,type,key,disabled,placeholder,resource,min,max,groupBy,mode,suffix,autoSize,col:itemCol=1}, params={}, resources={}, col=1, size='default', listKey=Math.random(), onChange=emptyFunc, onSubmit=emptyFunc) => (
+const converseToFormItem = ({label,type,key,disabled,placeholder,resource,min,max,groupBy,mode,suffix,autoSize,col:itemCol=1,render}, params={}, resources={}, col=1, size='default', listKey=Math.random(), onChange=emptyFunc, onSubmit=emptyFunc) => (
     If(isNull(groupBy) || For(groupBy).every((key, value) => params[key] === value)).then(() => (
         <Col span={24 * itemCol / col} key={listKey}>
             <Form.Item label={label} style={size === 'small'? {margin: 0}: {}}>
@@ -196,6 +196,8 @@ const converseToFormItem = ({label,type,key,disabled,placeholder,resource,min,ma
                     <TextArea value={params[key]} disabled={disabled} onChange={e => onChange(defineProperty({}, key, e.target.value))} placeholder={placeholder} autoSize={autoSize}/>
                 )).elseIf(type === 'inputNumber').then(() => (
                     <InputNumber value={params[key]} disabled={disabled} onChange={value => onChange(defineProperty({}, key, value))} placeholder={placeholder} min={min} max={max} suffix={suffix}/>
+                )).elseIf(type === 'inputGroup').then(() => (
+                    render(params[key], value => onChange(defineProperty({}, key, value)))
                 )).elseIf(type === 'bilibiliVideo' && isNotNull(params.av)).then(() => (
                     <iframe src={bilibiliVideoIframeUrlConverse(params.av)}
                             title="video"
