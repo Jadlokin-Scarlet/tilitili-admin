@@ -13,7 +13,7 @@ export default class UpdateRecommend extends Component {
                 title='编辑'
                 value='编辑'
                 disabled={isEmptyObject(this.props.selectedRow)}
-                formConfig={this.state.formConfig}
+                formConfig={this.formConfig}
                 updateApi={updateRecommend}
             />
         )
