@@ -5,6 +5,7 @@ import com.tilitili.admin.controller.BatchTaskController;
 import com.tilitili.common.emnus.TaskType;
 import com.tilitili.common.entity.BatchTask;
 import com.tilitili.common.entity.query.BatchTaskQuery;
+import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.BatchTaskMapper;
 import junit.framework.TestCase;
@@ -40,7 +41,7 @@ class BatchTaskServiceTest extends TestCase {
     void api() {
         int count = batchTaskMapper.count(batchTaskQuery);
         List<BatchTask> batchTaskList = batchTaskService.list(batchTaskQuery);
-        new PageModel<>(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
+        PageModel.of(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
     }
 
     @Test
@@ -56,7 +57,7 @@ class BatchTaskServiceTest extends TestCase {
     @Test
     void of() {
         long a = System.currentTimeMillis();
-        PageModel<Object> objectPageModel = new PageModel<>(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
+        BaseModel objectPageModel = PageModel.of(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
         long b = System.currentTimeMillis();
         System.out.println(b-a);
     }

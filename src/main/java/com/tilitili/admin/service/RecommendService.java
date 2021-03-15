@@ -49,21 +49,29 @@ public class RecommendService {
             String operator = recommend.getOperator();
             String text = recommend.getText();
             Integer startTime = recommend.getStartTime();
+            Integer endTime = recommend.getEndTime();
 
             String name = recommend.getName();
             String owner = recommend.getOwner();
             String externalOwner = recommend.getExternalOwner();
             String type = recommend.getType();
+            String pubTime = recommend.getPubTime();
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
+            recommendFileItem.setAv(av);
+            recommendFileItem.setStartTime(startTime);
+            recommendFileItem.setEndTime(endTime);
+
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
             recommendFileItem.setOperatorStr(operator);
             recommendFileItem.setTextStr(text);
-            recommendFileItem.setStartTime(startTime);
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(type);
+            if (pubTime != null) {
+                recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
+            }
             return recommendFileItem;
         }).collect(Collectors.toList());
     }

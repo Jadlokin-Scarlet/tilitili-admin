@@ -4,7 +4,6 @@ import com.tilitili.admin.entity.count.VideoInfoCountRequest;
 import com.tilitili.admin.entity.count.sub.NewVideoCount;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.VideoInfo;
-import com.tilitili.common.entity.dto.VideoInfoGroup;
 import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.manager.VideoInfoManager;
@@ -12,7 +11,6 @@ import com.tilitili.common.mapper.VideoInfoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;

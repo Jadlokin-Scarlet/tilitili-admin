@@ -1,12 +1,11 @@
 package com.tilitili.admin.service;
 
-import com.tilitili.admin.entity.RecommendFileItem;
+import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.common.emnus.*;
-import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.manager.VideoDataManager;
-import com.tilitili.common.mapper.RecommendMapper;
+import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.mapper.ResourcesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,15 @@ import java.util.function.Supplier;
 public class ResourceService {
     private final ResourcesMapper resourcesMapper;
     private final VideoDataManager videoDataManager;
+    private final RecommendVideoMapper recommendVideoMapper;
 
     private final Map<String, Supplier<List<Resource>>> resourceMap = new HashMap<>();
 
     @Autowired
-    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, VideoDataManager videoDataManager, RecommendVideoService recommendVideoService) {
+    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, VideoDataManager videoDataManager, RecommendVideoService recommendVideoService, RecommendVideoMapper recommendVideoMapper) {
         this.resourcesMapper = resourcesMapper;
         this.videoDataManager = videoDataManager;
+        this.recommendVideoMapper = recommendVideoMapper;
         resourceMap.put("videoTypeResource", typeService::getTypeResource);
         resourceMap.put("videoIssueResource", videoDataService::getIssueResource);
         resourceMap.put("TaskTypeResource", TaskType::getResource);
@@ -56,6 +57,12 @@ public class ResourceService {
         view.setMusicSource(resourcesMapper.getValueByType(ResourcesType.MUSIC_SOURCE.value));
         view.setMarkTime(getMarkTime());
         view.setV(videoDataManager.getNewIssue().toString());
+        return view;
+    }
+
+    public DispatchRecommendResourcesView getRecommendFlagResources() {
+        DispatchRecommendResourcesView view = new DispatchRecommendResourcesView();
+        view.setV(recommendVideoMapper.getNew().getId());
         return view;
     }
 

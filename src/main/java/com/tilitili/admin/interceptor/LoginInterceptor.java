@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.mapper.AdminMapper;
+import com.tilitili.common.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (url.contains("/admin") || (url.contains("/resources") && HttpMethod.GET.matches(method))) {
             return true;
         }
+        if (url.contains("error") || url.contains("ico")) {
+            return true;
+        }
 
         //未登录
         if (admin == null){
@@ -58,6 +62,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             this.returnResp(response,new BaseModel("暂无权限"));
             return false;
         }
+
+//        if (! HttpMethod.GET.matches(method)) {
+//            Log.info("request %s %s params: %s", method, request.getRequestURL(), request.());
+//        }
 
         return true;
     }

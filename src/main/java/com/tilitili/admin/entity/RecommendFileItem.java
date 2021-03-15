@@ -8,11 +8,12 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class RecommendFileItem {
-//    private Long av;
+    private Long av;
 //    private String name;
 //    private String operator;
 //    private String text;
     private Integer startTime;
+    private Integer endTime;
 //    private String owner;
 //    private String externalOwner;
 //    private String type;
@@ -24,4 +25,5 @@ public class RecommendFileItem {
     private String ownerStr;
     private String externalOwnerStr;
     private String typeStr;
+    private String pubTimeStr;
 }

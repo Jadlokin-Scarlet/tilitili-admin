@@ -1,11 +1,11 @@
 package com.tilitili.admin.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.VideoDataFileService;
-import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.resource.Resource;
@@ -14,6 +14,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,15 @@ public class ResourceController extends BaseController {
     private final ResourceService resourceService;
     private final VideoDataFileService videoDataFileService;
     private final RecommendService recommendService;
+    private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
 
     @Autowired
-    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendVideoMapper recommendVideoMapper) {
+    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper) {
         this.resourceService = resourceService;
         this.videoDataFileService = videoDataFileService;
         this.recommendService = recommendService;
+        this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
     }
 
@@ -62,6 +65,13 @@ public class ResourceController extends BaseController {
         flagResource.setMusicOwner("社团: " + flagResource.getMusicOwner());
         flagResource.setMusicCard("专辑: " + flagResource.getMusicCard());
         flagResource.setMusicSource("原曲: " + flagResource.getMusicSource());
+        return new BaseModel("success", true, flagResource);
+    }
+
+    @GetMapping("/recommendFlag")
+    @ResponseBody
+    public BaseModel getRecommendFlag() {
+        DispatchRecommendResourcesView flagResource = resourceService.getRecommendFlagResources();
         return new BaseModel("success", true, flagResource);
     }
 
@@ -87,8 +97,11 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
+        query.setStatus(1);
+        query.setSorter("sort_num", "desc");
+        int total = recommendMapper.count(query);
         List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
-        return PageModel.of(recommendList.size(), query.getPageSize(), Math.min(query.getCurrent(), recommendList.size()), recommendList);
+        return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
     @PatchMapping("/flag")
