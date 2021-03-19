@@ -34,7 +34,7 @@ public class RecommendVideoService {
     }
 
     public List<Resource> listIssue() {
-        List<RecommendVideo> recommendVideoList = recommendVideoMapper.list(new RecommendVideoQuery().setStatus(0));
+        List<RecommendVideo> recommendVideoList = recommendVideoMapper.list(new RecommendVideoQuery().setStatus(0).setPageSize(1000));
         return recommendVideoList.stream().filter(Objects::nonNull).map(RecommendVideoIssueResource::new).collect(Collectors.toList());
     }
 }

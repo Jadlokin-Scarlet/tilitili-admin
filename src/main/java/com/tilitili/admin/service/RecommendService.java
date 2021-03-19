@@ -54,7 +54,7 @@ public class RecommendService {
             String name = recommend.getName();
             String owner = recommend.getOwner();
             String externalOwner = recommend.getExternalOwner();
-            String type = recommend.getType();
+            String videoType = recommend.getVideoType();
             String pubTime = recommend.getPubTime();
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
@@ -68,7 +68,7 @@ public class RecommendService {
             recommendFileItem.setTextStr(text);
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
-            recommendFileItem.setTypeStr(type);
+            recommendFileItem.setTypeStr(videoType);
             if (pubTime != null) {
                 recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
             }

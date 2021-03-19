@@ -45,6 +45,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
+        query.setType(0);
         query.setStatus(1);
         int count = recommendMapper.count(query);
         List<Recommend> recommendList = recommendService.list(query);
@@ -55,6 +56,29 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel getRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
+        query.setType(0);
+        query.setStatus(0);
+        int count = recommendMapper.count(query);
+        List<Recommend> recommendList = recommendService.list(query);
+        return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/self")
+    @ResponseBody
+    public BaseModel getRecommendSelfByCondition(RecommendQuery query) {
+        Asserts.notNull(query, "参数");
+        query.setType(1);
+        query.setStatus(1);
+        int count = recommendMapper.count(query);
+        List<Recommend> recommendList = recommendService.list(query);
+        return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/selfPool")
+    @ResponseBody
+    public BaseModel getRecommendSelfPoolByCondition(RecommendQuery query) {
+        Asserts.notNull(query, "参数");
+        query.setType(1);
         query.setStatus(0);
         int count = recommendMapper.count(query);
         List<Recommend> recommendList = recommendService.list(query);
@@ -71,7 +95,7 @@ public class RecommendController extends BaseController {
         Asserts.notNull(recommend.getAv(), "av号");
         Asserts.notNull(admin.getUserName(), "操作人");
 
-        recommend.setOperator(admin.getUserName());
+//        recommend.setOperator(admin.getUserName());
 
         Recommend oldRecommend = recommendMapper.getByAv(recommend.getAv());
         Asserts.checkNull(oldRecommend, "该视频推荐已存在");
@@ -79,6 +103,9 @@ public class RecommendController extends BaseController {
         if (recommend.getIssue() != null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
             recommend.setIssueId(recommendVideo.getId());
+        }
+
+        if (recommend.getIssueId() != null) {
             recommend.setStatus(1);
         }
 
@@ -114,8 +141,6 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel unUseRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
-
-        RecommendVideo recommendVideo = recommendVideoMapper.getNew();
 
         Recommend updateRecommend = new Recommend();
         updateRecommend.setId(recommend.getId());
