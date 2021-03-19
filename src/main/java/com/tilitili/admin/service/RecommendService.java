@@ -75,4 +75,17 @@ public class RecommendService {
             return recommendFileItem;
         }).collect(Collectors.toList());
     }
+
+    public void unUseRecommend(Long id) {
+        Recommend recommend = recommendMapper.getById(id);
+        if (recommend == null || recommend.getStatus() == -1) {
+            return;
+        }
+
+        Recommend updateRecommend = new Recommend();
+        updateRecommend.setId(id);
+        updateRecommend.setStatus(0);
+        updateRecommend.setIssueId(-1);
+        recommendMapper.update(updateRecommend);
+    }
 }

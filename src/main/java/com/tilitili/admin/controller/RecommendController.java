@@ -145,13 +145,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel unUseRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
-
-        Recommend updateRecommend = new Recommend();
-        updateRecommend.setId(recommend.getId());
-        updateRecommend.setStatus(0);
-        updateRecommend.setIssueId(-1);
-        recommendMapper.update(updateRecommend);
-
+        recommendService.unUseRecommend(recommend.getId());
         return new BaseModel("使用成功",true);
     }
 

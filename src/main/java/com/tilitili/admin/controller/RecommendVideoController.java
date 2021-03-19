@@ -1,10 +1,14 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.RecommendVideoService;
+import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.query.RecommendVideoQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +20,15 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/recommendVideo")
 public class RecommendVideoController extends BaseController {
+    private final RecommendMapper recommendMapper;
+    private final RecommendService recommendService;
     private final RecommendVideoMapper recommendVideoMapper;
     private final RecommendVideoService recommendVideoService;
 
     @Autowired
-    public RecommendVideoController(RecommendVideoMapper recommendVideoMapper, RecommendVideoService recommendVideoService) {
+    public RecommendVideoController(RecommendMapper recommendMapper, RecommendService recommendService, RecommendVideoMapper recommendVideoMapper, RecommendVideoService recommendVideoService) {
+        this.recommendMapper = recommendMapper;
+        this.recommendService = recommendService;
         this.recommendVideoMapper = recommendVideoMapper;
         this.recommendVideoService = recommendVideoService;
     }
@@ -48,6 +56,13 @@ public class RecommendVideoController extends BaseController {
         Asserts.checkEquals(recommendVideo.getId(), newVideo.getId(), "只有最新一期可以编辑");
         if (recommendVideo.getType() == 1) {
             recommendVideo.setIssue(-1);
+        }
+        if (recommendVideo.getStatus() == -1) {
+            RecommendQuery recommendQuery = new RecommendQuery().setIssueId(recommendVideo.getId()).setStatus(0);
+            List<Recommend> recommendList = recommendMapper.list(recommendQuery);
+            for (Recommend recommend : recommendList) {
+                recommendService.unUseRecommend(recommend.getId());
+            }
         }
         recommendVideoMapper.update(recommendVideo);
         return BaseModel.success();
