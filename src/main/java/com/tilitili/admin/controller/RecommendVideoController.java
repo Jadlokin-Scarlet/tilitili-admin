@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/api/recommendVideo")
@@ -54,11 +55,11 @@ public class RecommendVideoController extends BaseController {
         Asserts.notNull(recommendVideo.getId(), "id");
         RecommendVideo newVideo = recommendVideoMapper.getNew();
         Asserts.checkEquals(recommendVideo.getId(), newVideo.getId(), "只有最新一期可以编辑");
-        if (recommendVideo.getType() == 1) {
+        if (Objects.equals(recommendVideo.getType(), 1)) {
             recommendVideo.setIssue(-1);
         }
-        if (recommendVideo.getStatus() == -1) {
-            RecommendQuery recommendQuery = new RecommendQuery().setIssueId(recommendVideo.getId()).setStatus(0);
+        if (Objects.equals(recommendVideo.getStatus(), -1)) {
+            RecommendQuery recommendQuery = new RecommendQuery().setIssueId(recommendVideo.getId()).setStatus(1);
             List<Recommend> recommendList = recommendMapper.list(recommendQuery);
             for (Recommend recommend : recommendList) {
                 recommendService.unUseRecommend(recommend.getId());
