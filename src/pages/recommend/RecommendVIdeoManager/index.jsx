@@ -3,6 +3,7 @@ import DefaultTable from "../../../components/default-table";
 import {getRecommendVideoByCondition} from "../../../api";
 import AddRecommendVideo from "./AddRecommendVideo";
 import UpdateRecommendVideo from "./UpdateRecommendVideo";
+import UpdateDeleteRecommendVideo from "./UpdateDeleteRecommendVideo";
 
 export default class RecommendVideoManager extends Component {
     columnsConfig = [
@@ -20,6 +21,7 @@ export default class RecommendVideoManager extends Component {
         const { resources, selectedRows } = state
         const selectedRow = selectedRows[0] || {};
         return <>
+            <UpdateDeleteRecommendVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
             <AddRecommendVideo resources={resources} onSuccess={handleUpdated}/>
             <UpdateRecommendVideo resources={resources} selectedRow={selectedRow} onSuccess={handleUpdated}/>
         </>
