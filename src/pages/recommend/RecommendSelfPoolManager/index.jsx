@@ -2,6 +2,11 @@ import React, {Component} from "react";
 import {dateFormat} from "../../../utils/HtmlUtils";
 import DefaultTable from "../../../components/default-table";
 import {getRecommendSelfPoolByCondition} from "../../../api";
+import UpdateRecommend from "./UpdateRecommend";
+import SpiderVideo from "./SpiderVideo";
+import RecommendVideo from "./RecommendVideo";
+import DeleteRecommend from "./DeleteRecommend";
+import UseRecommend from "./UseRecommend";
 
 export default class RecommendSelfPoolManager extends Component {
     columnsConfig = [
@@ -25,6 +30,11 @@ export default class RecommendSelfPoolManager extends Component {
         const selectedRow = selectedRows[0] || {};
         return (
             <>
+                <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <RecommendVideo onSuccess={handleUpdated}/>
+                <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
             </>
         )
     }

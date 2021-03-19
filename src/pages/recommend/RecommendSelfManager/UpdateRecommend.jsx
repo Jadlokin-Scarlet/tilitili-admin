@@ -1,25 +1,20 @@
 import React, {Component} from "react";
 import DefaultModalButton from "../../../components/default-modal-button/DefaultModalButton";
-import {addRecommend} from "../../../api";
+import {updateRecommend} from "../../../api";
+import {isEmptyObject} from "../../../utils/HtmlUtils";
 import {Input, InputNumber} from "antd";
 
-
-export default class RecommendSelfVideoToNow extends Component {
+export default class UpdateRecommend extends Component {
     render() {
-        const {resources} = this.props;
-        const {recommendIssueResource=[]} = resources;
-        const issueId = recommendIssueResource[0]?.value;
-        const name = recommendIssueResource[0]?.text;
-        const selectedRow = {issueId}
         return (
             <DefaultModalButton
                 {...this.props}
                 col={2}
-                title={`推荐视频至 ${name}`}
-                value='推荐视频'
+                title='编辑'
+                value='编辑'
+                disabled={isEmptyObject(this.props.selectedRow)}
                 formConfig={this.formConfig}
-                selectedRow={selectedRow}
-                updateApi={addRecommend}
+                updateApi={updateRecommend}
             />
         )
     }
@@ -42,13 +37,13 @@ export default class RecommendSelfVideoToNow extends Component {
     }
 
     formConfig = [
-        {label: 'issueId', key: 'issueId', type: 'select', resource: 'recommendIssueResource'},
-        {key: 'type', value: 1, hidden: true},
-        {label: 'av*', key: 'av', type: 'input', groupBy: {bv: null}},
-        {label: 'bv*', key: 'bv', type: 'input', groupBy: {av: null}},
-        {label: '开始展示时间', key: 'startTime', type: 'inputGroup', value: 0, render: this.timeRender},
-        {label: '结束展示时间', key: 'endTime', type: 'inputGroup', value: 0, render: this.timeRender},
+        {key: 'id', hidden: true},
+        {label: 'av号', key: 'av', type: 'input', disable: true},
+        {label: '推荐人', key: 'operator', type: 'input'},
+        {label: '开始展示时间', key: 'startTime', type: 'inputGroup', render: this.timeRender},
+        {label: '结束展示时间', key: 'endTime', type: 'inputGroup', render: this.timeRender},
         {label: '原作者', key: 'externalOwner', type: 'input'},
-        {label: '推荐语*', key: 'text', type: 'textArea', col: 2, autoSize: {minRows: 5}},
-    ];
+        {label: '排序值', key: 'sortNum', type: 'inputNumber'},
+        {label: '推荐语', key: 'text', type: 'textArea', col: 2, autoSize: {minRows: 5}}
+    ]
 }

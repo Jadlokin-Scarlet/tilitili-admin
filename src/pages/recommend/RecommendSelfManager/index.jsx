@@ -3,7 +3,9 @@ import {dateFormat} from "../../../utils/HtmlUtils";
 import DefaultTable from "../../../components/default-table";
 import {getRecommendSelfByCondition} from "../../../api";
 import SpiderVideo from "./SpiderVideo";
-import RecommendSelfVideoToNow from "./RecommendSelfVideoToNow";
+import RecommendVideoToNow from "./RecommendVideoToNow";
+import UnUseRecommend from "./UnUseRecommend";
+import UpdateRecommend from "./UpdateRecommend";
 
 export default class RecommendSelfManager extends Component {
     constructor(props) {
@@ -40,8 +42,10 @@ export default class RecommendSelfManager extends Component {
         const selectedRow = selectedRows[0] || {};
         return (
             <>
-                <RecommendSelfVideoToNow resources={resources} onSuccess={handleUpdated}/>
+                <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <RecommendVideoToNow resources={resources} onSuccess={handleUpdated}/>
+                <UnUseRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
             </>
         )
     }
