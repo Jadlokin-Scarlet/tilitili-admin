@@ -95,10 +95,14 @@ public class RecommendController extends BaseController {
         Asserts.notNull(recommend.getAv(), "av号");
         Asserts.notNull(admin.getUserName(), "操作人");
 
-//        recommend.setOperator(admin.getUserName());
+        recommend.setOperator(admin.getUserName());
 
         Recommend oldRecommend = recommendMapper.getByAv(recommend.getAv());
         Asserts.checkNull(oldRecommend, "该视频推荐已存在");
+
+        if (recommend.getEndTime() == 0) {
+            recommend.setEndTime(recommend.getStartTime() + 30);
+        }
 
         if (recommend.getIssue() != null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());

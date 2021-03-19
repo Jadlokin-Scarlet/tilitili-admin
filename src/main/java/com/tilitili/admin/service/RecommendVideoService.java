@@ -28,8 +28,10 @@ public class RecommendVideoService {
     public List<RecommendVideo> list(RecommendVideoQuery query) {
         return recommendVideoMapper.list(query).stream().peek(recommendVideo -> {
             Integer issueId = recommendVideo.getId();
-            int number = recommendMapper.count(new RecommendQuery().setIssueId(issueId));
-            recommendVideo.setNumber(number);
+            int recommendNumber = recommendMapper.count(new RecommendQuery().setIssueId(issueId).setType(0));
+            recommendVideo.setRecommendNumber(recommendNumber);
+            int selfRecommendNumber = recommendMapper.count(new RecommendQuery().setIssueId(issueId).setType(1));
+            recommendVideo.setSelfRecommendNumber(selfRecommendNumber);
         }).collect(Collectors.toList());
     }
 
