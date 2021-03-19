@@ -8,7 +8,8 @@ export default class RecommendVideoManager extends Component {
     columnsConfig = [
         {title: '刊名', key: 'name', width: 300},
         {title: '期数', key: 'issue', width: 100},
-        {title: '推荐数', key: 'number', width: 100},
+        {title: '推荐数', key: 'recommendNumber', width: 100},
+        {title: '自荐数', key: 'selfRecommendNumber', width: 100},
         {title: '类型', key: 'type', width: 100, type: 'choose', chooseMap: 'typeList'},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'statusList'},
         {title: '创建时间', key: 'createTime', width: 200, type: 'sorter'},

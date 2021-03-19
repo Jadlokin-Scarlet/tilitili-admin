@@ -4,13 +4,13 @@ import {addRecommend} from "../../../api";
 import {Input, InputNumber} from "antd";
 
 
-export default class RecommendVideoToNow extends Component {
+export default class RecommendSelfVideoToNow extends Component {
     render() {
         const {resources} = this.props;
         const {recommendIssueResource=[]} = resources;
-        const issue = recommendIssueResource[0]?.issue;
+        const issueId = recommendIssueResource[0]?.value;
         const name = recommendIssueResource[0]?.text;
-        const selectedRow = {issue}
+        const selectedRow = {issueId}
         return (
             <DefaultModalButton
                 {...this.props}
@@ -42,7 +42,8 @@ export default class RecommendVideoToNow extends Component {
     }
 
     formConfig = [
-        {key: 'issue', hidden: true},
+        {label: 'issueId', key: 'issueId', type: 'select', resource: 'recommendIssueResource'},
+        {key: 'type', value: 1, hidden: true},
         {label: 'av*', key: 'av', type: 'input', groupBy: {bv: null}},
         {label: 'bv*', key: 'bv', type: 'input', groupBy: {av: null}},
         {label: '开始展示时间', key: 'startTime', type: 'inputGroup', value: 0, render: this.timeRender},

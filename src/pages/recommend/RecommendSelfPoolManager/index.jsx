@@ -1,14 +1,9 @@
 import React, {Component} from "react";
-import DefaultTable from "../../../components/default-table";
-import {getRecommendPoolByCondition} from "../../../api";
-import RecommendVideo from "./RecommendVideo";
-import DeleteRecommend from "./DeleteRecommend";
-import UseRecommend from "./UseRecommend";
-import SpiderVideo from "./SpiderVideo";
-import UpdateRecommend from "./UpdateRecommend";
 import {dateFormat} from "../../../utils/HtmlUtils";
+import DefaultTable from "../../../components/default-table";
+import {getRecommendSelfPoolByCondition} from "../../../api";
 
-export default class RecommendPoolManager extends Component {
+export default class RecommendSelfPoolManager extends Component {
     columnsConfig = [
         {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
         {title: '作品名', key: 'name', width: 300, ellipsis: true},
@@ -30,11 +25,6 @@ export default class RecommendPoolManager extends Component {
         const selectedRow = selectedRows[0] || {};
         return (
             <>
-                <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <RecommendVideo onSuccess={handleUpdated}/>
-                <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
             </>
         )
     }
@@ -52,11 +42,10 @@ export default class RecommendPoolManager extends Component {
                 defaultFilters={{videoStatus: [0]}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
-                getDataApi={getRecommendPoolByCondition}
+                getDataApi={getRecommendSelfPoolByCondition}
                 onButtonsInit={this.handleButtonsInit}
                 onResourcesInit={this.handleResourcesInit}
             />
         )
     }
-
 }

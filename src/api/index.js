@@ -80,7 +80,12 @@ export const updateRecommend = data => patch('/recommend/', data);
 
 //推荐归档
 export const getUseRecommendByCondition = data => get('/recommend', data);
-export const addRecommendToNow = data => post('/recommend', data);
+
+//自荐池
+export const getRecommendSelfPoolByCondition = data => get('/recommend/selfPool', data);
+
+//自荐配置
+export const getRecommendSelfByCondition = data => get('/recommend/self', data);
 
 //推荐刊配置
 export const getRecommendVideoByCondition = data => get('/recommendVideo', data)

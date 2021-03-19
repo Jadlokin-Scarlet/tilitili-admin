@@ -13,6 +13,8 @@ import VideoDataCount from "../pages/data/VideoDataCount";
 import RecommendPoolManager from "../pages/recommend/RecommendPoolManager";
 import UseRecommendManager from "../pages/recommend/UseRecommendManager";
 import RecommendVideoManager from "../pages/recommend/RecommendVIdeoManager";
+import RecommendSelfManager from "../pages/recommend/RecommendSelfManager";
+import RecommendSelfPoolManager from "../pages/recommend/RecommendSelfPoolManager";
 
 export const menuList = [
     {key: "/rank", title: "排行榜后台", children: [
@@ -26,6 +28,8 @@ export const menuList = [
     {key: "/recommend", title: "推荐刊后台", children: [
         { title: "推荐池", key: "/recommend/RecommendPoolManager", icon: "funnel-plot", component: RecommendPoolManager},
         { title: "推荐归档", key: "/recommend/UseRecommendManager", icon: "folder-open", component: UseRecommendManager},
+        { title: "自荐池", key: "/recommend/RecommendSelfPoolManager", icon: "funnel-plot", component: RecommendSelfPoolManager},
+        { title: "自荐配置", key: "/recommend/RecommendSelfManager", icon: "smile", component: RecommendSelfManager},
         { title: "推荐刊配置", key: "/recommend/RecommendVideoManager", icon: "play-square", component: RecommendVideoManager}
     ]},
     {key: "/tilitili", title: "视频站后台", children: [

@@ -1,13 +1,11 @@
 import React, {Component} from "react";
-import DefaultTable from "../../../components/default-table";
-import {getUseRecommendByCondition} from "../../../api";
-import SpiderVideo from "./SpiderVideo";
-import RecommendVideoToNow from "./RecommendVideoToNow";
-import UpdateRecommend from "./UpdateRecommend";
-import UnUseRecommend from "./UnUseRecommend";
 import {dateFormat} from "../../../utils/HtmlUtils";
+import DefaultTable from "../../../components/default-table";
+import {getRecommendSelfByCondition} from "../../../api";
+import SpiderVideo from "./SpiderVideo";
+import RecommendSelfVideoToNow from "./RecommendSelfVideoToNow";
 
-export default class UseRecommendManager extends Component {
+export default class RecommendSelfManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,7 +29,7 @@ export default class UseRecommendManager extends Component {
     ];
 
     handleResourceLoaded = (resources, callback) => {
-        const { recommendIssueResource } = resources;
+        const { recommendIssueResource=[] } = resources;
         const newIssue = Math.max(...recommendIssueResource.map(resources => resources.value));
         this.setState({defaultFilters: Object.assign({issueId: [newIssue]}, this.state.defaultFilters)}, callback)
     }
@@ -42,10 +40,8 @@ export default class UseRecommendManager extends Component {
         const selectedRow = selectedRows[0] || {};
         return (
             <>
-                <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
+                <RecommendSelfVideoToNow resources={resources} onSuccess={handleUpdated}/>
                 <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <RecommendVideoToNow resources={resources} onSuccess={handleUpdated}/>
-                <UnUseRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
             </>
         )
     }
@@ -62,7 +58,7 @@ export default class UseRecommendManager extends Component {
                 defaultSorter={{field: 'sortNum', order: 'descend'}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
-                getDataApi={getUseRecommendByCondition}
+                getDataApi={getRecommendSelfByCondition}
                 onResourceLoaded={this.handleResourceLoaded}
                 onButtonsInit={this.handleButtonsInit}
                 onResourcesInit={this.handleResourcesInit}
