@@ -12,7 +12,7 @@ export default class UnUseRecommend extends Component {
 
     modalRender = state => {
         return <p>
-            {`确定把推荐[${state.name}]送回推荐池`}
+            {`确定把推荐[${state.name}]送回池`}
         </p>
     }
 
@@ -20,8 +20,8 @@ export default class UnUseRecommend extends Component {
         return (
             <DefaultModalButton
                 {...this.props}
-                title='送回推荐池'
-                value='送回推荐池'
+                title='送回池'
+                value='送回池'
                 formConfig={formConfig}
                 disabled={isEmptyObject(this.props.selectedRow)}
                 updateApi={unUseRecommend}
