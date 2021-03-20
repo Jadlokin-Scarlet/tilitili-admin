@@ -8,6 +8,7 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
@@ -27,16 +28,16 @@ import static com.tilitili.admin.utils.BilibiliUtil.converseAvToBv;
 @RequestMapping("/api/recommend")
 public class RecommendController extends BaseController {
     private final RecommendMapper recommendMapper;
+    private final RecommendManager recommendManager;
     private final RecommendService recommendService;
-    private final ResourcesManager resourcesManager;
     private final VideoInfoMapper videoInfoMapper;
     private final RecommendVideoMapper recommendVideoMapper;
 
     @Autowired
-    public RecommendController(RecommendMapper recommendMapper, RecommendService recommendService, ResourcesManager resourcesManager, VideoInfoMapper videoInfoMapper, RecommendVideoMapper recommendVideoMapper) {
+    public RecommendController(RecommendMapper recommendMapper, RecommendManager recommendManager, RecommendService recommendService, ResourcesManager resourcesManager, VideoInfoMapper videoInfoMapper, RecommendVideoMapper recommendVideoMapper) {
         this.recommendMapper = recommendMapper;
+        this.recommendManager = recommendManager;
         this.recommendService = recommendService;
-        this.resourcesManager = resourcesManager;
         this.videoInfoMapper = videoInfoMapper;
         this.recommendVideoMapper = recommendVideoMapper;
     }
@@ -45,10 +46,9 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
-        query.setType(0);
-        query.setStatus(1);
-        int count = recommendMapper.count(query);
-        List<Recommend> recommendList = recommendService.list(query);
+        int count = recommendManager.countRecommend(query);
+        List<Recommend> recommendList = recommendManager.listRecommend(query);
+        recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
@@ -56,32 +56,29 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel getRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
-        query.setType(0);
-        query.setStatus(0);
-        int count = recommendMapper.count(query);
-        List<Recommend> recommendList = recommendService.list(query);
+        int count = recommendManager.countRecommendPool(query);
+        List<Recommend> recommendList = recommendManager.listRecommendPool(query);
+        recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
     @GetMapping("/self")
     @ResponseBody
-    public BaseModel getRecommendSelfByCondition(RecommendQuery query) {
+    public BaseModel getSelfRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
-        query.setType(1);
-        query.setStatus(1);
-        int count = recommendMapper.count(query);
-        List<Recommend> recommendList = recommendService.list(query);
+        int count = recommendManager.countSelfRecommend(query);
+        List<Recommend> recommendList = recommendManager.listSelfRecommend(query);
+        recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
     @GetMapping("/selfPool")
     @ResponseBody
-    public BaseModel getRecommendSelfPoolByCondition(RecommendQuery query) {
+    public BaseModel getSelfRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数");
-        query.setType(1);
-        query.setStatus(0);
-        int count = recommendMapper.count(query);
-        List<Recommend> recommendList = recommendService.list(query);
+        int count = recommendManager.countSelfRecommendPool(query);
+        List<Recommend> recommendList = recommendManager.listSelfRecommendPool(query);
+        recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
 

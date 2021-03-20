@@ -14,6 +14,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ import java.util.List;
 @Validated
 @Slf4j
 public class ResourceController extends BaseController {
-
+    private final RecommendManager recommendManager;
     private final ResourceService resourceService;
     private final VideoDataFileService videoDataFileService;
     private final RecommendService recommendService;
@@ -39,7 +40,8 @@ public class ResourceController extends BaseController {
     private final RecommendVideoMapper recommendVideoMapper;
 
     @Autowired
-    public ResourceController(ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper) {
+    public ResourceController(RecommendManager recommendManager, ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper) {
+        this.recommendManager = recommendManager;
         this.resourceService = resourceService;
         this.videoDataFileService = videoDataFileService;
         this.recommendService = recommendService;
@@ -97,10 +99,22 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setStatus(1);
         query.setSorter("sort_num", "desc");
-        int total = recommendMapper.count(query);
+        int total = recommendManager.countRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
+        return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/selfRecommend")
+    @ResponseBody
+    public BaseModel getSelfRecommend(RecommendQuery query) {
+        if (query.getIssueId() == null) {
+            RecommendVideo recommendVideo = recommendVideoMapper.getNew();
+            query.setIssueId(recommendVideo.getId());
+        }
+        query.setSorter("sort_num", "desc");
+        int total = recommendManager.countSelfRecommend(query);
+        List<RecommendFileItem> recommendList = recommendService.getSelfRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
