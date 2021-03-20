@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Row, Tag, message} from "antd";
+import {Button, Card, Row, Tag, message, Form, Input} from "antd";
 import {
     checkResp,
     compose,
@@ -288,6 +288,7 @@ export default class DefaultTable extends Component {
         column.width = columnConfig.width;
         column.dataIndex = columnConfig.dataIndex || columnConfig.key;
         column.align = columnConfig.align || 'center';
+
         if (columnConfig.type === 'search') {
             this.newSearchColumn(column, columnConfig);
         }else if (columnConfig.type === 'choose') {

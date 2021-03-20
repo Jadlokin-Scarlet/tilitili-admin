@@ -7,7 +7,7 @@ import UpdateDeleteRecommendVideo from "./UpdateDeleteRecommendVideo";
 
 export default class RecommendVideoManager extends Component {
     columnsConfig = [
-        {title: '刊名', key: 'name', width: 300},
+        {title: '刊名', key: 'name', width: 300, editing: true, inputType: 'input'},
         {title: '期数', key: 'issue', width: 100},
         {title: '推荐数', key: 'recommendNumber', width: 100},
         {title: '自荐数', key: 'selfRecommendNumber', width: 100},

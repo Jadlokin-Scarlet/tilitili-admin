@@ -15,6 +15,7 @@ import UseRecommendManager from "../pages/recommend/UseRecommendManager";
 import RecommendVideoManager from "../pages/recommend/RecommendVIdeoManager";
 import RecommendSelfManager from "../pages/recommend/RecommendSelfManager";
 import RecommendSelfPoolManager from "../pages/recommend/RecommendSelfPoolManager";
+import RecommendTalkManager from "../pages/recommend/RecommendTalkManager";
 
 export const menuList = [
     {key: "/rank", title: "排行榜后台", children: [
@@ -30,7 +31,8 @@ export const menuList = [
         { title: "推荐归档", key: "/recommend/UseRecommendManager", icon: "folder-open", component: UseRecommendManager},
         { title: "自荐池", key: "/recommend/RecommendSelfPoolManager", icon: "funnel-plot", component: RecommendSelfPoolManager},
         { title: "自荐配置", key: "/recommend/RecommendSelfManager", icon: "smile", component: RecommendSelfManager},
-        { title: "推荐刊配置", key: "/recommend/RecommendVideoManager", icon: "play-square", component: RecommendVideoManager}
+        { title: "推荐刊配置", key: "/recommend/RecommendVideoManager", icon: "play-square", component: RecommendVideoManager},
+        { title: "推荐刊对话配置", key: "/recommend/RecommendTalkManager", icon: "", component: RecommendTalkManager},
     ]},
     {key: "/tilitili", title: "视频站后台", children: [
         { title: "作者管理", key: "/tilitili/ownerManager", icon: "user", component: OwnerManager},

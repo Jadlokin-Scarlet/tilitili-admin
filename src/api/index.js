@@ -91,3 +91,6 @@ export const getRecommendSelfByCondition = data => get('/recommend/self', data);
 export const getRecommendVideoByCondition = data => get('/recommendVideo', data)
 export const addRecommendVideo = data => post('/recommendVideo', data)
 export const updateRecommendVideo = data => patch('/recommendVideo', data);
+
+//对话配置
+export const getRecommendTalkByCondition = data => get('/recommendTalk', data);

@@ -81,6 +81,7 @@ export default class SimpleTable extends PureComponent {
                 loading={this.props.loading}
                 onChange={this.props.onChange}
                 rowClassName={this.props.rowClassName}
+                components={this.props.components}
                 onRow={this.onClick}
             />
         );

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {isEmptyObject, isNotNull} from "../../../utils/HtmlUtils";
+import {isEmptyObject} from "../../../utils/HtmlUtils";
 import DefaultModalButton from "../../../components/default-modal-button/DefaultModalButton";
 import {updateRecommendVideo} from "../../../api";
 
