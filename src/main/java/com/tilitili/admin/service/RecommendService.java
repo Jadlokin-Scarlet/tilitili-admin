@@ -102,7 +102,7 @@ public class RecommendService {
 
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
-            recommendFileItem.setOperatorStr(owner);
+            recommendFileItem.setOperatorStr("");
             recommendFileItem.setTextStr(text);
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
