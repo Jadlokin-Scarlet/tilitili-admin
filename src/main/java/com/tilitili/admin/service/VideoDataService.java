@@ -74,4 +74,12 @@ public class VideoDataService {
         return result;
     }
 
+    public Boolean isRank(Integer issue) {
+        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setSorter("point", "desc").setPageSize(1).setCurrent(1));
+        if (videoDataList.isEmpty()) {
+            return false;
+        }
+        return videoDataList.get(0).getRank() != 0;
+    }
+
 }
