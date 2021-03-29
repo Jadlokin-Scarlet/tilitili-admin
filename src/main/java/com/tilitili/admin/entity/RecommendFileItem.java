@@ -17,6 +17,7 @@ public class RecommendFileItem {
 //    private String owner;
 //    private String externalOwner;
 //    private String type;
+    private String face;
 
     private String avStr;
     private String nameStr;

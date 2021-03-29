@@ -1,14 +1,15 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.RecommendFileItem;
+import com.tilitili.common.entity.Admin;
+import com.tilitili.common.entity.Owner;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.manager.RecommendManager;
-import com.tilitili.common.mapper.RecommendMapper;
-import com.tilitili.common.mapper.RecommendVideoMapper;
-import com.tilitili.common.mapper.TaskMapper;
-import com.tilitili.common.mapper.VideoInfoMapper;
+import com.tilitili.common.mapper.*;
+import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,16 @@ public class RecommendService {
     private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
     private final RecommendManager recommendManager;
+    private final OwnerMapper ownerMapper;
+    private final AdminMapper adminMapper;
 
     @Autowired
-    public RecommendService(RecommendMapper recommendMapper, VideoInfoMapper videoInfoMapper, TaskMapper taskMapper, RecommendVideoMapper recommendVideoMapper, RecommendManager recommendManager) {
+    public RecommendService(RecommendMapper recommendMapper, VideoInfoMapper videoInfoMapper, TaskMapper taskMapper, RecommendVideoMapper recommendVideoMapper, RecommendManager recommendManager, OwnerMapper ownerMapper, AdminMapper adminMapper) {
         this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
         this.recommendManager = recommendManager;
+        this.ownerMapper = ownerMapper;
+        this.adminMapper = adminMapper;
     }
 
     public List<Recommend> list(RecommendQuery query) {
@@ -62,6 +67,10 @@ public class RecommendService {
             String videoType = recommend.getVideoType();
             String pubTime = recommend.getPubTime();
 
+            Admin admin = adminMapper.getByName(operator);
+
+            String textStr = text.replaceAll("\n", " ");
+
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);
             recommendFileItem.setStartTime(startTime);
@@ -70,10 +79,11 @@ public class RecommendService {
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
             recommendFileItem.setOperatorStr(operator);
-            recommendFileItem.setTextStr(text);
+            recommendFileItem.setTextStr(textStr);
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);
+            recommendFileItem.setFace(admin.getFace());
             if (pubTime != null) {
                 recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
             }
@@ -90,10 +100,17 @@ public class RecommendService {
             Integer endTime = recommend.getEndTime();
 
             String name = recommend.getName();
-            String owner = recommend.getOwner();
+            String ownerName = recommend.getOwner();
             String externalOwner = recommend.getExternalOwner();
             String videoType = recommend.getVideoType();
             String pubTime = recommend.getPubTime();
+
+            List<Owner> ownerList = ownerMapper.list(new OwnerQuery().setName(ownerName));
+            Asserts.isTrue(ownerList.size() > 0, "作者没找到");
+            Asserts.isTrue(ownerList.size() < 2, "重名?");
+            Owner owner = ownerList.get(0);
+
+            String textStr = text.replaceAll("\n", " ");
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);
@@ -102,11 +119,12 @@ public class RecommendService {
 
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
-            recommendFileItem.setOperatorStr("");
-            recommendFileItem.setTextStr(text);
-            recommendFileItem.setOwnerStr(owner);
+            recommendFileItem.setOperatorStr(ownerName);
+            recommendFileItem.setTextStr(textStr);
+            recommendFileItem.setOwnerStr(ownerName);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);
+            recommendFileItem.setFace(owner.getFace());
             if (pubTime != null) {
                 recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
             }
