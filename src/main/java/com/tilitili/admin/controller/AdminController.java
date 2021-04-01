@@ -29,7 +29,7 @@ public class AdminController extends BaseController {
         if (admin == null) {
             return new BaseModel("请重新登陆");
         }else {
-            return new BaseModel("已登录", true);
+            return new BaseModel("已登录", true, admin);
         }
     }
 
@@ -44,7 +44,7 @@ public class AdminController extends BaseController {
             return new BaseModel("用户名密码错误");
         }
         session.setAttribute("admin", admin);
-        return new BaseModel("登录成功", true, admin.getUserName());
+        return new BaseModel("登录成功", true, admin);
     }
 
     @PostMapping("/loginOut")
