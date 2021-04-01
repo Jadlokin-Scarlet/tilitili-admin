@@ -16,9 +16,10 @@ export default class UseRecommendManager extends Component {
     }
     columnsConfig = [
         {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
+        {title: 'BV号', key: 'bv', width: 140, type: 'search'},
         {title: '所在刊', key: 'issueId', width: 150, ellipsis: true, type: 'chooseInput', chooseMap: 'recommendIssueResource'},
         {title: '作品名', key: 'name', width: 300, ellipsis: true},
-        {title: '推荐人', key: 'operator', width: 100, ellipsis: true},
+        {title: '推荐人', key: 'operator', width: 100, type: 'search', ellipsis: true},
         {title: 'UP主', key: 'owner', width: 100, ellipsis: true},
         {title: '原作者', key: 'externalOwner', width: 100, ellipsis: true},
         {title: '投稿时间', key: 'pubTime', width: 180},

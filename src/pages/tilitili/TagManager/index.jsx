@@ -8,7 +8,7 @@ export default class TagManager extends Component {
         {title: 'id', key: 'id', width: 90, type: 'search', href: id => 'https://t.bilibili.com/topic/'+id},
         {title: 'Tag名', key: 'name', width: 200, type: 'search', ellipsis: true},
         {title: '标签封面', key: 'cover', type: 'image'},
-        {title: '介绍', key: 'content', width: 700, ellipsis: '\n'},
+        {title: '介绍', key: 'content', width: 400, ellipsis: '\n'},
         {title: '标签创建时间', key: 'externalCreateTime', width: 200},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'TagStatusList'},
         {title: '类型', key: 'type', width: 140, type: 'choose', chooseMap: 'TagTypeResource'},

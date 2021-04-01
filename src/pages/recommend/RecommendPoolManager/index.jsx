@@ -11,8 +11,9 @@ import {dateFormat} from "../../../utils/HtmlUtils";
 export default class RecommendPoolManager extends Component {
     columnsConfig = [
         {title: 'av号', key: 'av', width: 90, type: 'search', href: av => "https://www.bilibili.com/video/av" + av},
+        {title: 'BV号', key: 'bv', width: 140, type: 'search'},
         {title: '作品名', key: 'name', width: 300, ellipsis: true},
-        {title: '推荐人', key: 'operator', width: 100, ellipsis: true},
+        {title: '推荐人', key: 'operator', width: 130, type: 'search', ellipsis: true},
         {title: '推荐语', key: 'text', width: 300, ellipsis: true},
         {title: '选区开始', key: 'startTime', width: 100, afterRender: dateFormat},
         {title: '选区结束', key: 'endTime', width: 100, afterRender: dateFormat},
@@ -49,7 +50,7 @@ export default class RecommendPoolManager extends Component {
                 needResourcesList={['recommendIssueResource']}
                 defaultPageSize={20}
                 defaultSorter={{field: 'id', order: 'descend'}}
-                defaultFilters={{videoStatus: [0]}}
+                defaultFilters={{videoStatus: [0], operator: [this.props?.user?.userName]}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
                 getDataApi={getRecommendPoolByCondition}

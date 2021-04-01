@@ -34,7 +34,7 @@ export default class BatchSpiderVideoManager extends Component{
             <DefaultTable
                 needResourcesList={['TaskTypeResource', 'TaskReasonResource']}
                 defaultPageSize={20}
-                defaultFilters={{type: [1]}}
+                defaultFilters={{type: [2]}}
                 defaultSorter={{field: 'createTime', order: 'descend'}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}

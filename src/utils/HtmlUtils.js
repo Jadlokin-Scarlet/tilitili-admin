@@ -279,6 +279,14 @@ export const checkResp = data => {
     }
 }
 
+export const checkRespForData = data => {
+    if (checkResp(data)) {
+        return data.data;
+    }else {
+        return data;
+    }
+}
+
 export const defaultRowKey = (record, index) => index;
 
 export const defaultScroll = {x:1,y: true}
