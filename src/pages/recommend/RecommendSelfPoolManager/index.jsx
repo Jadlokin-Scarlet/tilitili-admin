@@ -33,7 +33,7 @@ export default class RecommendSelfPoolManager extends Component {
             <>
                 <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <RecommendVideo onSuccess={handleUpdated}/>
+                <RecommendVideo {...this.props} onSuccess={handleUpdated}/>
                 <DeleteRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <UseRecommend selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources}/>
             </>

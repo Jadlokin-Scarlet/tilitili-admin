@@ -41,6 +41,7 @@ export default class RecommendVideo extends Component {
         {label: '开始展示时间', key: 'startTime', type: 'inputGroup', value: 0, render: this.timeRender},
         {label: '结束展示时间', key: 'endTime', type: 'inputGroup', value: 0, render: this.timeRender},
         {label: '原作者', key: 'externalOwner', type: 'input'},
+        {label: '推荐人', key: 'operator', type: 'input', value: this.props?.user?.userName},
         {label: '推荐语*', key: 'text', type: 'textArea', col: 2, autoSize: {minRows: 5}},
     ]
 }

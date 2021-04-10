@@ -6,6 +6,7 @@ import SpiderVideo from "./SpiderVideo";
 import RecommendVideoToNow from "./RecommendVideoToNow";
 import UnUseRecommend from "./UnUseRecommend";
 import UpdateRecommend from "./UpdateRecommend";
+import RecommendVideo from "../RecommendPoolManager/RecommendVideo";
 
 export default class RecommendSelfManager extends Component {
     constructor(props) {
@@ -45,7 +46,7 @@ export default class RecommendSelfManager extends Component {
             <>
                 <UpdateRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
                 <SpiderVideo selectedRow={selectedRow} onSuccess={handleUpdated}/>
-                <RecommendVideoToNow resources={resources} onSuccess={handleUpdated}/>
+                <RecommendVideoToNow {...this.props} resources={resources} onSuccess={handleUpdated}/>
                 <UnUseRecommend selectedRow={selectedRow} onSuccess={handleUpdated}/>
             </>
         )
