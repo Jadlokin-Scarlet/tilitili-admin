@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 public class RecommendFileItem {
     private Long av;
 //    private String name;
-//    private String operator;
+    private String operator;
 //    private String text;
     private Integer startTime;
     private Integer endTime;

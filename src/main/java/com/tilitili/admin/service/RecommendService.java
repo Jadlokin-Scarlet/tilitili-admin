@@ -69,10 +69,16 @@ public class RecommendService {
 
             Admin admin = adminMapper.getByName(operator);
 
+            String face = null;
+            if (admin != null) {
+                face = admin.getFace();
+            }
+
             String textStr = text.replaceAll("\n", " ");
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);
+            recommendFileItem.setOperator(operator);
             recommendFileItem.setStartTime(startTime);
             recommendFileItem.setEndTime(endTime);
 
@@ -83,7 +89,7 @@ public class RecommendService {
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);
-            recommendFileItem.setFace(admin.getFace());
+            recommendFileItem.setFace(face);
             if (pubTime != null) {
                 recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
             }
@@ -106,14 +112,17 @@ public class RecommendService {
             String pubTime = recommend.getPubTime();
 
             List<Owner> ownerList = ownerMapper.list(new OwnerQuery().setName(ownerName));
-            Asserts.isTrue(ownerList.size() > 0, "作者没找到");
-            Asserts.isTrue(ownerList.size() < 2, "重名?");
-            Owner owner = ownerList.get(0);
+
+            String face = null;
+            if (ownerList.size() == 1) {
+                face = ownerList.get(0).getFace();
+            }
 
             String textStr = text.replaceAll("\n", " ");
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);
+            recommendFileItem.setOperator(ownerName);
             recommendFileItem.setStartTime(startTime);
             recommendFileItem.setEndTime(endTime);
 
@@ -124,7 +133,7 @@ public class RecommendService {
             recommendFileItem.setOwnerStr(ownerName);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);
-            recommendFileItem.setFace(owner.getFace());
+            recommendFileItem.setFace(face);
             if (pubTime != null) {
                 recommendFileItem.setPubTimeStr(pubTime.split(" ")[0]);
             }

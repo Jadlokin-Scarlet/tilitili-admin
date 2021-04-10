@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.tilitili.admin.utils.BilibiliUtil.converseAvToBv;
+import static java.util.Objects.isNull;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Controller
@@ -92,14 +94,22 @@ public class RecommendController extends BaseController {
         Asserts.notNull(recommend.getAv(), "av号");
         Asserts.notNull(admin.getUserName(), "操作人");
 
-        recommend.setOperator(admin.getUserName());
+        if (isBlank(recommend.getOperator())) {
+            recommend.setOperator(admin.getUserName());
+        }
 
         Recommend oldRecommend = recommendMapper.getByAv(recommend.getAv());
         Asserts.checkNull(oldRecommend, "该视频推荐已存在");
 
-        if (recommend.getEndTime() == 0) {
+        if (isNull(recommend.getStartTime())) {
+            recommend.setStartTime(0);
+        }
+
+        if (isNull(recommend.getEndTime()) || recommend.getEndTime() == 0) {
             recommend.setEndTime(recommend.getStartTime() + 30);
         }
+
+        Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
         if (recommend.getIssue() != null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
@@ -118,6 +128,9 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel updateRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号");
+        Asserts.notNull(recommend.getStartTime(), "开始时间");
+        Asserts.notNull(recommend.getEndTime(), "结束时间");
+        Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
         recommendMapper.update(recommend);
         videoInfoMapper.updateExternalOwner(recommend.getAv(), recommend.getExternalOwner());
