@@ -12,8 +12,11 @@ export default class LoginModal extends Component{
 
     login = () => {
         const { userName, password } = this.state;
-        this.props.onLogin(userName, password)
-        this.refresh();
+        this.props.onLogin(userName, password, req => {
+            if (req.data?.success === true) {
+                this.refresh();
+            }
+        })
     }
 
     register = () => {
@@ -44,7 +47,7 @@ export default class LoginModal extends Component{
                                 <Input value={this.state.userName} onChange={event => this.setState({userName: event.target.value})} type="userName"/>
                             </Form.Item>
                             <Form.Item label="密码" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
-                                <Input value={this.state.password} onChange={event => this.setState({password: event.target.value})} type="password"/>
+                                <Input value={this.state.password} onChange={event => this.setState({password: event.target.value})} onPressEnter={this.login} type="password"/>
                             </Form.Item>
                             <Form.Item>
                                 <Row type="flex" justify="space-around" align="middle">

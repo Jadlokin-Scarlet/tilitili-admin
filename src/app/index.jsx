@@ -54,8 +54,8 @@ export default class App extends Component{
         reqLoginOut().then(this.loginOut)
     }
 
-    reqLogin = (username, password) => {
-        reqLogin(username, password).then(this.login).catch(this.loginOut)
+    reqLogin = (username, password, callback) => {
+        reqLogin(username, password).then(this.login).catch(callback)
     }
 
     toggleCollapsed = () => {
