@@ -81,10 +81,10 @@ public class ResourceService {
         DateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
 
         calendar.add(Calendar.DAY_OF_WEEK, count);
-        String startTime = df.format(calendar.getTime());
+        String endTime = df.format(calendar.getTime());
 
         calendar.add(Calendar.DAY_OF_WEEK, -7);
-        String endTime = df.format(calendar.getTime());
+        String startTime = df.format(calendar.getTime());
 
 
         return startTime + "~" + endTime;
