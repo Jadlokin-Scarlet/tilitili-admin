@@ -12,8 +12,10 @@ const formConfig = [
     {label: 'ed专辑', key: 'musicCard', type: 'input'},
     {label: 'ed图片', key: 'musicImage', type: 'input'},
     {label: 'ed原曲', key: 'musicSource', type: 'input'},
+    {label: '小标题', key: 'tips', type: 'textArea'},
     {label: '期数', key: 'v', type: 'input', disabled: true},
     {label: '制作时间', key: 'markTime', type: 'input', disabled: true},
+    {label: '统计时间', key: 'countTime', type: 'input', disabled: true},
 ]
 
 const resources = {
@@ -44,8 +46,8 @@ export default class VideoResourceManager extends Component  {
     }
 
     handleSubmit = () => {
-        const {isStaffShow1,isStaffShow2,musicName,musicOwner,musicCard,musicImage,musicSource} = this.state;
-        const params = {isStaffShow1,isStaffShow2,musicName,musicOwner,musicCard,musicImage,musicSource};
+        const {isStaffShow1,isStaffShow2,musicName,musicOwner,musicCard,musicImage,musicSource,tips} = this.state;
+        const params = {isStaffShow1,isStaffShow2,musicName,musicOwner,musicCard,musicImage,musicSource,tips};
         this.setState({loading: true});
         updateFlag(params).then(checkResp).finally(() => {
             this.setState({loading: false});
@@ -62,7 +64,7 @@ export default class VideoResourceManager extends Component  {
         const params = this.state;
         const onChange = this.handleChange;
         return (
-            <Card style={{width: '60%'}}>
+            <Card style={{width: '90%'}}>
                 <Spin spinning={this.state.loading}>
                     {converseToForm({formConfig, params, resources, onChange, col: 2})}
                     <Row type="flex" justify="space-around" align="middle" >
