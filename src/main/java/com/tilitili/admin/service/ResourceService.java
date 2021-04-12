@@ -1,9 +1,9 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.DispatchRecommendResourcesView;
+import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.common.emnus.*;
 import com.tilitili.common.entity.resource.Resource;
-import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.mapper.ResourcesMapper;
@@ -55,7 +55,9 @@ public class ResourceService {
         view.setMusicCard(resourcesMapper.getValueByType(ResourcesType.MUSIC_CARD.value));
         view.setMusicImage(resourcesMapper.getValueByType(ResourcesType.MUSIC_IMAGE.value));
         view.setMusicSource(resourcesMapper.getValueByType(ResourcesType.MUSIC_SOURCE.value));
+        view.setTips(resourcesMapper.getValueByType(ResourcesType.TIPS.value));
         view.setMarkTime(getMarkTime());
+        view.setCountTime(getCountTime());
         view.setV(videoDataManager.getNewIssue().toString());
         return view;
     }
@@ -64,6 +66,28 @@ public class ResourceService {
         DispatchRecommendResourcesView view = new DispatchRecommendResourcesView();
         view.setV(recommendVideoMapper.getNew().getId());
         return view;
+    }
+    /*
+    * 06 07 01 02 03 04 05
+    * 00 -1 -2 -3 -4 -5 -6
+    */
+    private String getCountTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        int week = calendar.get(Calendar.DAY_OF_WEEK);
+
+        int count = (12 - week) % 7 - 6;
+        DateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
+
+        calendar.add(Calendar.DAY_OF_WEEK, count);
+        String startTime = df.format(calendar.getTime());
+
+        calendar.add(Calendar.DAY_OF_WEEK, -7);
+        String endTime = df.format(calendar.getTime());
+
+
+        return startTime + "~" + endTime;
     }
 
     private String getMarkTime() {
@@ -82,11 +106,10 @@ public class ResourceService {
         }
 
         // 获取距离当前日期最近的周日日期
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_WEEK, count);
+        calendar.add(Calendar.DAY_OF_WEEK, count);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        return df.format(c.getTime());
+        return df.format(calendar.getTime());
     }
 
     @Transactional
@@ -98,6 +121,7 @@ public class ResourceService {
         resourcesMapper.updateValueByType(ResourcesType.MUSIC_CARD.value, resourcesView.getMusicCard());
         resourcesMapper.updateValueByType(ResourcesType.MUSIC_IMAGE.value, resourcesView.getMusicImage());
         resourcesMapper.updateValueByType(ResourcesType.MUSIC_SOURCE.value, resourcesView.getMusicSource());
+        resourcesMapper.updateValueByType(ResourcesType.TIPS.value, resourcesView.getTips());
     }
 
 }

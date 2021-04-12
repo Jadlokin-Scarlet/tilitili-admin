@@ -2,6 +2,7 @@ package com.tilitili.admin.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.tilitili.admin.entity.DispatchRecommendResourcesView;
+import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.service.RecommendService;
@@ -12,7 +13,6 @@ import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
-import com.tilitili.common.entity.view.DispatchResourcesView;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.RecommendMapper;
@@ -128,6 +128,7 @@ public class ResourceController extends BaseController {
         Assert.notNull(resourcesView.getMusicCard(), "参数异常");
         Assert.notNull(resourcesView.getMusicImage(), "参数异常");
         Assert.notNull(resourcesView.getMusicSource(), "参数异常");
+        Assert.notNull(resourcesView.getTips(), "参数异常");
         resourceService.updateFlagResources(resourcesView);
         DispatchResourcesView flagResource = resourceService.getFlagResources();
         return new BaseModel("保存成功", true, flagResource);
