@@ -52,7 +52,7 @@ public class RecommendVideoController extends BaseController {
     @PatchMapping("")
     @ResponseBody
     public BaseModel updateRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
-        Asserts.notNull(recommendVideo.getId(), "id");
+        Asserts.notNull(recommendVideo.getId(), "id未获取到");
         RecommendVideo newVideo = recommendVideoMapper.getNew();
         Asserts.checkEquals(recommendVideo.getId(), newVideo.getId(), "只有最新一期可以编辑");
         if (Objects.equals(recommendVideo.getType(), 1)) {

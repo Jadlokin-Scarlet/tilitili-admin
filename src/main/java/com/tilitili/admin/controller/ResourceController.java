@@ -17,6 +17,7 @@ import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -121,14 +122,14 @@ public class ResourceController extends BaseController {
     @PatchMapping("/flag")
     @ResponseBody
     public BaseModel updateFlag(@RequestBody DispatchResourcesView resourcesView) {
-        Assert.notNull(resourcesView.getIsStaffShow1(), "参数异常");
-        Assert.notNull(resourcesView.getIsStaffShow2(), "参数异常");
-        Assert.notNull(resourcesView.getMusicName(), "参数异常");
-        Assert.notNull(resourcesView.getMusicOwner(), "参数异常");
-        Assert.notNull(resourcesView.getMusicCard(), "参数异常");
-        Assert.notNull(resourcesView.getMusicImage(), "参数异常");
-        Assert.notNull(resourcesView.getMusicSource(), "参数异常");
-        Assert.notNull(resourcesView.getTips(), "参数异常");
+        Asserts.notNull(resourcesView.getIsStaffShow1(), "参数异常");
+        Asserts.notNull(resourcesView.getIsStaffShow2(), "参数异常");
+        Asserts.notNull(resourcesView.getMusicName(), "参数异常");
+        Asserts.notNull(resourcesView.getMusicOwner(), "参数异常");
+        Asserts.notNull(resourcesView.getMusicCard(), "参数异常");
+        Asserts.notNull(resourcesView.getMusicImage(), "参数异常");
+        Asserts.notNull(resourcesView.getMusicSource(), "参数异常");
+        Asserts.notNull(resourcesView.getTips(), "参数异常");
         resourceService.updateFlagResources(resourcesView);
         DispatchResourcesView flagResource = resourceService.getFlagResources();
         return new BaseModel("保存成功", true, flagResource);

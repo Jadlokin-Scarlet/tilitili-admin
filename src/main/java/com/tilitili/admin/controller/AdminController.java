@@ -3,6 +3,7 @@ package com.tilitili.admin.controller;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.AdminService;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,13 +37,11 @@ public class AdminController extends BaseController {
     @PostMapping("/login")
     @ResponseBody
     public BaseModel login(@RequestBody Admin reqAdmin, HttpSession session) {
-        Assert.notNull(reqAdmin, "参数异常");
-        Assert.notNull(reqAdmin.getUserName(), "请输入用户名和密码");
-        Assert.notNull(reqAdmin.getPassword(), "请输入用户名和密码");
+        Asserts.notNull(reqAdmin, "参数异常");
+        Asserts.notNull(reqAdmin.getUserName(), "请输入用户名");
+        Asserts.notNull(reqAdmin.getPassword(), "请输入密码");
         Admin admin = adminService.login(reqAdmin.getUserName(), reqAdmin.getPassword());
-        if (admin == null) {
-            return new BaseModel("用户名密码错误");
-        }
+        Asserts.notNull(admin, "账号未获取到");
         session.setAttribute("admin", admin);
         return new BaseModel("登录成功", true, admin);
     }

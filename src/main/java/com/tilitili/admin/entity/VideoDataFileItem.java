@@ -54,6 +54,10 @@ public class VideoDataFileItem {
 	private Boolean isUp;
 	@JsonView(VideoView.class)
 	private Boolean isLen;
+	@JsonView(VideoView.class)
+	private Integer level;
+	@JsonView(VideoView.class)
+	private Integer showLength;
 
 	//视频中的占位字段
 	@JsonView(VideoView.class)

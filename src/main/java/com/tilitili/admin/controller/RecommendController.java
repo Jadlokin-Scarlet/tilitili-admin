@@ -47,7 +47,7 @@ public class RecommendController extends BaseController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getUseRecommendByCondition(RecommendQuery query) {
-        Asserts.notNull(query, "参数");
+        Asserts.notNull(query, "参数异常");
         int count = recommendManager.countRecommend(query);
         List<Recommend> recommendList = recommendManager.listRecommend(query);
         recommendService.supplementRecommend(recommendList);
@@ -57,7 +57,7 @@ public class RecommendController extends BaseController {
     @GetMapping("/pool")
     @ResponseBody
     public BaseModel getRecommendPoolByCondition(RecommendQuery query) {
-        Asserts.notNull(query, "参数");
+        Asserts.notNull(query, "参数异常");
         int count = recommendManager.countRecommendPool(query);
         List<Recommend> recommendList = recommendManager.listRecommendPool(query);
         recommendService.supplementRecommend(recommendList);
@@ -67,7 +67,7 @@ public class RecommendController extends BaseController {
     @GetMapping("/self")
     @ResponseBody
     public BaseModel getSelfRecommendByCondition(RecommendQuery query) {
-        Asserts.notNull(query, "参数");
+        Asserts.notNull(query, "参数异常");
         int count = recommendManager.countSelfRecommend(query);
         List<Recommend> recommendList = recommendManager.listSelfRecommend(query);
         recommendService.supplementRecommend(recommendList);
@@ -77,7 +77,7 @@ public class RecommendController extends BaseController {
     @GetMapping("/selfPool")
     @ResponseBody
     public BaseModel getSelfRecommendPoolByCondition(RecommendQuery query) {
-        Asserts.notNull(query, "参数");
+        Asserts.notNull(query, "参数异常");
         int count = recommendManager.countSelfRecommendPool(query);
         List<Recommend> recommendList = recommendManager.listSelfRecommendPool(query);
         recommendService.supplementRecommend(recommendList);
@@ -91,8 +91,8 @@ public class RecommendController extends BaseController {
             recommend.setAv(converseAvToBv(recommend.getBv()));
         }
 
-        Asserts.notNull(recommend.getAv(), "av号");
-        Asserts.notNull(admin.getUserName(), "操作人");
+        Asserts.notNull(recommend.getAv(), "av号未获取到");
+        Asserts.notNull(admin.getUserName(), "操作人未获取到");
 
         if (isBlank(recommend.getOperator())) {
             recommend.setOperator(admin.getUserName());
@@ -104,18 +104,15 @@ public class RecommendController extends BaseController {
         if (isNull(recommend.getStartTime())) {
             recommend.setStartTime(0);
         }
-
         if (isNull(recommend.getEndTime()) || recommend.getEndTime() == 0) {
             recommend.setEndTime(recommend.getStartTime() + 30);
         }
-
         Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
         if (recommend.getIssue() != null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
             recommend.setIssueId(recommendVideo.getId());
         }
-
         if (recommend.getIssueId() != null) {
             recommend.setStatus(1);
         }
@@ -127,9 +124,9 @@ public class RecommendController extends BaseController {
     @PatchMapping("")
     @ResponseBody
     public BaseModel updateRecommend(@RequestBody Recommend recommend) {
-        Asserts.notNull(recommend.getId(), "av号");
-        Asserts.notNull(recommend.getStartTime(), "开始时间");
-        Asserts.notNull(recommend.getEndTime(), "结束时间");
+        Asserts.notNull(recommend.getId(), "av号未获取到");
+        Asserts.notNull(recommend.getStartTime(), "开始时间未获取到");
+        Asserts.notNull(recommend.getEndTime(), "结束时间未获取到");
         Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
         recommendMapper.update(recommend);
@@ -141,7 +138,7 @@ public class RecommendController extends BaseController {
     @PatchMapping("/status/-1")
     @ResponseBody
     public BaseModel updateDeleteRecommend(@RequestBody Recommend recommend) {
-        Asserts.notNull(recommend.getId(), "av号");
+        Asserts.notNull(recommend.getId(), "av号未获取到");
 
         Recommend updateRecommend = new Recommend();
         updateRecommend.setId(recommend.getId());
@@ -154,7 +151,7 @@ public class RecommendController extends BaseController {
     @PatchMapping("/status/0")
     @ResponseBody
     public BaseModel unUseRecommend(@RequestBody Recommend recommend) {
-        Asserts.notNull(recommend.getId(), "av号");
+        Asserts.notNull(recommend.getId(), "av号未获取到");
         recommendService.unUseRecommend(recommend.getId());
         return new BaseModel("使用成功",true);
     }
@@ -162,13 +159,13 @@ public class RecommendController extends BaseController {
     @PatchMapping("/status/1")
     @ResponseBody
     public BaseModel useRecommend(@RequestBody Recommend recommend) {
-        Asserts.notNull(recommend.getId(), "av号");
+        Asserts.notNull(recommend.getId(), "av号未获取到");
 
         Recommend oldRecommend = recommendMapper.getById(recommend.getId());
-        Asserts.notNull(oldRecommend, "推荐信息");
+        Asserts.notNull(oldRecommend, "推荐信息未获取到");
 
         VideoInfo videoInfo = videoInfoMapper.getByAv(oldRecommend.getAv());
-        Asserts.notNull(videoInfo, "视频信息", "请发起爬取");
+        Asserts.notNull(videoInfo, "视频信息未获取到，请发起爬取");
 
         RecommendVideo recommendVideo = recommendVideoMapper.getNew();
 

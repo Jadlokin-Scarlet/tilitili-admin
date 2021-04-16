@@ -2,6 +2,8 @@ package com.tilitili.admin.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,6 +48,12 @@ public class StringUtil {
         return bigNumberFormat(number.toString());
     }
 
-
+    public static String matcherGroupOne(String regx, String source) {
+        Matcher matcher = Pattern.compile(regx).matcher(source);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
 
 }

@@ -9,6 +9,7 @@ import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.TaskMapper;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,8 +45,8 @@ public class TaskController extends BaseController{
     @PatchMapping("")
     @ResponseBody
     public BaseModel updateTask(@RequestBody Task task) {
-        Assert.notNull(task.getIdList(), "参数有误");
-        Assert.notNull(task.getStatus(), "参数有误");
+        Asserts.notNull(task.getIdList(), "参数有误");
+        Asserts.notNull(task.getStatus(), "参数有误");
 
         List<Long> idList = StringUtil.splitNumberList(task.getIdList());
 
@@ -59,8 +60,8 @@ public class TaskController extends BaseController{
     @PostMapping("")
     @ResponseBody
     public BaseModel spiderVideo(@RequestBody SimpleTaskView simpleTaskView) {
-        Assert.notNull(simpleTaskView, "参数有误");
-        Assert.notNull(simpleTaskView.getValue(), "参数有误");
+        Asserts.notNull(simpleTaskView, "参数有误");
+        Asserts.notNull(simpleTaskView.getValue(), "参数有误");
 
         if (simpleTaskView.getReason() == null) {
             simpleTaskView.setReason(TaskReason.NO_REASON.getValue());

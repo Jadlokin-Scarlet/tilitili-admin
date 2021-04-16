@@ -44,8 +44,8 @@ public class VideoInfoController extends BaseController {
     @GetMapping("/count")
     @ResponseBody
     public BaseModel getVideoInfoCount(VideoInfoCountRequest request) {
-        Asserts.notNull(request, "参数");
-        Asserts.notNull(request.getTime(), "查询区间");
+        Asserts.notNull(request, "参数异常");
+        Asserts.notNull(request.getTime(), "查询区间未获取到");
         VideoInfoCountResponse videoInfoCountResponse = new VideoInfoCountResponse();
         videoInfoCountResponse.setNewVideoCountList(videoInfoService.getNewVideoCount(request));
         return BaseModel.success(videoInfoCountResponse);
@@ -68,9 +68,9 @@ public class VideoInfoController extends BaseController {
     @PatchMapping("/startTime")
     @ResponseBody
     public BaseModel updateStartTime(@RequestBody VideoInfo videoInfo) {
-        Assert.notNull(videoInfo, "参数异常");
-        Assert.notNull(videoInfo.getAv(), "参数异常");
-        Assert.notNull(videoInfo.getStartTime(), "参数异常");
+        Asserts.notNull(videoInfo, "参数异常");
+        Asserts.notNull(videoInfo.getAv(), "参数异常");
+        Asserts.notNull(videoInfo.getStartTime(), "参数异常");
         videoInfoService.updateStartTime(videoInfo.getAv(), videoInfo.getStartTime());
         return new BaseModel("更新成功", true);
     }
@@ -78,9 +78,9 @@ public class VideoInfoController extends BaseController {
     @PatchMapping("/externalOwner")
     @ResponseBody
     public BaseModel updateExternalOwner(@RequestBody VideoInfo videoInfo) {
-        Assert.notNull(videoInfo, "参数异常");
-        Assert.notNull(videoInfo.getAv(), "参数异常");
-        Assert.notNull(videoInfo.getExternalOwner(), "参数异常");
+        Asserts.notNull(videoInfo, "参数异常");
+        Asserts.notNull(videoInfo.getAv(), "参数异常");
+        Asserts.notNull(videoInfo.getExternalOwner(), "参数异常");
         videoInfoMapper.updateExternalOwner(videoInfo.getAv(), videoInfo.getExternalOwner());
         return new BaseModel("更新成功", true);
     }
@@ -88,9 +88,9 @@ public class VideoInfoController extends BaseController {
     @PatchMapping("/isCopyWarning")
     @ResponseBody
     public BaseModel updateIsCopyWarning(@RequestBody VideoInfo videoInfo) {
-        Assert.notNull(videoInfo, "参数异常");
-        Assert.notNull(videoInfo.getAv(), "参数异常");
-        Assert.notNull(videoInfo.getIsCopyWarning(), "参数异常");
+        Asserts.notNull(videoInfo, "参数异常");
+        Asserts.notNull(videoInfo.getAv(), "参数异常");
+        Asserts.notNull(videoInfo.getIsCopyWarning(), "参数异常");
         VideoInfo oldVideoInfo = videoInfoMapper.getByAv(videoInfo.getAv());
         if (oldVideoInfo.getCopyright()) {
             return new BaseModel("已经是搬运视频了，不用疑似");

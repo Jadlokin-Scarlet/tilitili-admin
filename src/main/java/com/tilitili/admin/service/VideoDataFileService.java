@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,34 @@ public class VideoDataFileService {
 
     public List<VideoDataFileItem> listForDataFile(VideoDataQuery videoDataQuery) {
         videoDataQuery.setHasRank(true);
+        videoDataQuery.setPageSize(200);
         videoDataQuery.setSorter("point", "desc");
-        return videoDataManager.list(videoDataQuery).parallelStream().map(videoData -> {
+        List<VideoData> videoDataList = videoDataManager.list(videoDataQuery);
+        List<VideoDataFileItem> result = new ArrayList<>();
+
+        int rankWithoutLen = 1;
+
+        for (VideoData videoData : videoDataList) {
             VideoDataFileItem video = new VideoDataFileItem();
+
+            if (rankWithoutLen < 4) {
+                video.setLevel(1);
+                video.setShowLength(40);
+            } else if (rankWithoutLen < 11) {
+                video.setLevel(2);
+                video.setShowLength(30);
+            } else if (rankWithoutLen < 21) {
+                video.setLevel(3);
+                video.setShowLength(20);
+            } else if (rankWithoutLen < 31) {
+                video.setLevel(4);
+                video.setShowLength(10);
+            } else if (rankWithoutLen < 101) {
+                video.setLevel(5);
+            } else {
+                break;
+            }
+
             VideoData oldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 1);
             VideoData moreOldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 2);
 
@@ -85,7 +111,7 @@ public class VideoDataFileService {
             }
 
             // 主副榜不同的设置
-            if (videoData.getRank() <= 30) {
+            if (video.getLevel() < 5) {
                 video.setTypeStr(videoData.getType());
                 // 是否搬运
                 if (videoData.getCopyright()) {
@@ -110,8 +136,13 @@ public class VideoDataFileService {
                 video.setPubTimeStr("投稿日期 " + video.getPubTimeStr());
             }
 
-            return video;
-        }).collect(Collectors.toList());
+            result.add(video);
+
+            if (! video.getIsLen()) {
+                rankWithoutLen++;
+            }
+        }
+        return result;
     }
 
 }
