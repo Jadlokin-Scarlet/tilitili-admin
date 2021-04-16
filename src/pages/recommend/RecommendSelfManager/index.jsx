@@ -6,7 +6,6 @@ import SpiderVideo from "./SpiderVideo";
 import RecommendVideoToNow from "./RecommendVideoToNow";
 import UnUseRecommend from "./UnUseRecommend";
 import UpdateRecommend from "./UpdateRecommend";
-import RecommendVideo from "../RecommendPoolManager/RecommendVideo";
 
 export default class RecommendSelfManager extends Component {
     constructor(props) {

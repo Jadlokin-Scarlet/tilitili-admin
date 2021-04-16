@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {getRecommendTalkByCondition} from "../../../api";
 import DefaultTable from "../../../components/default-table";
+import UpdateRecommendTalk from "./UpdateRecommendTalk";
+import BatchUpdateRecommendTalk from "./BatchUpdateRecommendTalk";
 
 export default class RecommendTalkManager extends Component {
     columnsConfig = [
@@ -21,22 +23,25 @@ export default class RecommendTalkManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            defaultFilters: {},
+            defaultFilters: {status: [0], type: [1]},
         }
     }
 
     handleResourceLoaded = (resources, callback) => {
         const { recommendIssueResource } = resources;
-        const newIssue = Math.max(...recommendIssueResource.map(resources => resources.value));
-        this.setState({defaultFilters: Object.assign({issueId: [55]}, this.state.defaultFilters)}, callback)
+        const newIssueId = Math.max(...recommendIssueResource.map(resources => resources.value));
+        this.setState({defaultFilters: Object.assign({issueId: [newIssueId]}, this.state.defaultFilters)}, callback)
     }
 
     handleButtonsInit = (that) => {
-        const { state, handleUpdated } = that
-        const { selectedRows, resources } = state
+        const { state, handleUpdated, handleVisibleChange } = that
+        const { selectedRows, resources, visible, data } = state
+        const buttonData = data?.data || {};
         const selectedRow = selectedRows[0] || {};
         return (
             <>
+                <UpdateRecommendTalk selectedRow={selectedRow} onSuccess={handleUpdated} resources={resources} visible={visible} onVisibleChange={handleVisibleChange}/>
+                <BatchUpdateRecommendTalk buttonData={buttonData} onSuccess={handleUpdated} resources={resources}/>
             </>
         )
     }
@@ -45,6 +50,7 @@ export default class RecommendTalkManager extends Component {
         return (
             <DefaultTable
                 needResourcesList={['recommendIssueResource']}
+                defaultSorter={{field: 'id', order: 'ascend'}}
                 defaultFilters={this.state.defaultFilters}
                 defaultPageSize={100}
                 rowKey={record => record.id}

@@ -4,7 +4,7 @@ import DefaultTable from "../../../components/default-table";
 import UpdateStartTime from "./UpdateStartTime";
 import CopyBvToClipboard from "./CopyBvToClipboard";
 import UpdateExternalOwner from "../VideoDataManager/UpdateExternalOwner";
-import {dateFormat, isBlank} from "../../../utils/HtmlUtils";
+import {dateFormat, isBlank, suffixRender} from "../../../utils/HtmlUtils";
 import CheckPoint from "./CheckPoint";
 import CopyButtonToClipboard from "./CopyButtonToClipboard";
 import ChooseIssue from "./ChooseIssue";
@@ -90,6 +90,8 @@ export default class VideoDataFileCheck extends Component {
         {title: '历史排名槽', key: 'hisRankStr', width: 90, afterRender: value => value === 0? '': value},
         {title: '是否提升排名', key: 'isUp', width: 110, type: 'chooseRender', chooseMap: 'isUpList'},
         {title: '是否长期槽', key: 'isLen', width: 90, type: 'chooseRender', chooseMap: 'isLenList'},
+        {title: '等级', key: 'level', width: 60},
+        {title: '展示时常', key: 'showLength', width: 120, afterRender: suffixRender('秒')}
     ];
 
 }

@@ -1,6 +1,5 @@
 import React, {Component} from "react";
-import {Input} from "antd";
-import {defineProperty, emptyFunc, isBlank} from "../../../utils/HtmlUtils";
+import {defineProperty, emptyFunc} from "../../../utils/HtmlUtils";
 import CacheInput from "../../../components/cache-input";
 
 export default class ChooseIssue extends Component {

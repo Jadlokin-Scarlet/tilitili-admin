@@ -258,9 +258,15 @@ export const splitToList = (key, text) => {
 
 export const splitToListRender = currying(splitToList)
 
-export const priceRender = currying((unit, text) => {
+export const prefixRender = currying((unit, text) => {
     if (isNotNull(text)) {
         return unit + text
+    }
+})
+
+export const suffixRender = currying((unit, text) => {
+    if (isNotNull(text)) {
+        return text + unit;
     }
 })
 

@@ -11,6 +11,7 @@ export default class RecommendVideoManager extends Component {
         {title: '期数', key: 'issue', width: 100},
         {title: '推荐数', key: 'recommendNumber', width: 100},
         {title: '自荐数', key: 'selfRecommendNumber', width: 100},
+        {title: '是否有对话', key: 'hasTalk', width: 120, type: 'chooseRender', chooseMap: 'hasTalkList'},
         {title: '类型', key: 'type', width: 100, type: 'choose', chooseMap: 'typeList'},
         {title: '状态', key: 'status', width: 100, type: 'choose', chooseMap: 'statusList'},
         {title: '创建时间', key: 'createTime', width: 200, type: 'sorter'},
@@ -29,7 +30,8 @@ export default class RecommendVideoManager extends Component {
 
     handleResourcesInit = () => ({
         typeList: [{text: '正常', value: 0, renderHidden: true},{text: '特别刊', value: 1},],
-        statusList: [{text: '废弃', value: -1, tag: 'no'},{text: '正常', value: 0, renderHidden: true},]
+        statusList: [{text: '废弃', value: -1, tag: 'no'},{text: '正常', value: 0, renderHidden: true},],
+        hasTalkList: [{text: '无', value: false, renderHidden: true},{text: '有', value: true},],
     })
 
     render() {

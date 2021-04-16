@@ -6,7 +6,6 @@ import RecommendVideoToNow from "./RecommendVideoToNow";
 import UpdateRecommend from "./UpdateRecommend";
 import UnUseRecommend from "./UnUseRecommend";
 import {dateFormat} from "../../../utils/HtmlUtils";
-import RecommendVideo from "../RecommendPoolManager/RecommendVideo";
 
 export default class UseRecommendManager extends Component {
     constructor(props) {

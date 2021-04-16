@@ -32,7 +32,7 @@ export const menuList = [
         { title: "自荐池", key: "/recommend/RecommendSelfPoolManager", icon: "funnel-plot", component: RecommendSelfPoolManager},
         { title: "自荐配置", key: "/recommend/RecommendSelfManager", icon: "smile", component: RecommendSelfManager},
         { title: "推荐刊配置", key: "/recommend/RecommendVideoManager", icon: "play-square", component: RecommendVideoManager},
-        { title: "推荐刊对话配置", key: "/recommend/RecommendTalkManager", icon: "", component: RecommendTalkManager},
+        { title: "推荐刊对话配置", key: "/recommend/RecommendTalkManager", icon: "message", component: RecommendTalkManager},
     ]},
     {key: "/tilitili", title: "视频站后台", children: [
         { title: "作者管理", key: "/tilitili/ownerManager", icon: "user", component: OwnerManager},

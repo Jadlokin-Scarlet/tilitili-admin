@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './index.less';
 import {Button, Col, Icon, Layout, Menu, Result, Row, Tabs, Typography} from "antd";
-import {checkRespForData, For, If, isEmpty, isNotNull, isNull} from "../utils/HtmlUtils";
+import {For, If, isEmpty, isNotNull, isNull} from "../utils/HtmlUtils";
 import TweenOne from 'rc-tween-one';
 import QueueAnim from 'rc-queue-anim';
 import LoginModal from "./LoginModal";

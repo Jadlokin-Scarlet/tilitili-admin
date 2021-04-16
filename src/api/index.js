@@ -94,3 +94,4 @@ export const updateRecommendVideo = data => patch('/recommendVideo', data);
 
 //对话配置
 export const getRecommendTalkByCondition = data => get('/recommendTalk', data);
+export const updateRecommendTalk = data => patch('/recommendTalk', data);
