@@ -40,7 +40,7 @@ public class VideoDataFileController extends BaseController {
             return new BaseModel("未排行，请先排行");
         }
         List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
-        return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
+        return PageModel.of(videoDataFileItemList.size(), videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
     }
 
 }
