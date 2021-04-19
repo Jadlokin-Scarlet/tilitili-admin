@@ -93,8 +93,7 @@ public class ResourceController extends BaseController {
     @ResponseBody
     @JsonView(VideoDataFileItem.VideoView.class)
     public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
-        List<VideoDataFileItem> videoDataFileItemList = videoDataFileService.listForDataFile(videoDataQuery);
-        return PageModel.of(100, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), videoDataFileItemList);
+        return videoDataFileService.listForDataFile(videoDataQuery);
     }
 
     @GetMapping("/recommend")

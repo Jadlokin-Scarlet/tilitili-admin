@@ -4,6 +4,8 @@ import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.utils.MathUtil;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.query.VideoDataQuery;
+import com.tilitili.common.entity.view.BaseModel;
+import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.VideoDataManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +28,16 @@ public class VideoDataFileService {
         this.videoDataManager = videoDataManager;
     }
 
-    public List<VideoDataFileItem> listForDataFile(VideoDataQuery videoDataQuery) {
-        videoDataQuery.setHasRank(true);
-        videoDataQuery.setPageSize(200);
-        videoDataQuery.setSorter("point", "desc");
-        List<VideoData> videoDataList = videoDataManager.list(videoDataQuery);
+    public BaseModel listForDataFile(VideoDataQuery videoDataQuery) {
+        VideoDataQuery query = new VideoDataQuery().setIssue(videoDataQuery.getIssue()).setHasRank(true).setPageSize(200).setSorter("point", "desc");
+        List<VideoData> videoDataList = videoDataManager.list(query);
         List<VideoDataFileItem> result = new ArrayList<>();
 
         int rankWithoutLen = 1;
+        int total = 0;
 
-        for (VideoData videoData : videoDataList) {
+        for (int index = 0; index < videoDataList.size(); index++) {
+            VideoData videoData = videoDataList.get(index);
             VideoDataFileItem video = new VideoDataFileItem();
 
             if (rankWithoutLen < 4) {
@@ -141,13 +143,18 @@ public class VideoDataFileService {
                 video.setPubTimeStr("投稿日期 " + video.getPubTimeStr());
             }
 
-            result.add(video);
-
+            total ++;
+            // 分页
+            int start = videoDataQuery.getStart();
+            int end = start + videoDataQuery.getPageSize();
+            if (index >= start && index < end) {
+                result.add(video);
+            }
             if (! video.getIsLen()) {
                 rankWithoutLen++;
             }
         }
-        return result;
+        return PageModel.of(total, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), result);
     }
 
 }
