@@ -46,7 +46,7 @@ public class RecommendTalkService {
         String area = type == 1? "OP": "ED";
         Integer issueId = recommendVideoMapper.getNew().getId();
         String[] talkList = op.split("\n");
-        List<String> speakerList = Arrays.asList("灵梦", "早苗");
+        List<String> speakerList = Arrays.asList("灵梦", "早苗", "灵梦&早苗");
         List<String> reimuExpression = Arrays.asList("默认", "龇牙", "互动", "微笑", "気持", "思考向上", "GJ", "汗颜", "思考");
         List<String> sanaeExpression = Arrays.asList("默认", "开心", "猫耳", "互动", "汗颜", "好奇", "汇报");
 
@@ -65,6 +65,8 @@ public class RecommendTalkService {
                 Asserts.isTrue(reimuExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);
             } else if (Objects.equals(speaker, "早苗")) {
                 Asserts.isTrue(sanaeExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);
+            } else if (Objects.equals(speaker, "灵梦&早苗")) {
+                Asserts.isTrue(reimuExpression.contains(expression) && sanaeExpression.contains(expression), "%s第%s行，灵梦或早苗没有表情%s", area, index, speaker, expression);
             }
 
             RecommendTalk recommendTalk = new RecommendTalk().setSpeaker(speaker).setText(text).setExpression(expression).setType(type).setIssueId(issueId);

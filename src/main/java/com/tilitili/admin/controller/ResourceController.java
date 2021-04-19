@@ -7,8 +7,10 @@ import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.VideoDataFileService;
+import com.tilitili.common.entity.RecommendTalk;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendQuery;
+import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
@@ -16,12 +18,12 @@ import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.RecommendMapper;
+import com.tilitili.common.mapper.RecommendTalkMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,15 +41,17 @@ public class ResourceController extends BaseController {
     private final RecommendService recommendService;
     private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
+    private final RecommendTalkMapper recommendTalkMapper;
 
     @Autowired
-    public ResourceController(RecommendManager recommendManager, ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper) {
+    public ResourceController(RecommendManager recommendManager, ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, RecommendTalkMapper recommendTalkMapper) {
         this.recommendManager = recommendManager;
         this.resourceService = resourceService;
         this.videoDataFileService = videoDataFileService;
         this.recommendService = recommendService;
         this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
+        this.recommendTalkMapper = recommendTalkMapper;
     }
 
     @GetMapping("")
@@ -117,6 +121,19 @@ public class ResourceController extends BaseController {
         int total = recommendManager.countSelfRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getSelfRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/recommendTalk")
+    @ResponseBody
+    public BaseModel getRecommendTalk(RecommendTalkQuery query) {
+        if (query.getIssueId() == null) {
+            RecommendVideo recommendVideo = recommendVideoMapper.getNew();
+            query.setIssueId(recommendVideo.getId());
+        }
+        query.setStatus(0).setSorter("id", "asc");
+        int total = recommendTalkMapper.count(query);
+        List<RecommendTalk> recommendTalkList = recommendTalkMapper.list(query);
+        return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendTalkList);
     }
 
     @PatchMapping("/flag")
