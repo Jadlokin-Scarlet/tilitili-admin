@@ -127,7 +127,12 @@ public class VideoDataFileService {
                         video.setSubOwnerStr("疑似搬运");
                     }
                 }
+                // 是否上升排名
                 video.setIsUp(oldVideo.getRank() == 0 || videoData.getRank() <= oldVideo.getRank());
+                // 长期视频只5s
+                if (video.getIsLen()) {
+                    video.setShowLength(5);
+                }
             }else {
                 // 副榜历史排名默认显示上周-位，主榜不显示
                 if (oldVideo.getRank() == 0) {
