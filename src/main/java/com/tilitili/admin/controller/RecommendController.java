@@ -14,6 +14,7 @@ import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.mapper.VideoInfoMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.BilibiliUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.tilitili.admin.utils.BilibiliUtil.converseAvToBv;
 import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -88,7 +88,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel addRecommend(@RequestBody Recommend recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
         if (recommend.getBv() != null) {
-            recommend.setAv(converseAvToBv(recommend.getBv()));
+            recommend.setAv(BilibiliUtil.converseAvToBv(recommend.getBv()));
         }
 
         Asserts.notNull(recommend.getAv(), "av号未获取到");

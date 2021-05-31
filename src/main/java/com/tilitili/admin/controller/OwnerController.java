@@ -1,17 +1,17 @@
 package com.tilitili.admin.controller;
 
 import com.tilitili.common.entity.Owner;
+import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.OwnerMapper;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +34,17 @@ public class OwnerController {
         int count = ownerMapper.count(query);
         List<Owner> ownerList = ownerMapper.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), ownerList);
+    }
+
+    @PatchMapping("")
+    @ResponseBody
+    public BaseModel updateOwner(@RequestBody Owner owner) {
+        Asserts.notNull(owner, "参数有误");
+        Asserts.notNull(owner.getUid(), "参数有误");
+        Asserts.notNull(owner.getStatus(), "参数有误");
+
+        ownerMapper.update(owner);
+        return new BaseModel("更新作者成功", true);
     }
 
 }

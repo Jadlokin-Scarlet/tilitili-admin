@@ -22,7 +22,7 @@ public class RecommendFileItem {
     private String avStr;
     private String nameStr;
     private String operatorStr;
-    private String textStr;
+//    private String textStr;
     private String ownerStr;
     private String externalOwnerStr;
     private String typeStr;

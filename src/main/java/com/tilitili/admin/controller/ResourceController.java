@@ -7,6 +7,7 @@ import com.tilitili.admin.entity.RecommendFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.VideoDataFileService;
+import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendTalk;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendQuery;
@@ -120,6 +121,13 @@ public class ResourceController extends BaseController {
         int total = recommendManager.countSelfRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getSelfRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/recommend/text")
+    @ResponseBody
+    public BaseModel getRecommendText(Long av) {
+        Recommend recommend = recommendMapper.getByAv(av);
+        return BaseModel.success(recommend.getText());
     }
 
     @GetMapping("/recommendTalk")

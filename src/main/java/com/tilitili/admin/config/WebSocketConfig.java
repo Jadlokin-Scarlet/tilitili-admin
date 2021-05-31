@@ -1,0 +1,29 @@
+package com.tilitili.admin.config;
+
+import com.tilitili.admin.socket.BaseWebSocketHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+
+@Slf4j
+@Configuration
+public class WebSocketConfig {
+    final List<BaseWebSocketHandler> webSocketHandlerList;
+
+    @Autowired
+    public WebSocketConfig(List<BaseWebSocketHandler> webSocketHandlerList) {
+        this.webSocketHandlerList = webSocketHandlerList;
+    }
+
+    @PostConstruct
+    public void webSocketConnectionManager() {
+        for (BaseWebSocketHandler webSocketHandler : webSocketHandlerList) {
+            new WebSocketConnectionManager(new StandardWebSocketClient(), webSocketHandler, webSocketHandler.getUrl()).start();
+        }
+    }
+}

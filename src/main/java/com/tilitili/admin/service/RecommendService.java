@@ -85,7 +85,6 @@ public class RecommendService {
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
             recommendFileItem.setOperatorStr(operator);
-            recommendFileItem.setTextStr(textStr);
             recommendFileItem.setOwnerStr(owner);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);
@@ -129,7 +128,6 @@ public class RecommendService {
             recommendFileItem.setAvStr(av.toString());
             recommendFileItem.setNameStr(name);
             recommendFileItem.setOperatorStr(ownerName);
-            recommendFileItem.setTextStr(textStr);
             recommendFileItem.setOwnerStr(ownerName);
             recommendFileItem.setExternalOwnerStr(externalOwner);
             recommendFileItem.setTypeStr(videoType);

@@ -38,7 +38,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         //登陆和资源下放不用登陆
         String url = request.getRequestURL().toString();
         String method = request.getMethod();
-        if (url.contains("/admin") || (url.contains("/resources") && HttpMethod.GET.matches(method))) {
+        if (url.contains("/admin")) {
+            return true;
+        }
+        if (url.contains("/resources") && HttpMethod.GET.matches(method)) {
+            return true;
+        }
+        if (url.contains("/pub")) {
             return true;
         }
         if (url.contains("error") || url.contains("ico")) {

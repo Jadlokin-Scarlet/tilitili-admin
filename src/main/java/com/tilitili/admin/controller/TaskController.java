@@ -2,6 +2,7 @@ package com.tilitili.admin.controller;
 
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.emnus.TaskReason;
+import com.tilitili.common.emnus.TaskStatus;
 import com.tilitili.common.entity.Task;
 import com.tilitili.common.entity.query.TaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Validated
@@ -52,6 +54,9 @@ public class TaskController extends BaseController{
 
         for (Long id : idList) {
             taskMapper.update(new Task().setId(id).setStatus(task.getStatus()));
+            if (Objects.equals(task.getStatus(), TaskStatus.WAIT.value)) {
+                taskManager.reSpiderVideo(id);
+            }
         }
 
         return new BaseModel("修改成功", true);
