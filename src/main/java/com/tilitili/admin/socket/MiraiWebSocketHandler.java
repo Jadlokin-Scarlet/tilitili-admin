@@ -47,6 +47,9 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
             Asserts.isTrue(miraiMessage.getType().equals("FriendMessage"), "只支持私聊回复");
             String result = miraiManager.handleMessage(miraiMessage);
             Thread.sleep(1000);
+            if (result.length() > 30) {
+                result = result.substring(0, 25);
+            }
             miraiManager.sendFriendMessage("Plain", result, miraiMessage.getSender().getId());
         } catch (IllegalStateException e) {
             log.error(e.getMessage());
