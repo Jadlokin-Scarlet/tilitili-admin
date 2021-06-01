@@ -1,6 +1,7 @@
 package com.tilitili.admin.socket;
 
 import com.google.gson.Gson;
+import com.tilitili.admin.service.MiraiService;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.utils.Asserts;
@@ -18,12 +19,13 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
     @Value("${mirai.base-url}")
     private String baseUrl;
 
-
     private final MiraiManager miraiManager;
+    private final MiraiService miraiService;
 
     @Autowired
-    public MiraiWebSocketHandler(MiraiManager miraiManager) {
+    public MiraiWebSocketHandler(MiraiManager miraiManager, MiraiService miraiService) {
         this.miraiManager = miraiManager;
+        this.miraiService = miraiService;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
             Asserts.notNull(miraiMessage.getSender().getId(), "未获取到消息");
 
             Asserts.isTrue(miraiMessage.getType().equals("FriendMessage"), "只支持私聊回复");
-            String result = miraiManager.handleMessage(miraiMessage);
+            String result = miraiService.handleMessage(miraiMessage);
             Thread.sleep(1000);
             if (result.length() > 30) {
                 result = result.substring(0, 25);
