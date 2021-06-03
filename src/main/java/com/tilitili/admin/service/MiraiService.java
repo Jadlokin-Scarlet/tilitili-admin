@@ -90,16 +90,15 @@ public class MiraiService {
 
         Asserts.notBlank(uid, "格式错啦(uid)");
 
-        Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(qq).setSendType("friend");
-        subscriptionMapper.addSubscription(add);
+        int oldCount = subscriptionMapper.countSubscriptionByCondition(new Subscription().setType(1).setValue(uid).setSendGroup(qq));
+        Asserts.isTrue(oldCount == 0, "已经关注了哦。");
 
-        Owner owner = ownerMapper.getByUid(Long.valueOf(uid));
-        if (owner != null) {
-            return "关注成功！";
-        }
+        Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(qq).setSendType("friend");
+        subscriptionMapper.insertSubscription(add);
+
         SimpleTaskView simpleTaskView = new SimpleTaskView().setValue(uid).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
         taskManager.simpleSpiderVideo(simpleTaskView);
-        return "关注成功！等待爬取ing。";
+        return "关注成功！";
     }
 
     public String addRecommendFromMessage(MiraiMessage message, Map<String, String> map) {
