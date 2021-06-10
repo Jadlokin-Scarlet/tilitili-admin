@@ -1,30 +1,34 @@
 package com.tilitili.admin.service;
 
+import com.google.common.collect.ImmutableMap;
 import com.tilitili.common.emnus.TaskReason;
-import com.tilitili.common.entity.Owner;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.Subscription;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.manager.TaskManager;
-import com.tilitili.common.mapper.OwnerMapper;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.mapper.SubscriptionMapper;
-import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.BilibiliUtil;
-import com.tilitili.common.utils.StringUtils;
+import com.tilitili.common.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -33,29 +37,21 @@ public class MiraiService {
     private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
     private final SubscriptionMapper subscriptionMapper;
-    private final OwnerMapper ownerMapper;
     private final TaskManager taskManager;
 
     @Autowired
-    public MiraiService(RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, SubscriptionMapper subscriptionMapper, OwnerMapper ownerMapper, TaskManager taskManager) {
+    public MiraiService(RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, SubscriptionMapper subscriptionMapper, TaskManager taskManager) {
         this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
         this.subscriptionMapper = subscriptionMapper;
-        this.ownerMapper = ownerMapper;
         this.taskManager = taskManager;
     }
 
-    public String handleMessage(MiraiMessage message) {
+    public String handleMessage(MiraiMessageView message) {
         try {
             List<MessageChain> messageChain = message.getMessageChain();
-            if (messageChain.size() != 2) {
-                return "";
-            }
-            MessageChain messageChainItem = messageChain.get(1);
-            if (! Objects.equals(messageChainItem.getType(), "Plain")) {
-                return "";
-            }
-            String text = messageChainItem.getText();
+            String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
+            String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
             String[] lineList = text.split("\n");
             String title = lineList[0];
             Map<String, String> map = new HashMap<>();
@@ -68,9 +64,13 @@ public class MiraiService {
                 String value = line.split("=")[1];
                 map.put(key.trim(), value.trim());
             }
+            if (isNotBlank(url)) {
+                map.put("url", url);
+            }
             switch (title) {
                 case "添加推荐" : return addRecommendFromMessage(message, map);
                 case "关注主播" : return addSubscriptionFromMessage(message, map);
+                case "查找原图" : return findImageFromMessage(message, map);
                 default: return "?";
             }
 
@@ -83,7 +83,22 @@ public class MiraiService {
         }
     }
 
-    public String addSubscriptionFromMessage(MiraiMessage message, Map<String, String> map) {
+    private String findImageFromMessage(MiraiMessageView message, Map<String, String> map) {
+        String url = map.get("url");
+        Asserts.notBlank(url, "格式错啦(图片)");
+        String html = HttpClientUtil.httpPost("https://saucenao.com/search.php?url="+url, ImmutableMap.of(), null, null, null);
+        Asserts.notBlank(html, "没要到图😇\n"+url);
+        Document document = Jsoup.parse(html);
+        Elements resultList = document.select(".result:not(.hidden):not(#result-hidden-notification)");
+        Asserts.isFalse(resultList.isEmpty(), "没找到🤕\n"+url);
+        Element result = resultList.get(0);
+        String rate = result.select(".resultsimilarityinfo").text();
+        Elements linkList = result.select(".resultcontentcolumn a.linkify");
+        String link = linkList.get(0).attr("href");
+        return String.format("找到啦😊！相似度%s\n%s", rate, link);
+    }
+
+    public String addSubscriptionFromMessage(MiraiMessageView message, Map<String, String> map) {
         String uid = map.get("uid");
         Sender sender = message.getSender();
         Long qq = sender.getId();
@@ -101,7 +116,7 @@ public class MiraiService {
         return "关注成功！";
     }
 
-    public String addRecommendFromMessage(MiraiMessage message, Map<String, String> map) {
+    public String addRecommendFromMessage(MiraiMessageView message, Map<String, String> map) {
         String avStr = map.get("视频号");
         String operator = map.get("推荐人");
         String text = map.get("推荐语");
