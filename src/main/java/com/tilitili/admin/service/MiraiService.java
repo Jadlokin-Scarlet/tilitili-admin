@@ -6,7 +6,6 @@ import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.Subscription;
 import com.tilitili.common.entity.mirai.MessageChain;
-import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.view.SimpleTaskView;

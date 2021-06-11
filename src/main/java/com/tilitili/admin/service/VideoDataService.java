@@ -1,10 +1,10 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.count.sub.VideoDataAddCount;
-import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.VideoDataGroup;
 import com.tilitili.common.entity.query.VideoDataQuery;
+import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.manager.VideoDataManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -38,13 +38,44 @@ public class VideoDataService {
 
     @Transactional
     public void reRank(int issue) {
-        VideoDataQuery videoDataQuery = new VideoDataQuery().setIssue(issue).setIsDelete(false).setStatus(0).setStart(0).setPageSize(RANK_LIMIT).setSorter("point", "desc");
-        List<VideoData> videoList = videoDataManager.list(videoDataQuery);
-        IntStream.range(0, RANK_LIMIT)//.parallel()
-                .filter(index -> !videoList.get(index).getRank().equals(index + 1))
-                .peek(index -> log.info("av{} rank{} update to {}", videoList.get(index).getAv(), videoList.get(index).getRank(), index + 1))
-                .mapToObj(index -> videoList.get(index).setRank(index + 1))
-                .forEach(videoDataManager::updateRank);
+        videoDataManager.clearRank(issue);
+        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setStatus(0).setIsDelete(false).setPageSize(RANK_LIMIT).setSorter("point", "desc"));
+
+        int rankWithoutLen = 1;
+        for (int index = 0; index < videoDataList.size(); index++) {
+            VideoData videoData = videoDataList.get(index);
+            int rank = index + 1;
+            Long av = videoData.getAv();
+
+            VideoData hisData = videoDataManager.getByAvAndIssue(av, issue - 1);
+            VideoData moreHisData = videoDataManager.getByAvAndIssue(av, issue - 2);
+            int hisRank = Optional.ofNullable(hisData).map(VideoData::getRank).orElse(0);
+            int moreHisRank = Optional.ofNullable(moreHisData).map(VideoData::getRank).orElse(0);
+            boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0 && rank <= 30 && hisRank <= 30 && moreHisRank <=30;
+
+            VideoData upd = new VideoData();
+            upd.setAv(av);
+            upd.setIssue(issue);
+            upd.setRank(rank);
+            if (rankWithoutLen < 4) {
+                upd.setLevel(1);
+            } else if (rankWithoutLen < 11) {
+                upd.setLevel(2);
+            } else if (rankWithoutLen < 21) {
+                upd.setLevel(3);
+            } else if (rankWithoutLen < 31) {
+                upd.setLevel(4);
+            } else if (rankWithoutLen < 101) {
+                upd.setLevel(5);
+            }
+
+            if (! isLen) {
+                rankWithoutLen ++;
+            }
+
+            log.info("av{} issue={} oldRank={} rank={} level={}", av, issue, videoData.getRank(), rank, upd.getLevel());
+            videoDataManager.update(videoData);
+        }
     }
 
     public List<VideoDataAddCount> getVideoDataCount(VideoDataQuery query) {
