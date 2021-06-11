@@ -1,5 +1,7 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.manager.VideoDataManager;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class VideoDataServiceTest extends TestCase {
     @Resource
     private VideoDataService videoDataService;
+    @Resource
+    private VideoDataManager videoDataManager;
     @Test
     void reRank() {
-        videoDataService.reRank(23);
+        VideoData hisData = videoDataManager.getByAvAndIssue(715997051L, 44);
     }
 }

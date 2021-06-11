@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.tilitili.admin.utils.StringUtil.bigNumberFormat;
@@ -29,60 +30,66 @@ public class VideoDataFileService {
     }
 
     public BaseModel listForDataFile(VideoDataQuery videoDataQuery) {
-        VideoDataQuery query = new VideoDataQuery().setIssue(videoDataQuery.getIssue()).setHasRank(true).setPageSize(200).setSorter("point", "desc");
+        VideoDataQuery query = videoDataQuery.setIssue(videoDataQuery.getIssue()).setHasLevel(true).setSorter("point", "desc");
+        int total = videoDataManager.count(query);
         List<VideoData> videoDataList = videoDataManager.list(query);
-        List<VideoDataFileItem> result = new ArrayList<>();
-
-        int rankWithoutLen = 1;
-        int total = 0;
-
-        for (int index = 0; index < videoDataList.size(); index++) {
-            VideoData videoData = videoDataList.get(index);
+        List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
+            Integer rank = videoData.getRank();
 
-            if (rankWithoutLen < 4) {
-                video.setLevel(1);
-                video.setShowLength(40);
-            } else if (rankWithoutLen < 11) {
-                video.setLevel(2);
-                video.setShowLength(30);
-            } else if (rankWithoutLen < 21) {
-                video.setLevel(3);
-                video.setShowLength(20);
-            } else if (rankWithoutLen < 31) {
-                video.setLevel(4);
-                video.setShowLength(10);
-            } else if (rankWithoutLen < 101) {
-                video.setLevel(5);
-            } else {
-                break;
+            long view = Optional.ofNullable(videoData.getView()).orElse(0);
+            long favorite = Optional.ofNullable(videoData.getFavorite()).orElse(0);
+            long coin = Optional.ofNullable(videoData.getCoin()).orElse(0);
+            long reply = Optional.ofNullable(videoData.getReply()).orElse(0);
+            long page = videoData.getPage();
+
+            switch (videoData.getLevel()) {
+                case 1:
+                    video.setShowLength(40);
+                    break;
+                case 2:
+                    video.setShowLength(30);
+                    break;
+                case 3:
+                    video.setShowLength(20);
+                    break;
+                case 4:
+                    video.setShowLength(10);
+                    break;
             }
 
             VideoData oldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 1);
             VideoData moreOldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 2);
 
+            long oldView = Optional.ofNullable(oldVideo).map(VideoData::getView).orElse(0);
+            long oldFavorite = Optional.ofNullable(oldVideo).map(VideoData::getFavorite).orElse(0);
+            long oldCoin = Optional.ofNullable(oldVideo).map(VideoData::getCoin).orElse(0);
+            long oldReply = Optional.ofNullable(oldVideo).map(VideoData::getReply).orElse(0);
+
+            Integer oldRank = Optional.ofNullable(oldVideo).map(VideoData::getRank).orElse(0);
+            Integer moreOldRank = Optional.ofNullable(moreOldVideo).map(VideoData::getRank).orElse(0);
+
             BeanUtils.copyProperties(videoData, video);
-            video.setHisRank(oldVideo.getRank());
-            video.setIsLen(videoData.getRank(), oldVideo.getRank(), moreOldVideo.getRank());
+            video.setHisRank(oldRank);
+            video.setIsLen(rank, oldRank, moreOldRank);
 
             // 检查分数
-            long favorite = videoData.getFavorite() - oldVideo.getFavorite();
-            long coin = videoData.getCoin() - oldVideo.getCoin();
-            long view = videoData.getView() - oldVideo.getView();
-            long reply = videoData.getReply() - oldVideo.getReply();
-            long page = videoData.getPage();
+            long dFavorite = favorite - oldFavorite;
+            long dCoin = coin - oldCoin;
+            long dView = view - oldView;
+            long dReply = reply - oldReply;
 
             // 播放得分
-            long viewPoint = view / 10 / (page + 1);
+            long viewPoint = dView / 10 / (page + 1);
             long viewPoint1000 = viewPoint * 1000;
             // 修正a
-            long a100 = (viewPoint + favorite) * 10 * 100 / (viewPoint + favorite + reply * 10);
+            long a100 = (viewPoint + dFavorite) * 10 * 100 / (viewPoint + dFavorite + dReply * 10);
             long a1000 = a100 * 10;
             // 修正b
-            long b1000 = (favorite + coin) * 3 * 1000 / (viewPoint * 4);
-            b1000 = b1000 > 2000? 2000: b1000;
+            long b1000 = (dFavorite + dCoin) * 3 * 1000 / (viewPoint * 4);
+            b1000 = b1000 > 2000 ? 2000 : b1000;
 
-            long point =  (viewPoint1000 + reply * a1000 + (favorite + coin) * 500) * b1000 / 1000000;
+            long point = (viewPoint1000 + dReply * a1000 + (dFavorite + dCoin) * 500) * b1000 / 1000000;
 
             // 计算过程记录
             video.setPage(Long.valueOf(page).intValue());
@@ -101,15 +108,15 @@ public class VideoDataFileService {
                 video.setPubTimeStr(videoData.getPubTime().split(" ")[0]);
             }
             // 数据为落差数据
-            video.setFavoriteStr("收藏 " + bigNumberFormat(favorite));
-            video.setCoinStr("硬币 " + bigNumberFormat(coin));
-            video.setViewStr("播放 " + bigNumberFormat(view));
-            video.setReplyStr("评论 " + bigNumberFormat(reply));
+            video.setFavoriteStr("收藏 " + bigNumberFormat(dFavorite));
+            video.setCoinStr("硬币 " + bigNumberFormat(dCoin));
+            video.setViewStr("播放 " + bigNumberFormat(dView));
+            video.setReplyStr("评论 " + bigNumberFormat(dReply));
             video.setPointStr(bigNumberFormat(videoData.getPoint()) + "PT");
             video.setRankStr(videoData.getRank().toString());
             // 历史排名
-            if (oldVideo.getRank() != 0) {
-                video.setHisRankStr("上周" + oldVideo.getRank() + "位");
+            if (oldRank != 0) {
+                video.setHisRankStr("上周" + oldRank + "位");
             }
 
             // 主副榜不同的设置
@@ -119,41 +126,32 @@ public class VideoDataFileService {
                 if (videoData.getCopyright()) {
                     if (isBlank(videoData.getExternalOwner())) {
                         video.setOwnerStr(videoData.getOwner());
-                    }else {
+                    } else {
                         video.setOwnerStr(videoData.getExternalOwner());
-                        video.setSubOwnerStr("搬运:"+videoData.getOwner());
+                        video.setSubOwnerStr("搬运:" + videoData.getOwner());
                     }
-                }else {
+                } else {
                     video.setOwnerStr(videoData.getOwner());
                     if (videoData.getIsCopyWarning()) {
                         video.setSubOwnerStr("疑似搬运");
                     }
                 }
                 // 是否上升排名
-                video.setIsUp(oldVideo.getRank() == 0 || videoData.getRank() <= oldVideo.getRank());
+                video.setIsUp(oldRank == 0 || videoData.getRank() <= oldRank);
                 // 长期视频只5s
                 if (video.getIsLen()) {
                     video.setShowLength(5);
                 }
-            }else {
+            } else {
                 // 副榜历史排名默认显示上周-位，主榜不显示
-                if (oldVideo.getRank() == 0) {
+                if (oldRank == 0) {
                     video.setHisRankStr("上周-位");
                 }
                 video.setPubTimeStr("投稿日期 " + video.getPubTimeStr());
             }
 
-            total ++;
-            // 分页
-            int start = videoDataQuery.getStart();
-            int end = start + videoDataQuery.getPageSize();
-            if (index >= start && index < end) {
-                result.add(video);
-            }
-            if (! video.getIsLen()) {
-                rankWithoutLen++;
-            }
-        }
+            return video;
+        }).collect(Collectors.toList());
         return PageModel.of(total, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), result);
     }
 

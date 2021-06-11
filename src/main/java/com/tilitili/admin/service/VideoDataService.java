@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -39,19 +40,34 @@ public class VideoDataService {
     @Transactional
     public void reRank(int issue) {
         videoDataManager.clearRank(issue);
-        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setStatus(0).setIsDelete(false).setPageSize(RANK_LIMIT).setSorter("point", "desc"));
+        log.info("清理完毕");
+        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setStatus(0).setIsDelete(false).setPageSize(1000).setSorter("point", "desc"));
+        log.info("size={}", videoDataList.size());
+        IntStream.range(0, videoDataList.size()).parallel().forEach(index -> {
+            VideoData videoData = videoDataList.get(index);
+            Long av = videoData.getAv();
+            int rank = index + 1;
+            if (rank > 150) {
+                return;
+            }
 
+            VideoData hisData = videoDataManager.getByAvAndIssue(av, issue - 1);
+            VideoData moreHisData = videoDataManager.getByAvAndIssue(av, issue - 2);
+            int hisRank = Optional.ofNullable(hisData).map(VideoData::getRank).orElse(0);
+            int moreHisRank = Optional.ofNullable(moreHisData).map(VideoData::getRank).orElse(0);
+            boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0 && rank <= 30 && hisRank <= 30 && moreHisRank <= 30;
+
+            videoData.setIsLen(isLen);
+        });
+
+        List<VideoData> updList = new ArrayList<>();
         int rankWithoutLen = 1;
         for (int index = 0; index < videoDataList.size(); index++) {
             VideoData videoData = videoDataList.get(index);
             int rank = index + 1;
             Long av = videoData.getAv();
 
-            VideoData hisData = videoDataManager.getByAvAndIssue(av, issue - 1);
-            VideoData moreHisData = videoDataManager.getByAvAndIssue(av, issue - 2);
-            int hisRank = Optional.ofNullable(hisData).map(VideoData::getRank).orElse(0);
-            int moreHisRank = Optional.ofNullable(moreHisData).map(VideoData::getRank).orElse(0);
-            boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0 && rank <= 30 && hisRank <= 30 && moreHisRank <=30;
+            boolean isLen = videoData.getIsLen();
 
             VideoData upd = new VideoData();
             upd.setAv(av);
@@ -74,8 +90,10 @@ public class VideoDataService {
             }
 
             log.info("av{} issue={} oldRank={} rank={} level={}", av, issue, videoData.getRank(), rank, upd.getLevel());
-            videoDataManager.update(videoData);
+            updList.add(upd);
         }
+
+        updList.parallelStream().forEach(videoDataManager::update);
     }
 
     public List<VideoDataAddCount> getVideoDataCount(VideoDataQuery query) {
