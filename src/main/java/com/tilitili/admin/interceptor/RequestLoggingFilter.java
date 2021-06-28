@@ -28,6 +28,6 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected void afterRequest(HttpServletRequest httpServletRequest, String s) {
-        Log.info(s);
+//        Log.info(s);
     }
 }

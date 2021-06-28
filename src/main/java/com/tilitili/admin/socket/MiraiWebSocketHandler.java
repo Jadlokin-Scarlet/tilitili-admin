@@ -2,7 +2,7 @@ package com.tilitili.admin.socket;
 
 import com.google.gson.Gson;
 import com.tilitili.admin.service.MiraiService;
-import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.utils.Asserts;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 public class MiraiWebSocketHandler extends BaseWebSocketHandler {
@@ -20,11 +22,13 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 
     private final MiraiManager miraiManager;
     private final MiraiService miraiService;
+    private final MiraiSessionService miraiSessionService;
 
     @Autowired
-    public MiraiWebSocketHandler(MiraiManager miraiManager, MiraiService miraiService) {
+    public MiraiWebSocketHandler(MiraiManager miraiManager, MiraiService miraiService, MiraiSessionService miraiSessionService) {
         this.miraiManager = miraiManager;
         this.miraiService = miraiService;
+        this.miraiSessionService = miraiSessionService;
     }
 
     @Override
@@ -36,6 +40,7 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
+        String result;
         try {
             MiraiMessageView miraiMessage = new Gson().fromJson(message.getPayload(), MiraiMessageView.class);
             log.info("Message Received [{}]",miraiMessage);
@@ -44,10 +49,13 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
             Asserts.notNull(miraiMessage.getSender(), "未获取到消息");
             Asserts.notNull(miraiMessage.getMessageChain(), "未获取到消息");
             Asserts.notNull(miraiMessage.getSender().getId(), "未获取到消息");
+            Long sender = miraiMessage.getSender().getId();
 
             Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
-            String result = miraiService.handleMessage(miraiMessage);
-            Thread.sleep(1000);
+            Map<String, String> miraiSession = miraiSessionService.getSession(String.valueOf(sender));
+            result = miraiService.handleMessage(miraiMessage, miraiSession);
+            Asserts.notBlank(result, "回复为空");
+            Thread.sleep(100);
             if (result.length() > 100) {
                 result = result.substring(0, 90);
             }

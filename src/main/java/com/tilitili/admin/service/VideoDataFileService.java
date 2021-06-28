@@ -30,9 +30,11 @@ public class VideoDataFileService {
     }
 
     public BaseModel listForDataFile(VideoDataQuery videoDataQuery) {
-        VideoDataQuery query = videoDataQuery.setIssue(videoDataQuery.getIssue()).setHasLevel(true).setSorter("point", "desc");
-        int total = videoDataManager.count(query);
-        List<VideoData> videoDataList = videoDataManager.list(query);
+        Integer pageSize = videoDataQuery.getPageSize();
+        Integer current = videoDataQuery.getCurrent();
+        Integer start = videoDataQuery.getStart();
+        int total = videoDataManager.count(videoDataQuery.setHasLevel(true));
+        List<VideoData> videoDataList = videoDataManager.listDataFile(videoDataQuery.getIssue());
         List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
             Integer rank = videoData.getRank();
@@ -41,25 +43,16 @@ public class VideoDataFileService {
             long favorite = Optional.ofNullable(videoData.getFavorite()).orElse(0);
             long coin = Optional.ofNullable(videoData.getCoin()).orElse(0);
             long reply = Optional.ofNullable(videoData.getReply()).orElse(0);
-            long page = videoData.getPage();
 
             switch (videoData.getLevel()) {
-                case 1:
-                    video.setShowLength(40);
-                    break;
-                case 2:
-                    video.setShowLength(30);
-                    break;
-                case 3:
-                    video.setShowLength(20);
-                    break;
-                case 4:
-                    video.setShowLength(10);
-                    break;
+                case 1: video.setShowLength(40);break;
+                case 2: video.setShowLength(30);break;
+                case 3: video.setShowLength(20);break;
+                case 4: video.setShowLength(10);break;
             }
 
-            VideoData oldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 1);
-            VideoData moreOldVideo = videoDataManager.getOrDefault(videoData.getAv(), videoData.getIssue() - 2);
+            VideoData oldVideo = videoDataManager.getByAvAndIssue(videoData.getAv(), videoData.getIssue() - 1);
+            VideoData moreOldVideo = videoDataManager.getByAvAndIssue(videoData.getAv(), videoData.getIssue() - 2);
 
             long oldView = Optional.ofNullable(oldVideo).map(VideoData::getView).orElse(0);
             long oldFavorite = Optional.ofNullable(oldVideo).map(VideoData::getFavorite).orElse(0);
@@ -73,11 +66,12 @@ public class VideoDataFileService {
             video.setHisRank(oldRank);
             video.setIsLen(rank, oldRank, moreOldRank);
 
-            // 检查分数
             long dFavorite = favorite - oldFavorite;
             long dCoin = coin - oldCoin;
             long dView = view - oldView;
             long dReply = reply - oldReply;
+            long page = video.getPage();
+
 
             // 播放得分
             long viewPoint = dView / 10 / (page + 1);
@@ -87,9 +81,9 @@ public class VideoDataFileService {
             long a1000 = a100 * 10;
             // 修正b
             long b1000 = (dFavorite + dCoin) * 3 * 1000 / (viewPoint * 4);
-            b1000 = b1000 > 2000 ? 2000 : b1000;
+            b1000 = b1000 > 2000? 2000: b1000;
 
-            long point = (viewPoint1000 + dReply * a1000 + (dFavorite + dCoin) * 500) * b1000 / 1000000;
+            long point =  (viewPoint1000 + dReply * a1000 + (dFavorite + dCoin) * 500) * b1000 / 1000000;
 
             // 计算过程记录
             video.setPage(Long.valueOf(page).intValue());
@@ -99,6 +93,7 @@ public class VideoDataFileService {
             video.setCheckPoint(point);
             // 新旧计算的得分差距大于旧得分的10%的发出警告
             video.setIsPointWarning(Math.abs(point - videoData.getPoint()) > videoData.getPoint() / 10);
+
 
             // 将数据填入占位槽
             video.setAvStr("av" + videoData.getAv());
@@ -151,8 +146,8 @@ public class VideoDataFileService {
             }
 
             return video;
-        }).collect(Collectors.toList());
-        return PageModel.of(total, videoDataQuery.getPageSize(), videoDataQuery.getCurrent(), result);
+        }).skip(start).limit(pageSize).collect(Collectors.toList());
+        return PageModel.of(total, pageSize, current, result);
     }
 
 }

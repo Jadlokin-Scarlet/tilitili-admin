@@ -23,7 +23,8 @@ public class WebSocketConfig {
     @PostConstruct
     public void webSocketConnectionManager() {
         for (BaseWebSocketHandler webSocketHandler : webSocketHandlerList) {
-            new WebSocketConnectionManager(new StandardWebSocketClient(), webSocketHandler, webSocketHandler.getUrl()).start();
+            StandardWebSocketClient standardWebSocketClient = new StandardWebSocketClient();
+            new WebSocketConnectionManager(standardWebSocketClient, webSocketHandler, webSocketHandler.getUrl()).start();
         }
     }
 }
