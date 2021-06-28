@@ -32,9 +32,9 @@ public class VideoDataFileService {
     public BaseModel listForDataFile(VideoDataQuery videoDataQuery) {
         Integer pageSize = videoDataQuery.getPageSize();
         Integer current = videoDataQuery.getCurrent();
-        Integer start = videoDataQuery.getStart();
-        int total = videoDataManager.count(videoDataQuery.setHasLevel(true));
-        List<VideoData> videoDataList = videoDataManager.listDataFile(videoDataQuery.getIssue());
+        videoDataQuery.setHasLevel(true).setSorter("point", "desc");
+        int total = videoDataManager.count(videoDataQuery);;;
+        List<VideoData> videoDataList = videoDataManager.list(videoDataQuery);
         List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
             Integer rank = videoData.getRank();
@@ -146,7 +146,7 @@ public class VideoDataFileService {
             }
 
             return video;
-        }).skip(start).limit(pageSize).collect(Collectors.toList());
+        }).collect(Collectors.toList());
         return PageModel.of(total, pageSize, current, result);
     }
 
