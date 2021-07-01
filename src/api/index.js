@@ -60,6 +60,7 @@ export const updateFlag = (data) => patch('/resources/flag', data);
 
 //作者管理
 export const getOwnerByCondition = (data) => get('/owner', data)
+export const updateOwner = (data) => patch('/owner', data)
 
 //视频信息数据
 export const getVideoInfoCount = (data) => get('/video/info/count', data);
@@ -79,7 +80,7 @@ export const unUseRecommend = data => patch('/recommend/status/0', data);
 export const updateRecommend = data => patch('/recommend/', data);
 
 //推荐归档
-export const getUseRecommendByCondition = data => get('/recommend', data);
+export const getUseRecommendByCondition = data => get('/recommend/use', data);
 
 //自荐池
 export const getRecommendSelfPoolByCondition = data => get('/recommend/selfPool', data);

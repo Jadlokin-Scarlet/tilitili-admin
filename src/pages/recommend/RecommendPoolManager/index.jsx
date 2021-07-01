@@ -50,7 +50,7 @@ export default class RecommendPoolManager extends Component {
                 needResourcesList={['recommendIssueResource']}
                 defaultPageSize={20}
                 defaultSorter={{field: 'id', order: 'descend'}}
-                defaultFilters={{videoStatus: [0], operator: [this.props?.user?.userName]}}
+                defaultFilters={{videoStatus: [0]}}
                 rowKey={record => record.id}
                 columnsConfig={this.columnsConfig}
                 getDataApi={getRecommendPoolByCondition}
