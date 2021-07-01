@@ -50,6 +50,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (url.contains("error") || url.contains("ico")) {
             return true;
         }
+        if (url.contains("/mock")) {
+            return true;
+        }
 
         //未登录
         if (admin == null){

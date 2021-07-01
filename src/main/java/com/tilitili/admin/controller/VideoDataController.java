@@ -48,7 +48,7 @@ public class VideoDataController extends BaseController {
 
     @PatchMapping("/rank")
     @ResponseBody
-    public BaseModel reRank(@RequestBody Integer issue) {
+    public BaseModel reRank(Integer issue) {
         int newIssue = videoDataManager.listIssue().stream()
                 .mapToInt(Integer::intValue).max().getAsInt();
         if (issue != newIssue) {

@@ -8,8 +8,10 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.manager.ResourcesManager;
+import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.mapper.VideoInfoMapper;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.tilitili.common.emnus.TaskReason.NO_REASON;
 import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -34,22 +37,34 @@ public class RecommendController extends BaseController {
     private final RecommendService recommendService;
     private final VideoInfoMapper videoInfoMapper;
     private final RecommendVideoMapper recommendVideoMapper;
+    private final TaskManager taskManager;
 
     @Autowired
-    public RecommendController(RecommendMapper recommendMapper, RecommendManager recommendManager, RecommendService recommendService, ResourcesManager resourcesManager, VideoInfoMapper videoInfoMapper, RecommendVideoMapper recommendVideoMapper) {
+    public RecommendController(RecommendMapper recommendMapper, RecommendManager recommendManager, RecommendService recommendService, ResourcesManager resourcesManager, VideoInfoMapper videoInfoMapper, RecommendVideoMapper recommendVideoMapper, TaskManager taskManager) {
         this.recommendMapper = recommendMapper;
         this.recommendManager = recommendManager;
         this.recommendService = recommendService;
         this.videoInfoMapper = videoInfoMapper;
         this.recommendVideoMapper = recommendVideoMapper;
+        this.taskManager = taskManager;
     }
 
     @GetMapping("")
     @ResponseBody
+    public BaseModel getRecommendByCondition(RecommendQuery query) {
+        Asserts.notNull(query, "参数异常");
+        int count = recommendMapper.count(query);
+        List<Recommend> recommendList = recommendMapper.list(query);
+        recommendService.supplementRecommend(recommendList);
+        return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
+    }
+
+    @GetMapping("/use")
+    @ResponseBody
     public BaseModel getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        int count = recommendManager.countRecommend(query);
-        List<Recommend> recommendList = recommendManager.listRecommend(query);
+        int count = recommendManager.countUseRecommend(query);
+        List<Recommend> recommendList = recommendManager.listUseRecommend(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
@@ -109,7 +124,10 @@ public class RecommendController extends BaseController {
         }
         Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
-        if (recommend.getIssue() != null) {
+        if (recommend.getIssue() == null) {
+            RecommendVideo newVideo = recommendVideoMapper.getNew();
+            recommend.setIssueId(newVideo.getId());
+        } else if (recommend.getIssue() != null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
             recommend.setIssueId(recommendVideo.getId());
         }
@@ -118,19 +136,29 @@ public class RecommendController extends BaseController {
         }
 
         recommendMapper.insert(recommend);
+        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(NO_REASON.value).setValue(String.valueOf(recommend.getAv())));
         return new BaseModel("推荐成功",true);
     }
 
     @PatchMapping("")
     @ResponseBody
     public BaseModel updateRecommend(@RequestBody Recommend recommend) {
-        Asserts.notNull(recommend.getId(), "av号未获取到");
-        Asserts.notNull(recommend.getStartTime(), "开始时间未获取到");
-        Asserts.notNull(recommend.getEndTime(), "结束时间未获取到");
-        Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
+        Asserts.notNull(recommend.getId(), "id未获取到");
+
+        Recommend old = recommendMapper.getById(recommend.getId());
+        if (recommend.getStartTime() != null || recommend.getEndTime() != null) {
+            Integer startTime = recommend.getStartTime() != null? recommend.getStartTime(): old.getStartTime();
+            Integer endTime = recommend.getEndTime() != null? recommend.getEndTime(): old.getEndTime();
+            Asserts.isTrue(startTime < endTime, "开始时间应在结束时间之前");
+            recommend.setStartTime(startTime);
+            recommend.setEndTime(endTime);
+        }
 
         recommendMapper.update(recommend);
-        videoInfoMapper.updateExternalOwner(recommend.getAv(), recommend.getExternalOwner());
+        if (recommend.getExternalOwner() != null) {
+            Long av = recommend.getAv() != null? recommend.getAv(): old.getAv();
+            videoInfoMapper.updateExternalOwner(av, recommend.getExternalOwner());
+        }
 
         return new BaseModel("更新成功",true);
     }

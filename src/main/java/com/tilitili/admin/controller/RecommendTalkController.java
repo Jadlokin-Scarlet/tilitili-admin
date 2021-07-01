@@ -3,10 +3,12 @@ package com.tilitili.admin.controller;
 import com.google.common.collect.ImmutableMap;
 import com.tilitili.admin.service.RecommendTalkService;
 import com.tilitili.common.entity.RecommendTalk;
+import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.RecommendTalkMapper;
+import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,16 +23,22 @@ import java.util.Map;
 public class RecommendTalkController extends BaseController {
     private final RecommendTalkMapper recommendTalkMapper;
     private final RecommendTalkService recommendTalkService;
+    private final RecommendVideoMapper recommendVideoMapper;
 
     @Autowired
-    public RecommendTalkController(RecommendTalkMapper recommendTalkMapper, RecommendTalkService recommendTalkService) {
+    public RecommendTalkController(RecommendTalkMapper recommendTalkMapper, RecommendTalkService recommendTalkService, RecommendVideoMapper recommendVideoMapper) {
         this.recommendTalkMapper = recommendTalkMapper;
         this.recommendTalkService = recommendTalkService;
+        this.recommendVideoMapper = recommendVideoMapper;
     }
 
     @GetMapping("")
     @ResponseBody
     public BaseModel getRecommendTalkByCondition(RecommendTalkQuery query) {
+        if (query.getIssueId() == null) {
+            RecommendVideo recommendVideo = recommendVideoMapper.getNew();
+            query.setIssueId(recommendVideo.getId());
+        }
         int total = recommendTalkMapper.count(query);
         List<RecommendTalk> list = recommendTalkMapper.list(query);
         Map<Object, Object> data = ImmutableMap.of(

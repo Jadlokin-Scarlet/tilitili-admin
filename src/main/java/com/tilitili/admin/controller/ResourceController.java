@@ -105,7 +105,7 @@ public class ResourceController extends BaseController {
             query.setIssueId(recommendVideo.getId());
         }
         query.setSorter("sort_num", "desc");
-        int total = recommendManager.countRecommend(query);
+        int total = recommendManager.countUseRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
     }

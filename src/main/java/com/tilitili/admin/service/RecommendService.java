@@ -54,7 +54,7 @@ public class RecommendService {
     }
 
     public List<RecommendFileItem> getRecommendFile(RecommendQuery query) {
-        return recommendManager.listRecommend(query).stream().map(recommend -> {
+        return recommendManager.listUseRecommend(query).stream().map(recommend -> {
             Long av = recommend.getAv();
             String operator = recommend.getOperator();
             String text = recommend.getText();
