@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tilitili.admin.service.MiraiService;
 import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
+import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
@@ -49,22 +50,26 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
             Asserts.notNull(miraiMessage.getSender(), "未获取到消息");
             Asserts.notNull(miraiMessage.getMessageChain(), "未获取到消息");
             Asserts.notNull(miraiMessage.getSender().getId(), "未获取到消息");
-            Long sender = miraiMessage.getSender().getId();
 
-            Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
-            Map<String, String> miraiSession = miraiSessionService.getSession(String.valueOf(sender));
-            result = miraiService.handleMessage(miraiMessage, miraiSession);
-            Asserts.notBlank(result, "回复为空");
-            Thread.sleep(100);
-            if (result.length() > 100) {
-                result = result.substring(0, 90);
+//            Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
+            if (miraiMessage.getType().equals("GroupMessage")) {
+                Long sender = miraiMessage.getSender().getGroup().getId();
+                Map<String, String> miraiSession = miraiSessionService.getSession("group-" + sender);
+                result = miraiService.handleGroupMessage(miraiMessage, miraiSession);
+            } else {
+                Long sender = miraiMessage.getSender().getId();
+                Map<String, String> miraiSession = miraiSessionService.getSession("friend-" + sender);
+                result = miraiService.handleMessage(miraiMessage, miraiSession);
             }
+            Asserts.notBlank(result, "回复为空");
             if (miraiMessage.getType().equals("FriendMessage")) {
                 miraiManager.sendFriendMessage("Plain", result, miraiMessage.getSender().getId());
             } else if (miraiMessage.getType().equals("TempMessage")){
                 miraiManager.sendTempMessage("Plain", result, miraiMessage.getSender().getGroup().getId(), miraiMessage.getSender().getId());
+            } else {
+                miraiManager.sendGroupMessage("Plain", result, miraiMessage.getSender().getGroup().getId());
             }
-        } catch (IllegalStateException e) {
+        } catch (AssertException e) {
             log.error(e.getMessage());
         } catch (Exception e) {
             log.error("异常", e);

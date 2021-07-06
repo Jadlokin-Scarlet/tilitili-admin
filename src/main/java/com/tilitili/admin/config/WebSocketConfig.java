@@ -23,8 +23,12 @@ public class WebSocketConfig {
     @PostConstruct
     public void webSocketConnectionManager() {
         for (BaseWebSocketHandler webSocketHandler : webSocketHandlerList) {
-            StandardWebSocketClient standardWebSocketClient = new StandardWebSocketClient();
-            new WebSocketConnectionManager(standardWebSocketClient, webSocketHandler, webSocketHandler.getUrl()).start();
+            try {
+                StandardWebSocketClient standardWebSocketClient = new StandardWebSocketClient();
+                new WebSocketConnectionManager(standardWebSocketClient, webSocketHandler, webSocketHandler.getUrl()).start();
+            } catch (Exception e) {
+                log.error("异常", e);
+            }
         }
     }
 }
