@@ -7,6 +7,7 @@ import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,11 +55,11 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 //            Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
             if (miraiMessage.getType().equals("GroupMessage")) {
                 Long sender = miraiMessage.getSender().getGroup().getId();
-                Map<String, String> miraiSession = miraiSessionService.getSession("group-" + sender);
+                MiraiSessionService.MiraiSession miraiSession = miraiSessionService.getSession("group-" + sender);
                 result = miraiService.handleGroupMessage(miraiMessage, miraiSession);
             } else {
                 Long sender = miraiMessage.getSender().getId();
-                Map<String, String> miraiSession = miraiSessionService.getSession("friend-" + sender);
+                MiraiSessionService.MiraiSession miraiSession = miraiSessionService.getSession("friend-" + sender);
                 result = miraiService.handleMessage(miraiMessage, miraiSession);
             }
             Asserts.notBlank(result, "回复为空");

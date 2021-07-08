@@ -1,5 +1,7 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.common.utils.RedisCache;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -7,28 +9,48 @@ import java.util.Map;
 
 @Component
 public class MiraiSessionService {
-    private final Map<String, Map<String, String>> sessionMap;
+    private final Map<String, MiraiSession> sessionMap;
+    private final RedisCache redisCache;
 
-    public MiraiSessionService() {
+    @Autowired
+    public MiraiSessionService(RedisCache redisCache) {
+        this.redisCache = redisCache;
         this.sessionMap = new HashMap<>();
     }
 
-    public Map<String, String> getSession(String sessionKey) {
+    public MiraiSession getSession(String sessionKey) {
         if (! sessionMap.containsKey(sessionKey)) {
-            sessionMap.put(sessionKey, new HashMap<>());
+            sessionMap.put(sessionKey, new MiraiSession(sessionKey));
         }
         return sessionMap.get(sessionKey);
     }
 
-    public String getValue(String sessionKey, String key) {
-        return getSession(sessionKey).get(key);
-    }
-
-    public void setSession(String sessionKey, Map<String, String> session) {
-        sessionMap.put(sessionKey, session);
-    }
-
-    public void setValue(String sessionKey, String key, String value) {
-        getSession(sessionKey).put(key, value);
+    public class MiraiSession {
+        private final String sessionKey;
+        public MiraiSession(String sessionKey) {
+            this.sessionKey = sessionKey;
+        }
+        public String getSessionKey() {
+            return sessionKey;
+        }
+        public String get(String key) {
+            return (String) redisCache.getMapValue(sessionKey, key);
+        }
+        public String getOrDefault(String key, String or) {
+            if (redisCache.existsHashKey(sessionKey, key)) {
+                return (String) redisCache.getMapValue(sessionKey, key);
+            } else {
+                return or;
+            }
+        }
+        public void put(String key, String value) {
+            redisCache.addMapValue(sessionKey, key, value);
+        }
+        public boolean containsKey(String key) {
+            return redisCache.existsHashKey(sessionKey, key);
+        }
+        public void remove(String key) {
+            redisCache.removeMapValue(sessionKey, key);
+        }
     }
 }

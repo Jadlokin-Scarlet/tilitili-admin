@@ -46,7 +46,7 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
         int oldCount = subscriptionMapper.countSubscriptionByCondition(new Subscription().setType(1).setValue(uid).setSendQq(qq));
         Asserts.isTrue(oldCount == 0, "已经关注了哦。");
 
-        Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(group).setSendQq(qq).setSendType("friend");
+        Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
         subscriptionMapper.insertSubscription(add);
 
         SimpleTaskView simpleTaskView = new SimpleTaskView().setValue(uid).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);

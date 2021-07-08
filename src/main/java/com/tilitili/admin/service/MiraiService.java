@@ -29,7 +29,7 @@ public class MiraiService {
         this.messageHandleList = messageHandleList;
     }
 
-    public String handleGroupMessage(MiraiMessageView message, Map<String, String> miraiSession) {
+    public String handleGroupMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
         List<MessageChain> messageChain = message.getMessageChain();
         String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
         String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
@@ -51,7 +51,7 @@ public class MiraiService {
         return "";
     }
 
-    public String handleMessage(MiraiMessageView message, Map<String, String> miraiSession) {
+    public String handleMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
         try {
             List<MessageChain> messageChain = message.getMessageChain();
             String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
