@@ -4,6 +4,8 @@ import com.tilitili.admin.service.mirai.BaseMessageHandle;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
+import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,14 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class MiraiService {
 
     private final List<BaseMessageHandle> messageHandleList;
+    private final ResourcesManager resourcesManager;
+    private final MiraiManager miraiManager;
 
     @Autowired
-    public MiraiService(List<BaseMessageHandle> messageHandleList) {
+    public MiraiService(List<BaseMessageHandle> messageHandleList, ResourcesManager resourcesManager, MiraiManager miraiManager) {
         this.messageHandleList = messageHandleList;
+        this.resourcesManager = resourcesManager;
+        this.miraiManager = miraiManager;
     }
 
     public String handleGroupMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
@@ -57,6 +63,13 @@ public class MiraiService {
             String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
             String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
             String[] textList = text.split("\n");
+
+
+            if (message.getType().equals("TempMessage")) {
+                if (resourcesManager.isForwardTempMessage()) {
+                    miraiManager.sendFriendMessage("Plain", text);
+                }
+            }
 
             String title;
             String body;

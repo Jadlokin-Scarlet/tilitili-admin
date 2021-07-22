@@ -6,15 +6,13 @@ import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
-
-import java.util.Map;
 
 @Slf4j
 @Component
