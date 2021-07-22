@@ -34,6 +34,11 @@ public class CalendarHandle implements BaseMessageHandle {
     }
 
     @Override
+    public String getDescription() {
+        return "日程表（xxx叫我xxx）";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String body = map.get("body");
         Sender sender = message.getSender();

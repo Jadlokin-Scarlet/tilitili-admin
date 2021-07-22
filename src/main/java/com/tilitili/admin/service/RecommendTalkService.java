@@ -51,8 +51,8 @@ public class RecommendTalkService {
         List<String> sanaeExpression = Arrays.asList("默认", "开心", "猫耳", "互动", "汗颜", "好奇", "汇报");
 
         List<RecommendTalk> recommendTalkList = new ArrayList<>();
-        for (Integer index = 0; index < talkList.length; index++) {
-            String talk = talkList[index];
+        for (Integer index = 1; index <= talkList.length; index++) {
+            String talk = talkList[index - 1];
             String speaker = StringUtil.matcherGroupOne("^(.+?)：", talk);
             String text = StringUtil.matcherGroupOne("：(.+)（", talk);
             String expression = StringUtil.matcherGroupOne("([^（]+)）$", talk);
@@ -61,12 +61,10 @@ public class RecommendTalkService {
             Asserts.notNull(expression, "%s第%s行，无法识别表情", area, index);
 
             Asserts.isTrue(speakerList.contains(speaker), "%s第%s行，没有角色%s", area, index, speaker);
-            if (Objects.equals(speaker, "灵梦")) {
-                Asserts.isTrue(reimuExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);
-            } else if (Objects.equals(speaker, "早苗")) {
-                Asserts.isTrue(sanaeExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);
-            } else if (Objects.equals(speaker, "灵梦&早苗")) {
-                Asserts.isTrue(reimuExpression.contains(expression) && sanaeExpression.contains(expression), "%s第%s行，灵梦或早苗没有表情%s", area, index, speaker, expression);
+            switch (speaker) {
+                case "灵梦": Asserts.isTrue(reimuExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);break;
+                case "早苗": Asserts.isTrue(sanaeExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);break;
+                case "灵梦&早苗": Asserts.isTrue(reimuExpression.contains(expression) && sanaeExpression.contains(expression), "%s第%s行，灵梦或早苗没有表情%s", area, index, speaker, expression);break;
             }
 
             RecommendTalk recommendTalk = new RecommendTalk().setSpeaker(speaker).setText(text).setExpression(expression).setType(type).setIssueId(issueId);

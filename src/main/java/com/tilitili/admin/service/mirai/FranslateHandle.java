@@ -28,6 +28,11 @@ public class FranslateHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getDescription() {
+        return "翻译文本或图片";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String body = map.getOrDefault("body", "");
         String url = map.getOrDefault("url", "");

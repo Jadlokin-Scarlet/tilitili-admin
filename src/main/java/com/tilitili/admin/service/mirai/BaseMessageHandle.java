@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface BaseMessageHandle {
     List<String> getKeyword();
+    String getDescription();
     String handleMessage(MiraiMessageView message, Map<String, String> map);
 }

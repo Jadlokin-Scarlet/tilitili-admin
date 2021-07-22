@@ -23,6 +23,11 @@ public class PatternStringHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getDescription() {
+        return "正则匹配";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String regex = map.get("r");
         String string = map.get("s");

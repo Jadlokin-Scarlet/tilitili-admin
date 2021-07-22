@@ -33,6 +33,11 @@ public class AddRecommendHandle implements BaseMessageHandle {
     }
 
     @Override
+    public String getDescription() {
+        return "添加推荐";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String avStr = map.get("视频号");
         String operator = map.get("推荐人");

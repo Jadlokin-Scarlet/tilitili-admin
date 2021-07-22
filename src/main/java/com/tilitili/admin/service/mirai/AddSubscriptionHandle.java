@@ -35,6 +35,11 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
     }
 
     @Override
+    public String getDescription() {
+        return "关注b站up，关注后可以获得开播提醒和动态推送";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String uid = map.get("uid");
         Sender sender = message.getSender();

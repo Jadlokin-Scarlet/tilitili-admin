@@ -22,6 +22,11 @@ public class FindImageHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getDescription() {
+        return "查找原图";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String url = map.get("url");
         Asserts.notBlank(url, "格式错啦(图片)");

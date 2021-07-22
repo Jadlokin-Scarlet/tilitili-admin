@@ -19,6 +19,11 @@ public class BeautifyJsonHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getDescription() {
+        return "Json美化";
+    }
+
+    @Override
     public String handleMessage(MiraiMessageView message, Map<String, String> map) {
         String body = map.getOrDefault("body", "");
         Asserts.notBlank(body, "格式错啦(内容)");
