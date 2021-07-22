@@ -35,7 +35,7 @@ public class CalendarHandle implements BaseMessageHandle {
 
     @Override
     public String getDescription() {
-        return "日程表（xxx叫我xxx）";
+        return "日程表（xxx时间叫我xxx）";
     }
 
     @Override
