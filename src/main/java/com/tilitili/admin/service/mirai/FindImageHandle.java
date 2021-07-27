@@ -28,6 +28,11 @@ public class FindImageHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getSendType() {
+        return "friend";
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
         MiraiMessage result = new MiraiMessage();
         String url = map.get("url");

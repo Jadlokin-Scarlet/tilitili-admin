@@ -7,6 +7,7 @@ import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.ResourcesManager;
+import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,22 +42,58 @@ public class MiraiService {
         List<MessageChain> messageChain = message.getMessageChain();
         String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
         String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
-        String value = text+url;
+        String[] textList = text.split("\n");
 
-        String oldValue = miraiSession.getOrDefault("value", "");
-        int oldNumber = Integer.parseInt(miraiSession.getOrDefault("number", "0"));
-        if (oldValue.equals(value)) {
-            miraiSession.put("number", String.valueOf(oldNumber + 1));
+        String title = textList[0];
+        String body = Stream.of(textList).skip(1).collect(Collectors.joining("\n"));
+
+        List<BaseMessageHandle> handleList = messageHandleList.stream().filter(StreamUtil.isEqual(BaseMessageHandle::getSendType, "group")).filter(a -> a.getKeyword().contains(title)).collect(Collectors.toList());
+        if (handleList.isEmpty() || textList.length < 2) {
+            String value = text+url;
+
+            String oldValue = miraiSession.getOrDefault("value", "");
+            int oldNumber = Integer.parseInt(miraiSession.getOrDefault("number", "0"));
+            if (oldValue.equals(value)) {
+                miraiSession.put("number", String.valueOf(oldNumber + 1));
+            } else {
+                miraiSession.put("value", value);
+                miraiSession.put("number", "1");
+            }
+
+            String newNumber = miraiSession.get("number");
+            if (Objects.equals(newNumber, "3") && value.length() < 10) {
+                return result.setMessage(text).setMessageType("Plain");
+            }
+            return result.setMessage("").setMessageType("Plain");
         } else {
-            miraiSession.put("value", value);
-            miraiSession.put("number", "1");
-        }
+            try {
+                String[] bodyList = body.split("\n");
+                Map<String, String> map = new HashMap<>();
+                for (String line : bodyList) {
+                    if (!line.contains("=")) {
+                        continue;
+                    }
+                    String key = line.split("=")[0];
+                    String value = line.split("=")[1];
+                    map.put(key.trim(), value.trim());
+                }
+                if (isNotBlank(body)) {
+                    map.put("body", body);
+                }
+                if (isNotBlank(url)) {
+                    map.put("url", url);
+                }
 
-        String newNumber = miraiSession.get("number");
-        if (Objects.equals(newNumber, "3") && value.length() < 10) {
-            return result.setMessage(text).setMessageType("Plain");
+                Asserts.isTrue(handleList.size() < 2, "emmmmm？");
+                return handleList.get(0).handleMessage(message, map);
+            } catch (AssertException e) {
+                log.error(e.getMessage());
+                return result.setMessage(e.getMessage()).setMessageType("Plain");
+            } catch (Exception e) {
+                log.error("处理消息回调失败",e);
+                return result.setMessage("¿").setMessageType("Plain");
+            }
         }
-        return result.setMessage("").setMessageType("Plain");
     }
 
     public MiraiMessage handleMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
@@ -110,8 +147,10 @@ public class MiraiService {
             }
 
             for (BaseMessageHandle messageHandle : messageHandleList) {
-                if (messageHandle.getKeyword().contains(title)) {
-                    return messageHandle.handleMessage(message, map);
+                if (messageHandle.getSendType().equals("friend")) {
+                    if (messageHandle.getKeyword().contains(title)) {
+                        return messageHandle.handleMessage(message, map);
+                    }
                 }
             }
 

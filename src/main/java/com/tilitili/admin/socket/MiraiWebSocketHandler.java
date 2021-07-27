@@ -61,7 +61,7 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
                 MiraiSessionService.MiraiSession miraiSession = miraiSessionService.getSession("friend-" + sender);
                 result = miraiService.handleMessage(miraiMessage, miraiSession);
             }
-            Asserts.notBlank(result.getMessage(), "回复为空");
+            Asserts.notBlank((""+result.getMessage()+result.getUrl()+result.getVoiceId()).replaceAll("null", ""), "回复为空");
             if (miraiMessage.getType().equals("FriendMessage")) {
                 miraiManager.sendMessage(result.setSendType("friend").setQq(miraiMessage.getSender().getId()));
             } else if (miraiMessage.getType().equals("TempMessage")){

@@ -37,6 +37,11 @@ public class VoiceHandle implements BaseMessageHandle {
     }
 
     @Override
+    public String getSendType() {
+        return "group";
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) throws IOException, InterruptedException {
         String text = map.get("body");
 
@@ -53,6 +58,6 @@ public class VoiceHandle implements BaseMessageHandle {
         String voiceId = miraiManager.uploadVoice(slkFile);
         Asserts.notBlank(voiceId, "上传失败");
 
-        return new MiraiMessage().setMessage(voiceId).setMessageType("Voice");
+        return new MiraiMessage().setVoiceId(voiceId).setMessageType("Voice");
     }
 }

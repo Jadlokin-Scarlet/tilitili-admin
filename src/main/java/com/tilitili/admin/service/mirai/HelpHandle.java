@@ -29,6 +29,11 @@ public class HelpHandle implements BaseMessageHandle {
     }
 
     @Override
+    public String getSendType() {
+        return "friend";
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
         MiraiMessage result = new MiraiMessage();
         StringBuilder stringBuilder = new StringBuilder("咱可以帮你做这些事！").append("\n");

@@ -29,6 +29,11 @@ public class PatternStringHandle implements BaseMessageHandle{
     }
 
     @Override
+    public String getSendType() {
+        return "friend";
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
         MiraiMessage result = new MiraiMessage();
         String regex = map.get("r");
