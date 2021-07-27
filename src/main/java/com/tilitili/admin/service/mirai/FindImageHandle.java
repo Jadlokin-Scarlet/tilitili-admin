@@ -1,6 +1,7 @@
 package com.tilitili.admin.service.mirai;
 
 import com.google.common.collect.ImmutableMap;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.HttpClientUtil;
@@ -27,18 +28,19 @@ public class FindImageHandle implements BaseMessageHandle{
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
         String url = map.get("url");
         Asserts.notBlank(url, "格式错啦(图片)");
         String html = HttpClientUtil.httpPost("https://saucenao.com/search.php?url="+url, ImmutableMap.of());
         Asserts.notBlank(html, "没要到图😇\n"+url);
         Document document = Jsoup.parse(html);
-        Elements resultList = document.select(".result:not(.hidden):not(#result-hidden-notification)");
-        Asserts.isFalse(resultList.isEmpty(), "没找到🤕\n"+url);
-        Element result = resultList.get(0);
-        String rate = result.select(".resultsimilarityinfo").text();
-        Elements linkList = result.select(".resultcontentcolumn a.linkify");
+        Elements imageList = document.select(".result:not(.hidden):not(#result-hidden-notification)");
+        Asserts.isFalse(imageList.isEmpty(), "没找到🤕\n"+url);
+        Element image = imageList.get(0);
+        String rate = image.select(".resultsimilarityinfo").text();
+        Elements linkList = image.select(".resultcontentcolumn a.linkify");
         String link = linkList.get(0).attr("href");
-        return String.format("找到啦😊！相似度%s\n%s", rate, link);
+        return result.setMessage(String.format("找到啦😊！相似度%s\n%s", rate, link)).setMessageType("Plain");
     }
 }

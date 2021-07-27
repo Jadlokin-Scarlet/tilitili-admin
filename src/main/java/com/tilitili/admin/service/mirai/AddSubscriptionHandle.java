@@ -2,6 +2,7 @@ package com.tilitili.admin.service.mirai;
 
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.Subscription;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.view.SimpleTaskView;
@@ -40,7 +41,9 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
+
         String uid = map.get("uid");
         Sender sender = message.getSender();
         Long qq = sender.getId();
@@ -56,6 +59,6 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
 
         SimpleTaskView simpleTaskView = new SimpleTaskView().setValue(uid).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
         taskManager.simpleSpiderVideo(simpleTaskView);
-        return "关注成功！";
+        return result.setMessage("关注成功！").setMessageType("Plain");
     }
 }

@@ -1,5 +1,6 @@
 package com.tilitili.admin;
 
+import com.google.common.collect.ImmutableMap;
 import com.tilitili.StartApplication;
 import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.entity.VideoData;
@@ -7,8 +8,22 @@ import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.FileUtil;
+import com.tilitili.common.utils.HttpClientHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -21,10 +36,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -35,10 +49,30 @@ public class MainTest {
     private MiraiManager miraiManager;
     @Resource
     private VideoDataManager videoDataManager;
+
+    private static final int TIME_OUT = 10000;
+    private static final CloseableHttpClient httpClient;
+
+    static {
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(TIME_OUT).setSocketTimeout(TIME_OUT).setConnectionRequestTimeout(TIME_OUT).build();
+        httpClient = HttpClients.custom().setDefaultRequestConfig(config).setRetryHandler(new StandardHttpRequestRetryHandler()).build();
+    }
     @Test
     public void test() throws IOException {
-        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId("20E53EABF38B17DCF9535561023978DD.amr").setSendType("group").setGroup(GroupEmum.RANK_GROUP.getValue()));
+        final String BASE_DIR = "/Users/admin/Documents/";
+        final String SLK_DIR = BASE_DIR + "voice.slk";
+
+        File slkFile = new File(SLK_DIR);
+        String session = miraiManager.auth();
+        miraiManager.verify(session);
+        Map<String, String> params = ImmutableMap.of("sessionKey", session, "type", "group");
+        String result = HttpClientHelper.uploadFile("http://1.15.188.132:8080/uploadVoice", "voice", slkFile, params);
+        System.out.println(result);
+
+//        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId("D41D8CD98F00B204E9800998ECF8427E.amr").setSendType("group").setGroup(GroupEmum.TEST_GROUP.getValue()));
     }
+
+
 
     @Test
     public void test3() {

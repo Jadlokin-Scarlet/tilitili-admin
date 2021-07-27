@@ -3,6 +3,7 @@ package com.tilitili.admin.socket;
 import com.google.gson.Gson;
 import com.tilitili.admin.service.MiraiService;
 import com.tilitili.admin.service.MiraiSessionService;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
@@ -40,7 +41,7 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        String result;
+        MiraiMessage result;
         try {
             MiraiMessageView miraiMessage = new Gson().fromJson(message.getPayload(), MiraiMessageView.class);
             log.info("Message Received [{}]",miraiMessage);
@@ -60,13 +61,13 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
                 MiraiSessionService.MiraiSession miraiSession = miraiSessionService.getSession("friend-" + sender);
                 result = miraiService.handleMessage(miraiMessage, miraiSession);
             }
-            Asserts.notBlank(result, "回复为空");
+            Asserts.notBlank(result.getMessage(), "回复为空");
             if (miraiMessage.getType().equals("FriendMessage")) {
-                miraiManager.sendFriendMessage("Plain", result, miraiMessage.getSender().getId());
+                miraiManager.sendMessage(result.setSendType("friend").setQq(miraiMessage.getSender().getId()));
             } else if (miraiMessage.getType().equals("TempMessage")){
-                miraiManager.sendTempMessage("Plain", result, miraiMessage.getSender().getGroup().getId(), miraiMessage.getSender().getId());
+                miraiManager.sendMessage(result.setSendType("temp").setQq(miraiMessage.getSender().getId()).setGroup(miraiMessage.getSender().getGroup().getId()));
             } else {
-                miraiManager.sendGroupMessage("Plain", result, miraiMessage.getSender().getGroup().getId());
+                miraiManager.sendMessage(result.setSendType("group").setGroup(miraiMessage.getSender().getGroup().getId()));
             }
         } catch (AssertException e) {
             log.error(e.getMessage());

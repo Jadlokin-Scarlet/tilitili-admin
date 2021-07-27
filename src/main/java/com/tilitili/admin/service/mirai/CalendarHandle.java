@@ -1,6 +1,7 @@
 package com.tilitili.admin.service.mirai;
 
 import com.tilitili.common.entity.BotCalendar;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.mapper.BotCalendarMapper;
@@ -39,7 +40,8 @@ public class CalendarHandle implements BaseMessageHandle {
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
         String body = map.get("body");
         Sender sender = message.getSender();
         Long qq = sender.getId();
@@ -82,7 +84,8 @@ public class CalendarHandle implements BaseMessageHandle {
         botCalendarMapper.insertBotCalendar(botCalendar);
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH时mm分");
-        return String.format("收到！%s（%s）", body.replaceAll("我", "你"), sdf.format(calendar.getTime()));
+        String reply = String.format("收到！%s（%s）", body.replaceAll("我", "你"), sdf.format(calendar.getTime()));
+        return result.setMessage(reply).setMessageType("Plain");
     }
     // (明天|今天|后天|大后天|周(?\d|日)|下周(?\d|日)|下下周(?\d|日)|\d+号)
     private void setDayToCalendar(Calendar calendar, String day) {

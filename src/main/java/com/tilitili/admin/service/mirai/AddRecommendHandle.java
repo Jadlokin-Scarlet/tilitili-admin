@@ -2,6 +2,7 @@ package com.tilitili.admin.service.mirai;
 
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
@@ -38,7 +39,9 @@ public class AddRecommendHandle implements BaseMessageHandle {
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
+
         String avStr = map.get("视频号");
         String operator = map.get("推荐人");
         String text = map.get("推荐语");
@@ -71,6 +74,7 @@ public class AddRecommendHandle implements BaseMessageHandle {
         recommend.setStartTime(startTime);
         recommend.setEndTime(endTime);
         recommendMapper.insert(recommend);
-        return "收到！";
+
+        return result.setMessage("收到！").setMessageType("Plain");
     }
 }

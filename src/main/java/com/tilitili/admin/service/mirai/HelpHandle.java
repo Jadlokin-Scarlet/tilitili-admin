@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,11 +29,12 @@ public class HelpHandle implements BaseMessageHandle {
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
         StringBuilder stringBuilder = new StringBuilder("咱可以帮你做这些事！").append("\n");
         for (BaseMessageHandle handle : handleList) {
             stringBuilder.append(String.join(",", handle.getKeyword())).append("：").append(handle.getDescription()).append("\n");
         }
-        return stringBuilder.toString();
+        return result.setMessage(stringBuilder.toString()).setMessageType("Plain");
     }
 }

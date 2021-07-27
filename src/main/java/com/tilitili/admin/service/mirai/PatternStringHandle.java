@@ -1,6 +1,7 @@
 package com.tilitili.admin.service.mirai;
 
 import com.tilitili.admin.utils.StringUtil;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.StringUtils;
@@ -28,18 +29,19 @@ public class PatternStringHandle implements BaseMessageHandle{
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
         String regex = map.get("r");
         String string = map.get("s");
         Asserts.notBlank(regex, "格式错啦(r)");
         Asserts.notBlank(string, "格式错啦(s)");
-        List<String> resultList = new ArrayList<>();
-        resultList.add(StringUtils.patten(regex, string));
-        resultList.addAll(StringUtils.extractList(regex, string));
-        String result = String.join("\n", resultList);
-        if (isBlank(result)) {
-            return "没匹配到";
+        List<String> pattenList = new ArrayList<>();
+        pattenList.add(StringUtils.patten(regex, string));
+        pattenList.addAll(StringUtils.extractList(regex, string));
+        String patten = String.join("\n", pattenList);
+        if (isBlank(patten)) {
+            return result.setMessage("没匹配到").setMessageType("Plain");
         }
-        return result;
+        return result.setMessage(patten).setMessageType("Plain");
     }
 }

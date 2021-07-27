@@ -2,6 +2,7 @@ package com.tilitili.admin.service;
 
 import com.tilitili.admin.service.mirai.BaseMessageHandle;
 import com.tilitili.common.entity.mirai.MessageChain;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
@@ -35,7 +36,8 @@ public class MiraiService {
         this.miraiManager = miraiManager;
     }
 
-    public String handleGroupMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
+    public MiraiMessage handleGroupMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
+        MiraiMessage result = new MiraiMessage();
         List<MessageChain> messageChain = message.getMessageChain();
         String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
         String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
@@ -52,18 +54,18 @@ public class MiraiService {
 
         String newNumber = miraiSession.get("number");
         if (Objects.equals(newNumber, "3") && value.length() < 10) {
-            return text;
+            return result.setMessage(text).setMessageType("Plain");
         }
-        return "";
+        return result.setMessage("").setMessageType("Plain");
     }
 
-    public String handleMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
+    public MiraiMessage handleMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
+        MiraiMessage result = new MiraiMessage();
         try {
             List<MessageChain> messageChain = message.getMessageChain();
             String text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
             String url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
             String[] textList = text.split("\n");
-
 
             if (message.getType().equals("TempMessage")) {
                 if (resourcesManager.isForwardTempMessage()) {
@@ -78,7 +80,7 @@ public class MiraiService {
                 body = text;
                 if (Objects.equals(textList[0], "退出")) {
                     miraiSession.remove("模式");
-                    return "停止"+title;
+                    return result.setMessage("停止"+title).setMessageType("Plain");
                 }
             } else {
                 title = textList[0];
@@ -86,7 +88,7 @@ public class MiraiService {
                 if (textList[0].contains("模式")) {
                     String mod = textList[0].replaceAll("模式", "");
                     miraiSession.put("模式", mod);
-                    return "开始"+mod;
+                    return result.setMessage("开始"+mod).setMessageType("Plain");
                 }
             }
 
@@ -113,13 +115,13 @@ public class MiraiService {
                 }
             }
 
-            return "?";
+            return result.setMessage("?").setMessageType("Plain");
         } catch (AssertException e) {
             log.error(e.getMessage());
-            return e.getMessage();
+            return result.setMessage(e.getMessage()).setMessageType("Plain");
         } catch (Exception e) {
             log.error("处理消息回调失败",e);
-            return "¿";
+            return result.setMessage("¿").setMessageType("Plain");
         }
     }
 }

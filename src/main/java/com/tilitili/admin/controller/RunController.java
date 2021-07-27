@@ -1,15 +1,15 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.BufferedReader;
@@ -22,14 +22,15 @@ import java.util.Random;
 
 @Slf4j
 @Controller
-@RequestMapping("/api/run")
+@RequestMapping("/api/pub/run")
 public class RunController extends BaseController{
     @Resource
     private VideoDataManager videoDataManager;
 
-    @GetMapping("/shell")
+    @PostMapping("/shell")
     @ResponseBody
-    public BaseModel runShell(String shell) throws IOException {
+    public BaseModel runShell(@RequestBody String shell) throws IOException {
+        log.info("shell="+shell);
         Process p = Runtime.getRuntime().exec(shell);
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;

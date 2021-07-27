@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.manager.BaiduManager;
 import com.tilitili.common.utils.Asserts;
@@ -33,19 +34,20 @@ public class FranslateHandle implements BaseMessageHandle{
     }
 
     @Override
-    public String handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+        MiraiMessage result = new MiraiMessage();
         String body = map.getOrDefault("body", "");
         String url = map.getOrDefault("url", "");
         Asserts.notBlank(body + url, "格式错啦(内容)");
-        String result;
+        String cnText;
         if (isNotBlank(body)) {
-            result = baiduManager.translate(body);
+            cnText = baiduManager.translate(body);
         } else {
-            result = baiduManager.translateImage(url);
+            cnText = baiduManager.translateImage(url);
         }
-        if (isBlank(result)) {
-            return "无法翻译";
+        if (isBlank(cnText)) {
+            return result.setMessage("无法翻译").setMessageType("Plain");
         }
-        return result;
+        return result.setMessage(cnText).setMessageType("Plain");
     }
 }
