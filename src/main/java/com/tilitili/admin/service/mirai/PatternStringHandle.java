@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -34,10 +35,10 @@ public class PatternStringHandle implements BaseMessageHandle{
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
-        String regex = map.get("r");
-        String string = map.get("s");
+        String regex = request.getParam("r");
+        String string = request.getParam("s");
         Asserts.notBlank(regex, "格式错啦(r)");
         Asserts.notBlank(string, "格式错啦(s)");
         List<String> pattenList = new ArrayList<>();

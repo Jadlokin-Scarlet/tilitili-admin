@@ -1,6 +1,7 @@
 package com.tilitili.admin.service.mirai;
 
 import com.google.common.collect.ImmutableMap;
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.utils.Asserts;
@@ -33,9 +34,9 @@ public class FindImageHandle implements BaseMessageHandle{
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
-        String url = map.get("url");
+        String url = request.getUrl();
         Asserts.notBlank(url, "格式错啦(图片)");
         String html = HttpClientUtil.httpPost("https://saucenao.com/search.php?url="+url, ImmutableMap.of());
         Asserts.notBlank(html, "没要到图😇\n"+url);

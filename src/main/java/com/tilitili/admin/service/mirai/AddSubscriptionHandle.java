@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.Subscription;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -46,11 +47,11 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
 
-        String uid = map.get("uid");
-        Sender sender = message.getSender();
+        String uid = request.getParam("uid");
+        Sender sender = request.getMessage().getSender();
         Long qq = sender.getId();
         Long group = Optional.ofNullable(sender.getGroup()).map(Sender::getId).orElse(null);
 

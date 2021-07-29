@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -44,14 +45,14 @@ public class AddRecommendHandle implements BaseMessageHandle {
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
 
-        String avStr = map.get("视频号");
-        String operator = map.get("推荐人");
-        String text = map.get("推荐语");
-        int startTime = Integer.parseInt(map.getOrDefault("开始时间", "0"));
-        int endTime = Integer.parseInt(map.getOrDefault("结束时间", String.valueOf(startTime + 30)));
+        String avStr = request.getParam("视频号");
+        String operator = request.getParam("推荐人");
+        String text = request.getParam("推荐语");
+        int startTime = Integer.parseInt(request.getParamOrDefault("开始时间", "0"));
+        int endTime = Integer.parseInt(request.getParamOrDefault("结束时间", String.valueOf(startTime + 30)));
 
         Asserts.notNull(avStr, "格式错啦(视频号)");
         Asserts.notNull(operator, "格式错啦(推荐人)");

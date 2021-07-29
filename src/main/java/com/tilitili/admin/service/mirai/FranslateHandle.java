@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.manager.BaiduManager;
@@ -40,12 +41,12 @@ public class FranslateHandle implements BaseMessageHandle{
 
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
-        String body = map.getOrDefault("body", "");
-        String url = map.getOrDefault("url", "");
-        String to = map.get("to");
-        String text = map.get("t");
+        String body = request.getBody();
+        String url = request.getUrl();
+        String to = request.getParam("to");
+        String text = request.getParam("t");
         Asserts.notBlank(body + url, "格式错啦(内容)");
         String cnText;
         if (to != null) {

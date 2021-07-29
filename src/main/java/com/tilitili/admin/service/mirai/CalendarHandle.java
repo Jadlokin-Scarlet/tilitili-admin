@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.BotCalendar;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -45,10 +46,10 @@ public class CalendarHandle implements BaseMessageHandle {
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiMessageView message, Map<String, String> map) {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
-        String body = map.get("body");
-        Sender sender = message.getSender();
+        String body = request.getBody();
+        Sender sender = request.getMessage().getSender();
         Long qq = sender.getId();
         Long group = Optional.ofNullable(sender.getGroup()).map(Sender::getId).orElse(null);
 
