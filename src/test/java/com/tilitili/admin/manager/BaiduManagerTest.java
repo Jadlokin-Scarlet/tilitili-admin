@@ -19,8 +19,5 @@ public class BaiduManagerTest {
     private MiraiManager miraiManager;
     @Test
     public void test() {
-//        miraiManager.sendGroupMessage("Plain", "臭威威", 229712256L);
-//        String result = baiduManager.translateImage("http://c2cpicdw.qpic.cn/offpic_new/545459363//545459363-1286451716-A171CF4B966BAC4B3CEDE4A83DD0AE53/0?term=2");
-//        System.out.println(result);
     }
 }
