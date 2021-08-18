@@ -46,7 +46,7 @@ public class VoiceHandle implements BaseMessageHandle {
 
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws IOException, InterruptedException {
-        String text = request.getText();
+        String text = request.getBody();
 
         String jpText = baiduManager.translate("jp", text);
 

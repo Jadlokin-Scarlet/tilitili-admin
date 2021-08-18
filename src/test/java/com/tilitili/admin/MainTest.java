@@ -11,6 +11,7 @@ import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.FileUtil;
 import com.tilitili.common.utils.HttpClientHelper;
+import com.tilitili.common.utils.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -59,15 +60,6 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        final String BASE_DIR = "/Users/admin/Documents/";
-        final String SLK_DIR = BASE_DIR + "voice.slk";
-
-        File slkFile = new File(SLK_DIR);
-        String session = miraiManager.auth();
-        miraiManager.verify(session);
-        Map<String, String> params = ImmutableMap.of("sessionKey", session, "type", "group");
-        String result = HttpClientHelper.uploadFile("http://1.15.188.132:8080/uploadVoice", "voice", slkFile, params);
-        System.out.println(result);
 
 //        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId("D41D8CD98F00B204E9800998ECF8427E.amr").setSendType("group").setGroup(GroupEmum.TEST_GROUP.getValue()));
     }

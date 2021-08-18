@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.mapper.AdminMapper;
-import com.tilitili.common.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
