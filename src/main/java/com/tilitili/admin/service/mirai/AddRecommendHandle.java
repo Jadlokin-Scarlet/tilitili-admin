@@ -4,7 +4,6 @@ import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.mirai.MiraiMessage;
-import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.mapper.RecommendMapper;
 import com.tilitili.common.mapper.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class AddRecommendHandle implements BaseMessageHandle {
