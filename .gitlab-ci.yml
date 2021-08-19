@@ -1,0 +1,11 @@
+stages:
+  - build-deploy
+
+bulid-deploy:
+  stage: build-deploy
+  script:
+    - echo "start building tilitili-admin ..."
+    - cd /home/www/
+    - ./docker_build tf8-laxin-admin taofen8 springboot release tf8-laxin-admin
+  only:
+    - deploy
