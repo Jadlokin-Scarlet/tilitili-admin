@@ -14,6 +14,17 @@
         <version>2.3.5.RELEASE</version>
     </parent>
 
+    <repositories>
+        <repository>
+            <id>tilitili-repo</id>
+            <url>http://mvn.tilitili.club/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,5 +91,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>tilitili-repo</id>
+            <url>http://mvn.tilitili.club/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>tilitili-repo</id>
+            <url>http://mvn.tilitili.club/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
