@@ -2,6 +2,8 @@ package com.tilitili.admin;
 
 import com.google.common.collect.ImmutableMap;
 import com.tilitili.StartApplication;
+import com.tilitili.admin.entity.mirai.MiraiRequest;
+import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -25,6 +27,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -50,6 +56,8 @@ public class MainTest {
     private MiraiManager miraiManager;
     @Resource
     private VideoDataManager videoDataManager;
+    @Resource
+    private FindImageHandle findImageHandle;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -60,8 +68,19 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-
-//        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId("D41D8CD98F00B204E9800998ECF8427E.amr").setSendType("group").setGroup(GroupEmum.TEST_GROUP.getValue()));
+        MiraiMessage result = new MiraiMessage();
+        String url = "http://c2cpicdw.qpic.cn/offpic_new/545459363//545459363-3613474805-9AB7E35963A95437F2B081CC05B164F5/0?term=2";
+        Asserts.notBlank(url, "格式错啦(图片)");
+        String html = HttpClientUtil.httpPost("https://saucenao.com/search.php?url="+url, ImmutableMap.of());
+        Asserts.notBlank(html, "没要到图😇\n"+url);
+        Document document = Jsoup.parse(html);
+        Elements imageList = document.select(".result:not(.hidden):not(#result-hidden-notification)");
+        Asserts.isFalse(imageList.isEmpty(), "没找到🤕\n"+url);
+        Element image = imageList.get(0);
+        String rate = image.select(".resultsimilarityinfo").text();
+        Elements linkList = image.select(".resultcontentcolumn a.linkify");
+        String link = linkList.get(0).attr("href");
+        System.out.println(result.setMessage(String.format("找到啦😊！相似度%s\n%s", rate, link)).setMessageType("Plain"));
     }
 
 
