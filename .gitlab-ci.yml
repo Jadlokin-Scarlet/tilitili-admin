@@ -6,6 +6,6 @@ bulid-deploy:
   script:
     - echo "start building tilitili-admin ..."
     - cd /home/www/
-    - ./docker_build tilitili-admin 8083
+    - ./docker_build tilitili-admin 47.100.66.36 8083
   only:
     - deploy
