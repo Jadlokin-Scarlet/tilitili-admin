@@ -1,12 +1,21 @@
 stages:
-  - build-deploy
+  - build
+  - deploy
 
-bulid-deploy:
-  stage: build-deploy
+bulid:
+  stage: build
   script:
     - echo "start building ..."
     - cd /home/www/
     - ./docker_build tilitili-admin
+  only:
+    - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - echo "start deploy ..."
+    - cd /home/www/
     - ./docker_deploy tilitili-admin 47.100.66.36 8083
   only:
     - deploy
