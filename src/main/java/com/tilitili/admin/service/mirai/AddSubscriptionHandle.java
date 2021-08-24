@@ -4,7 +4,6 @@ import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.Subscription;
 import com.tilitili.common.entity.mirai.MiraiMessage;
-import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.manager.TaskManager;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
