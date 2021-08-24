@@ -24,7 +24,7 @@ public class FranslateHandle implements BaseMessageHandle{
 
     @Override
     public List<String> getKeyword() {
-        return Arrays.asList("翻译", "fy");
+        return Arrays.asList("翻译", "fy", "fy2");
     }
 
     @Override
