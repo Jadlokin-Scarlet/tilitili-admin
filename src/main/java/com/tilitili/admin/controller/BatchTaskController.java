@@ -2,10 +2,12 @@ package com.tilitili.admin.controller;
 
 import com.tilitili.admin.service.BatchTaskService;
 import com.tilitili.common.entity.BatchTask;
+import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.BatchTaskMapper;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,15 @@ public class BatchTaskController extends BaseController {
         int count = batchTaskMapper.count(query);
         List<BatchTask> batchTaskList = batchTaskService.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), batchTaskList);
+    }
+
+    @GetMapping("/count")
+    @ResponseBody
+    public BaseModel getBatchTaskCount(BatchTaskQuery query) {
+        Asserts.notNull(query, "参数异常");
+        Asserts.notNull(query.getTime(), "查询区间未获取到");
+        List<BatchTaskIpCount> data = batchTaskMapper.listCount(query);
+        return BaseModel.success(data);
     }
 
     @DeleteMapping("/{id}")
