@@ -16,8 +16,8 @@
 
     <repositories>
         <repository>
-            <id>tilitili-repo</id>
-            <url>http://mvn.tilitili.club/repository/maven-public/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.tilitili.club/api/v4/groups/3/-/packages/maven</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -94,12 +94,12 @@
 
     <distributionManagement>
         <repository>
-            <id>tilitili-repo</id>
-            <url>http://mvn.tilitili.club/repository/maven-releases/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.tilitili.club/api/v4/projects/3/packages/maven</url>
         </repository>
         <snapshotRepository>
-            <id>tilitili-repo</id>
-            <url>http://mvn.tilitili.club/repository/maven-snapshots/</url>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.tilitili.club/api/v4/projects/3/packages/maven</url>
         </snapshotRepository>
     </distributionManagement>
 
