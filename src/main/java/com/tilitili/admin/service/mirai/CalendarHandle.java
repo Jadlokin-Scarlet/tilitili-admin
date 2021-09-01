@@ -6,6 +6,7 @@ import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.mapper.BotCalendarMapper;
+import com.tilitili.common.utils.AESUtils;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +87,7 @@ public class CalendarHandle implements BaseMessageHandle {
         }
         calendar.set(Calendar.SECOND, 0);
 
-        BotCalendar botCalendar = new BotCalendar().setSendTime(calendar.getTime()).setText(something).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
+        BotCalendar botCalendar = new BotCalendar().setSendTime(calendar.getTime()).setText(AESUtils.encrypt(something)).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
         botCalendarMapper.insertBotCalendar(botCalendar);
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH时mm分");
