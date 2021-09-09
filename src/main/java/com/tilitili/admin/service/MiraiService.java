@@ -77,13 +77,13 @@ public class MiraiService {
                 }
             }
 
-            return new MiraiMessage().setMessage("?").setMessageType("Plain");
+            return new MiraiMessage().setUrl("http://m.qpic.cn/psc?/V53UUlnk2IehYn4WcXfY2dBFO92OvB1L/TmEUgtj9EK6.7V8ajmQrEPBYbjL66rmGmhZeULQk5K23cRElRpiBGW67YBgbgQxSQQ*jZ1sT2lB3FSogwc0t5DyuSeiAT17yAwmaSTNULPo!/b&bo=aABPAAAAAAABFxc!&rf=viewer_4").setMessageType("Image");
         } catch (AssertException e) {
             log.error(e.getMessage());
             return new MiraiMessage().setMessage(e.getMessage()).setMessageType("Plain");
         } catch (Exception e) {
             log.error("处理消息回调失败",e);
-            return new MiraiMessage().setMessage("¿").setMessageType("Plain");
+            return new MiraiMessage().setUrl("http://m.qpic.cn/psc?/V53UUlnk2IehYn4WcXfY2dBFO92OvB1L/TmEUgtj9EK6.7V8ajmQrENdFC7iq*X8AsvjACl.g*DjfOPu0Ohw4r47052XDpNQGtOBy0dw5ZNtRggzAZvOvUBGBlTjwCDv4o3k*J7IWang!/b&bo=eABcAAAAAAABFxQ!&rf=viewer_4").setMessageType("Image");
         }
     }
 }
