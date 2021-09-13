@@ -37,6 +37,11 @@ public class HelpHandle implements BaseMessageHandle {
     }
 
     @Override
+    public Integer getType() {
+        return 0;
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
         StringBuilder stringBuilder = new StringBuilder("咱可以帮你做这些事！\n");

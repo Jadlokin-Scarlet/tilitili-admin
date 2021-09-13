@@ -9,5 +9,6 @@ public interface BaseMessageHandle {
     List<String> getKeyword();
     String getDescription();
     String getSendType();
+    Integer getType();
     MiraiMessage handleMessage(MiraiRequest request) throws Exception;
 }

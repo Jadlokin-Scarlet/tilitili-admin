@@ -40,10 +40,15 @@ public class MiraiService {
         try {
             MiraiRequest miraiRequest = new MiraiRequest(message, miraiSession);
 
-            messageHandleList.sort(Comparator.comparing(a -> a.getKeyword().size(), Comparator.reverseOrder()));
             for (BaseMessageHandle handle : messageHandleList) {
-                if (handle.getSendType().equals("group")) {
-                    if (handle.getKeyword().isEmpty() || handle.getKeyword().contains(miraiRequest.getTitle())) {
+                if (handle.getSendType().equals("group") && handle.getType().equals(1)) {
+                    handle.handleMessage(miraiRequest);
+                }
+            }
+
+            for (BaseMessageHandle handle : messageHandleList) {
+                if (handle.getSendType().equals("group") && handle.getType().equals(0)) {
+                    if (handle.getKeyword().contains(miraiRequest.getTitle())) {
                         return handle.handleMessage(miraiRequest);
                     }
                 }
@@ -61,11 +66,12 @@ public class MiraiService {
 
     public MiraiMessage handleMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
         try {
+            Long sender = message.getSender().getId();
             MiraiRequest miraiRequest = new MiraiRequest(message, miraiSession);
 
             if (message.getType().equals("TempMessage")) {
                 if (resourcesManager.isForwardTempMessage()) {
-                    miraiManager.sendFriendMessage("Plain", miraiRequest.getText());
+                    miraiManager.sendFriendMessage("Plain", String.format("%s\n%s", sender, miraiRequest.getText()));
                 }
             }
 

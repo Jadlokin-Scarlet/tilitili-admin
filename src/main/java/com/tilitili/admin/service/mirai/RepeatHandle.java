@@ -9,11 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static org.apache.http.util.TextUtils.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 public class RepeatHandle implements BaseMessageHandle {
+    private final String valueKey = "repeat.value";
+    private final String numberKey = "repeat.number";
+
     @Override
     public List<String> getKeyword() {
         return Collections.emptyList();
@@ -30,21 +32,26 @@ public class RepeatHandle implements BaseMessageHandle {
     }
 
     @Override
+    public Integer getType() {
+        return 1;
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiSessionService.MiraiSession session = request.getSession();
         String value = request.getText() + request.getUrl();
         MiraiMessage result = new MiraiMessage();
 
-        String oldValue = session.getOrDefault("value", "");
-        int oldNumber = Integer.parseInt(session.getOrDefault("number", "0"));
+        String oldValue = session.getOrDefault(valueKey, "");
+        int oldNumber = Integer.parseInt(session.getOrDefault(numberKey, "0"));
         if (oldValue.equals(value)) {
-            session.put("number", String.valueOf(oldNumber + 1));
+            session.put(numberKey, String.valueOf(oldNumber + 1));
         } else {
-            session.put("value", value);
-            session.put("number", "1");
+            session.put(valueKey, value);
+            session.put(numberKey, "1");
         }
 
-        String newNumber = session.get("number");
+        String newNumber = session.get(numberKey);
         if (Objects.equals(newNumber, "3")) {
             boolean hasImage = isNotBlank(request.getUrl());
             return result.setMessage(request.getText()).setMessageType(hasImage? "ImageText": "Plain").setUrl(request.getUrl());

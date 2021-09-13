@@ -45,6 +45,11 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
     }
 
     @Override
+    public Integer getType() {
+        return 0;
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
 

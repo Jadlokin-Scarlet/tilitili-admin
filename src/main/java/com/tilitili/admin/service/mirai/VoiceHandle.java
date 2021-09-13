@@ -45,6 +45,11 @@ public class VoiceHandle implements BaseMessageHandle {
     }
 
     @Override
+    public Integer getType() {
+        return 0;
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws IOException, InterruptedException {
         String text = request.getBody();
 

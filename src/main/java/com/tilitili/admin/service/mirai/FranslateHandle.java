@@ -37,6 +37,11 @@ public class FranslateHandle implements BaseMessageHandle{
         return "friend";
     }
 
+    @Override
+    public Integer getType() {
+        return 0;
+    }
+
 
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) {

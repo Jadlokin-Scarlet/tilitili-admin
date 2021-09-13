@@ -35,6 +35,11 @@ public class PatternStringHandle implements BaseMessageHandle{
     }
 
     @Override
+    public Integer getType() {
+        return 0;
+    }
+
+    @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
         String regex = request.getParam("r");
