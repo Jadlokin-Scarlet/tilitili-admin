@@ -3,6 +3,8 @@ package com.tilitili.admin.service.mirai;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.common.manager.MiraiManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -15,6 +17,13 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class RepeatHandle implements BaseMessageHandle {
     private final String valueKey = "repeat.value";
     private final String numberKey = "repeat.number";
+
+    private final MiraiManager miraiManager;
+
+    @Autowired
+    public RepeatHandle(MiraiManager miraiManager) {
+        this.miraiManager = miraiManager;
+    }
 
     @Override
     public List<String> getKeyword() {
@@ -53,8 +62,7 @@ public class RepeatHandle implements BaseMessageHandle {
 
         String newNumber = session.get(numberKey);
         if (Objects.equals(newNumber, "3")) {
-            boolean hasImage = isNotBlank(request.getUrl());
-            return result.setMessage(request.getText()).setMessageType(hasImage? "ImageText": "Plain").setUrl(request.getUrl());
+            miraiManager.sendGroupMessage("Plain", request.getText(), request.getMessage().getSender().getGroup().getId());
         }
         return result.setMessage("").setMessageType("Plain");
     }
