@@ -29,23 +29,8 @@ public class MiraiRequest {
         text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
         url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
         textList = text.split("\n");
-        
-        if (session.containsKey("模式")) {
-            title = session.get("模式");
-            body = text;
-//            if (Objects.equals(textList[0], "退出")) {
-//                session.remove("模式");
-//                return result.setMessage("停止"+title).setMessageType("Plain");
-//            }
-        } else {
-            title = textList[0];
-            body = Stream.of(textList).skip(1).collect(Collectors.joining("\n"));
-//            if (textList[0].contains("模式")) {
-//                String mod = textList[0].replaceAll("模式", "");
-//                session.put("模式", mod);
-//                return result.setMessage("开始"+mod).setMessageType("Plain");
-//            }
-        }
+        title = textList.length > 1? textList[0]: "";
+        body = textList.length > 2? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
 
         String[] bodyList = body.split("\n");
         params = new HashMap<>();
