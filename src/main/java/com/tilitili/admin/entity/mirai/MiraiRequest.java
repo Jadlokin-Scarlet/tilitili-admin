@@ -29,8 +29,8 @@ public class MiraiRequest {
         text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
         url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
         textList = text.split("\n");
-        title = textList.length > 1? textList[0]: "";
-        body = textList.length > 2? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
+        title = textList.length > 0? textList[0]: "";
+        body = textList.length > 1? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
 
         String[] bodyList = body.split("\n");
         params = new HashMap<>();
