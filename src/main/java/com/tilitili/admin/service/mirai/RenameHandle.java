@@ -72,7 +72,8 @@ public class RenameHandle implements BaseMessageHandle {
             }
 
             scheduled.schedule(() -> {
-                boolean isDown = lastSendTimeStr == null || DateUtils.parseDateYMDHMS(lastSendTimeStr).before(getLimitDate());
+                String lastSendTime2Str = session.get(lastSendTimeKey);
+                boolean isDown = lastSendTime2Str == null || DateUtils.parseDateYMDHMS(lastSendTime2Str).before(getLimitDate());
                 if (isDown) {
                     miraiManager.changeGroupNick(listenGroup, MASTER_QQ, "cirno | 潜水。");
                     session.put(statusKey, "潜水。");
