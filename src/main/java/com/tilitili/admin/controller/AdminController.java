@@ -43,7 +43,7 @@ public class AdminController extends BaseController {
         Admin admin = adminService.login(reqAdmin.getUserName(), reqAdmin.getPassword());
         Asserts.notNull(admin, "账号未获取到");
         session.setAttribute("admin", admin);
-        return new BaseModel("登录成功1", true, admin);
+        return new BaseModel("登录成功", true, admin);
     }
 
     @PostMapping("/loginOut")
