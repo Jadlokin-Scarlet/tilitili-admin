@@ -17,7 +17,7 @@
     <repositories>
         <repository>
             <id>gitlab-maven</id>
-            <url>https://gitlab.tilitili.club/api/v4/groups/3/-/packages/maven</url>
+            <url>https://gitlab.tilitili.club/api/v4/groups/4/-/packages/maven</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
