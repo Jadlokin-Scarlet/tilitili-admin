@@ -57,10 +57,10 @@ public class FranslateHandle implements BaseMessageHandle{
         String body = request.getBody();
         String url = request.getUrl();
         String to = request.getParam("to");
-        String text = request.getParam("t");
-        Asserts.notBlank(body + url, "格式错啦(内容)");
+        String text = request.getParamOrDefault("t", "");
+        Asserts.notBlank(body + url + text, "格式错啦(内容)");
 
-        String mapText = Arrays.stream(text.split("")).map(s -> map.getOrDefault(s, s)).collect(Collectors.joining());
+        String mapText = Arrays.stream((body + text).split("")).map(s -> map.getOrDefault(s, s)).collect(Collectors.joining());
 
         String cnText;
         if (to != null) {
