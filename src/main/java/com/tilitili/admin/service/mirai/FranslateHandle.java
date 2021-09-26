@@ -9,12 +9,22 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 public class FranslateHandle implements BaseMessageHandle{
+
+    private final Map<String, String> map = IntStream.range(65, 91).boxed().collect(Collectors.toMap(
+            a -> String.valueOf(Character.forDigit(a,10)),
+            a -> " " + Character.forDigit(a + 32, 10)
+    ));
+
     private final BaiduManager baiduManager;
 
     @Autowired
@@ -41,8 +51,6 @@ public class FranslateHandle implements BaseMessageHandle{
     public Integer getType() {
         return 0;
     }
-
-
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
@@ -51,9 +59,12 @@ public class FranslateHandle implements BaseMessageHandle{
         String to = request.getParam("to");
         String text = request.getParam("t");
         Asserts.notBlank(body + url, "格式错啦(内容)");
+
+        String mapText = Arrays.stream(text.split("")).map(s -> map.getOrDefault(s, s)).collect(Collectors.joining());
+
         String cnText;
         if (to != null) {
-            cnText = baiduManager.translate(to, text);
+            cnText = baiduManager.translate(to, mapText);
         } else if (isNotBlank(body)) {
             cnText = baiduManager.translate(body);
         } else {
