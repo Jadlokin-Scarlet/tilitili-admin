@@ -20,11 +20,6 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Component
 public class FranslateHandle implements BaseMessageHandle{
 
-    private final Map<String, String> map = IntStream.range(65, 91).boxed().collect(Collectors.toMap(
-            a -> String.valueOf(Character.toChars(a)),
-            a -> " " + String.valueOf(Character.toChars(a + 32))
-    ));
-
     private final BaiduManager baiduManager;
 
     @Autowired
@@ -60,11 +55,9 @@ public class FranslateHandle implements BaseMessageHandle{
         String text = request.getParamOrDefault("t", "");
         Asserts.notBlank(body + url + text, "格式错啦(内容)");
 
-        String mapText = Arrays.stream((body + text).split("")).map(s -> map.getOrDefault(s, s)).collect(Collectors.joining());
-
         String cnText;
         if (to != null) {
-            cnText = baiduManager.translate(to, mapText);
+            cnText = baiduManager.translate(to, text);
         } else if (isNotBlank(body)) {
             cnText = baiduManager.translate(body);
         } else {
