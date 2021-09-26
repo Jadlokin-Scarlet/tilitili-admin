@@ -21,8 +21,8 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class FranslateHandle implements BaseMessageHandle{
 
     private final Map<String, String> map = IntStream.range(65, 91).boxed().collect(Collectors.toMap(
-            a -> String.valueOf(Character.forDigit(a,10)),
-            a -> " " + Character.forDigit(a + 32, 10)
+            a -> String.valueOf(Character.toChars(a)),
+            a -> " " + String.valueOf(Character.toChars(a + 32))
     ));
 
     private final BaiduManager baiduManager;
