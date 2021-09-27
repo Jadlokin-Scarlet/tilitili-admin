@@ -4,6 +4,7 @@ import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.manager.BaiduManager;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,11 +56,12 @@ public class FranslateHandle implements BaseMessageHandle{
         String text = request.getParamOrDefault("t", "");
         Asserts.notBlank(body + url + text, "格式错啦(内容)");
 
+        String enText = StringUtils.convertToSmallWord(text + body);
         String cnText;
         if (to != null) {
-            cnText = baiduManager.translate(to, text);
+            cnText = baiduManager.translate(to, enText);
         } else if (isNotBlank(body)) {
-            cnText = baiduManager.translate(body);
+            cnText = baiduManager.translate(enText);
         } else {
             cnText = baiduManager.translateImage(url);
         }
