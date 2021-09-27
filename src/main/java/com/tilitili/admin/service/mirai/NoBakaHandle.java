@@ -28,7 +28,6 @@ public class NoBakaHandle implements BaseMessageHandle {
 
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
-        MiraiSessionService.MiraiSession session = request.getSession();
         String text = request.getText();
         MiraiMessage result = new MiraiMessage();
 
@@ -45,6 +44,6 @@ public class NoBakaHandle implements BaseMessageHandle {
             miraiManager.sendGroupMessage("Plain", repeat, request.getMessage().getSender().getGroup().getId());
             return result.setMessage("").setMessageType("Plain");
         }
-        return result.setMessage("").setMessageType("Plain");
+        return null;
     }
 }

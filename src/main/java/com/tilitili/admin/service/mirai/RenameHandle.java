@@ -69,7 +69,7 @@ public class RenameHandle implements BaseMessageHandle {
             session.put(lastSendTimeKey, DateUtils.formatDateYMDHMS(new Date()));
         }
 
-        return result.setMessage("").setMessageType("Plain");
+        return null;
     }
 
 

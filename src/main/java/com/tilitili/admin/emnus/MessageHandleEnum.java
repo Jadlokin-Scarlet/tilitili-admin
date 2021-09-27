@@ -15,7 +15,7 @@ public enum MessageHandleEnum {
     HelpHandle("HelpHandle", Arrays.asList("帮助", "help", "?"), "获取帮助", "friend", 0, 0),
     PatternStringHandle("PatternStringHandle", Arrays.asList("正则", "zz"), "正则匹配", "friend", 0, 0),
     RenameHandle("RenameHandle", Collections.emptyList(), "改名。", "group", 1, 2),
-    NoBakaHandle("NoBakaHandle", Collections.emptyList(), "不笨。", "group", 2, 1),
+    NoBakaHandle("NoBakaHandle", Collections.emptyList(), "不笨。", "group", 1, 1),
     RepeatHandle("RepeatHandle", Collections.emptyList(), "复读。", "group", 1, 0),
     VoiceHandle("VoiceHandle", Arrays.asList("说", "s"), "文本转语音（日语）", "group", 0, 0),
     ;

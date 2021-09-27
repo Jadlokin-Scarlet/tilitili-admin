@@ -50,6 +50,6 @@ public class RepeatHandle implements BaseMessageHandle {
         if (Objects.equals(newNumber, "3")) {
             miraiManager.sendGroupMessage("Plain", request.getText(), request.getMessage().getSender().getGroup().getId());
         }
-        return result.setMessage("").setMessageType("Plain");
+        return null;
     }
 }
