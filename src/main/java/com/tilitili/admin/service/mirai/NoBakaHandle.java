@@ -32,10 +32,18 @@ public class NoBakaHandle implements BaseMessageHandle {
         String text = request.getText();
         MiraiMessage result = new MiraiMessage();
 
-        int count = StringUtils.findCount("笨蛋", text);
-        if (count > 0) {
-            String repeat = IntStream.range(0, count).mapToObj(c -> "不笨").collect(Collectors.joining());
+        int bdCount = StringUtils.findCount("笨蛋", text);
+        if (bdCount > 0) {
+            String repeat = IntStream.range(0, bdCount).mapToObj(c -> "不笨").collect(Collectors.joining());
             miraiManager.sendGroupMessage("Plain", repeat, request.getMessage().getSender().getGroup().getId());
+            return result.setMessage("").setMessageType("Plain");
+        }
+
+        int ddCount = StringUtils.findCount("dd", text);
+        if (ddCount > 0) {
+            String repeat = IntStream.range(0, ddCount).mapToObj(c -> "bd").collect(Collectors.joining());
+            miraiManager.sendGroupMessage("Plain", repeat, request.getMessage().getSender().getGroup().getId());
+            return result.setMessage("").setMessageType("Plain");
         }
         return result.setMessage("").setMessageType("Plain");
     }
