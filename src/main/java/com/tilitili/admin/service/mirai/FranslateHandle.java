@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.manager.BaiduManager;
@@ -29,24 +30,10 @@ public class FranslateHandle implements BaseMessageHandle{
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("翻译", "fy", "fy2");
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.FranslateHandle;
     }
 
-    @Override
-    public String getDescription() {
-        return "翻译文本或图片";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
-    }
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();

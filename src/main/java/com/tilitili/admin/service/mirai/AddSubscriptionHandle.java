@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.Subscription;
@@ -30,23 +31,8 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("关注", "gz");
-    }
-
-    @Override
-    public String getDescription() {
-        return "关注b站up，关注后可以获得开播提醒和动态推送";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.AddSubscriptionHandle;
     }
 
     @Override

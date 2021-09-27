@@ -2,24 +2,21 @@ package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.service.mirai.BaseMessageHandle;
-import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.ResourcesManager;
-import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.tilitili.common.utils.AsciiUtil.sbc2dbcCase;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -40,15 +37,18 @@ public class MiraiService {
         try {
             MiraiRequest miraiRequest = new MiraiRequest(message, miraiSession);
 
-            for (BaseMessageHandle handle : messageHandleList) {
-                if (handle.getSendType().equals("group") && handle.getType().equals(1)) {
-                    handle.handleMessage(miraiRequest);
+            List<BaseMessageHandle> groupList = messageHandleList.stream().filter(handle -> handle.getType().getSendType().equals("group")).filter(handle -> Arrays.asList(1, 2).contains(handle.getType().getType()))
+                    .sorted(Comparator.comparing(a -> a.getType().getSort(), Comparator.reverseOrder())).collect(Collectors.toList());
+            for (BaseMessageHandle handle : groupList) {
+                handle.handleMessage(miraiRequest);
+                if (handle.getType().getType().equals(2)) {
+                    break;
                 }
             }
 
             for (BaseMessageHandle handle : messageHandleList) {
-                if (handle.getSendType().equals("group") && handle.getType().equals(0)) {
-                    if (handle.getKeyword().contains(miraiRequest.getTitle())) {
+                if (handle.getType().getSendType().equals("group") && handle.getType().getType().equals(0)) {
+                    if (handle.getType().getKeyword().contains(miraiRequest.getTitle())) {
                         return handle.handleMessage(miraiRequest);
                     }
                 }
@@ -76,8 +76,8 @@ public class MiraiService {
             }
 
             for (BaseMessageHandle messageHandle : messageHandleList) {
-                if (messageHandle.getSendType().equals("friend")) {
-                    if (messageHandle.getKeyword().contains(sbc2dbcCase(miraiRequest.getTitle()))) {
+                if (messageHandle.getType().getSendType().equals("friend")) {
+                    if (messageHandle.getType().getKeyword().contains(sbc2dbcCase(miraiRequest.getTitle()))) {
                         return messageHandle.handleMessage(miraiRequest);
                     }
                 }

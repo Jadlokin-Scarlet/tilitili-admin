@@ -1,6 +1,7 @@
 package com.tilitili.admin.service.mirai;
 
 import com.google.common.collect.ImmutableMap;
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -18,24 +19,10 @@ import java.util.Map;
 
 @Component
 public class FindImageHandle implements BaseMessageHandle{
-    @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("找图", "zt");
-    }
 
     @Override
-    public String getDescription() {
-        return "查找原图";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.FindImageHandle;
     }
 
     @Override

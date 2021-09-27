@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -19,24 +20,10 @@ import static org.apache.http.util.TextUtils.isBlank;
 
 @Component
 public class PatternStringHandle implements BaseMessageHandle{
-    @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("正则", "zz");
-    }
 
     @Override
-    public String getDescription() {
-        return "正则匹配";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.PatternStringHandle;
     }
 
     @Override

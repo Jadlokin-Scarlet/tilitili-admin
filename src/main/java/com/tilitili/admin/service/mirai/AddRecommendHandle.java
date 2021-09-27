@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
@@ -28,23 +29,8 @@ public class AddRecommendHandle implements BaseMessageHandle {
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("推荐", "tj");
-    }
-
-    @Override
-    public String getDescription() {
-        return "添加推荐";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.AddRecommendHandle;
     }
 
     @Override

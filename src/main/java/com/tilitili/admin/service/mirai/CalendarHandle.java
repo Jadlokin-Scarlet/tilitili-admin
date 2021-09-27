@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.BotCalendar;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -32,23 +33,8 @@ public class CalendarHandle implements BaseMessageHandle {
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("日程表", "rc");
-    }
-
-    @Override
-    public String getDescription() {
-        return "日程表（xxx时间叫我xxx）";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.CalendarHandle;
     }
 
     @Override

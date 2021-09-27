@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.emnus.GroupEmum;
@@ -34,23 +35,8 @@ public class RenameHandle implements BaseMessageHandle {
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public String getDescription() {
-        return "复读。";
-    }
-
-    @Override
-    public String getSendType() {
-        return "group";
-    }
-
-    @Override
-    public Integer getType() {
-        return 1;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.RenameHandle;
     }
 
     @Override

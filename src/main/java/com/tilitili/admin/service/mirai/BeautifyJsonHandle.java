@@ -2,6 +2,7 @@ package com.tilitili.admin.service.mirai;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -14,25 +15,9 @@ import java.util.Map;
 
 @Component
 public class BeautifyJsonHandle implements BaseMessageHandle{
-
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("Json", "json");
-    }
-
-    @Override
-    public String getDescription() {
-        return "Json美化";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.BeautifyJsonHandle;
     }
 
     @Override

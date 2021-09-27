@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -14,38 +15,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class HelpHandle implements BaseMessageHandle {
-    private final List<BaseMessageHandle> handleList;
-
-    @Autowired
-    public HelpHandle(List<BaseMessageHandle> handleList) {
-        this.handleList = handleList;
-    }
-
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("帮助", "help", "?");
-    }
-
-    @Override
-    public String getDescription() {
-        return "获取帮助";
-    }
-
-    @Override
-    public String getSendType() {
-        return "friend";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.HelpHandle;
     }
 
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
         StringBuilder stringBuilder = new StringBuilder("咱可以帮你做这些事！\n");
-        String body = handleList.stream().filter(a->!a.getKeyword().isEmpty()).sorted(Comparator.comparing(a -> a.getKeyword().size(), Comparator.reverseOrder())).map(handle ->
+        String body = Arrays.stream(MessageHandleEnum.values()).filter(a->!a.getKeyword().isEmpty()).sorted(Comparator.comparing(a -> a.getKeyword().size(), Comparator.reverseOrder())).map(handle ->
                 String.join(",", handle.getKeyword()) + "：" + handle.getDescription()
         ).collect(Collectors.joining("\n"));
         return result.setMessage(stringBuilder.append(body).toString()).setMessageType("Plain");

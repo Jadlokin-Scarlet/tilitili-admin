@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.entity.mirai.MiraiMessage;
@@ -30,23 +31,8 @@ public class VoiceHandle implements BaseMessageHandle {
     }
 
     @Override
-    public List<String> getKeyword() {
-        return Arrays.asList("说", "s");
-    }
-
-    @Override
-    public String getDescription() {
-        return "文本转语音（日语）";
-    }
-
-    @Override
-    public String getSendType() {
-        return "group";
-    }
-
-    @Override
-    public Integer getType() {
-        return 0;
+    public MessageHandleEnum getType() {
+        return MessageHandleEnum.VoiceHandle;
     }
 
     @Override
