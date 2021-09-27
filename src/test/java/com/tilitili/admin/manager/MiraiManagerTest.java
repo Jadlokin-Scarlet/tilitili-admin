@@ -39,7 +39,8 @@ public class MiraiManagerTest {
 
     @Test
     public void test0() {
-        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Image").setGroup(QIAN_QIAN_GROUP.value).setUrl("http://c2cpicdw.qpic.cn/offpic_new/545459363//545459363-1650411805-E7E658A46AB963FE09B0080806BBE90B/0?term=2"));
+        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("temp").setMessageType("Plain").setQq(1578611368L).setGroup(QIAN_QIAN_GROUP.value)
+                .setMessage("[手动回复]rc\nxxx叫我xxx   这个还不够吗   左边大多数关于时间的描述都可以"));
 
     }
 

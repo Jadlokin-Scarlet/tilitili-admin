@@ -12,7 +12,7 @@ public enum MessageHandleEnum {
     CalendarHandle("CalendarHandle", Arrays.asList("日程表", "rc"), "日程表（xxx时间叫我xxx）", "friend", 0, 0),
     FindImageHandle("FindImageHandle", Arrays.asList("找图", "zt"), "查找原图", "friend", 0, 0),
     FranslateHandle("FranslateHandle", Arrays.asList("翻译", "fy"), "翻译文本或图片", "friend", 0, 0),
-    HelpHandle("HelpHandle", Arrays.asList("帮助", "help", "?"), "获取帮助", "friend", 0, 0),
+    HelpHandle("HelpHandle", Arrays.asList("帮助", "help", "?", "？"), "获取帮助", "friend", 0, 0),
     PatternStringHandle("PatternStringHandle", Arrays.asList("正则", "zz"), "正则匹配", "friend", 0, 0),
     RenameHandle("RenameHandle", Collections.emptyList(), "改名。", "group", 1, 2),
     NoBakaHandle("NoBakaHandle", Collections.emptyList(), "不笨。", "group", 1, 1),

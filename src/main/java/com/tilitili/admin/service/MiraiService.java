@@ -9,6 +9,7 @@ import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.ResourcesManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,6 +22,8 @@ import static com.tilitili.common.utils.AsciiUtil.sbc2dbcCase;
 @Slf4j
 @Service
 public class MiraiService {
+    @Value("${mirai.master-qq}")
+    private Long MASTER_QQ;
 
     private final List<BaseMessageHandle> messageHandleList;
     private final ResourcesManager resourcesManager;
@@ -74,7 +77,8 @@ public class MiraiService {
 
             if (message.getType().equals("TempMessage")) {
                 if (resourcesManager.isForwardTempMessage()) {
-                    miraiManager.sendFriendMessage("Plain", String.format("%s\n%s", sender, miraiRequest.getText()));
+//                    miraiManager.sendFriendMessage("Plain", String.format("%s\n%s", sender, miraiRequest.getText()));
+                    miraiManager.sendMessage(new MiraiMessage().setMessage(String.format("%s\n%s", sender, miraiRequest.getText())).setMessageType("Plain").setSendType("friend").setUrl(miraiRequest.getUrl()).setQq(MASTER_QQ));
                 }
             }
 
