@@ -40,8 +40,10 @@ public class MiraiManagerTest {
     @Test
     public void test0() {
         Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("temp").setMessageType("Plain").setQq(1578611368L).setGroup(QIAN_QIAN_GROUP.value)
-                .setMessage("[手动回复]rc\nxxx叫我xxx   这个还不够吗   左边大多数关于时间的描述都可以"));
+                .setMessage("[手动回复]有红点就是私聊和特关"));
 
+//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Plain").setGroup(QIAN_QIAN_GROUP.value)
+//                .setMessage("我也要！送到雾之湖畔就行"));
     }
 
 

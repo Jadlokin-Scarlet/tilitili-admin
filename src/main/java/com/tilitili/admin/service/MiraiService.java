@@ -77,7 +77,6 @@ public class MiraiService {
 
             if (message.getType().equals("TempMessage")) {
                 if (resourcesManager.isForwardTempMessage()) {
-//                    miraiManager.sendFriendMessage("Plain", String.format("%s\n%s", sender, miraiRequest.getText()));
                     miraiManager.sendMessage(new MiraiMessage().setMessage(String.format("%s\n%s", sender, miraiRequest.getText())).setMessageType("Plain").setSendType("friend").setUrl(miraiRequest.getUrl()).setQq(MASTER_QQ));
                 }
             }
