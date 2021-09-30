@@ -18,8 +18,6 @@ import org.springframework.web.socket.*;
 @Slf4j
 @Component
 public class MiraiWebSocketHandler extends BaseWebSocketHandler {
-    @Value("${mirai.base-url}")
-    private String baseUrl;
 
     private final MiraiManager miraiManager;
     private final MiraiService miraiService;
@@ -34,9 +32,7 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 
     @Override
     public String getUrl() {
-        String sessionStr = miraiManager.auth();
-        miraiManager.verify(sessionStr);
-        return baseUrl.replace("http", "ws") + "message?sessionKey="+sessionStr;
+        return miraiManager.getWebSocketUrl();
     }
 
     @Override
