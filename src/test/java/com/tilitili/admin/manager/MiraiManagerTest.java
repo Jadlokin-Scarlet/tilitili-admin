@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 
 import static com.tilitili.common.emnus.GroupEmum.QIAN_QIAN_GROUP;
+import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -44,6 +45,9 @@ public class MiraiManagerTest {
 
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Plain").setGroup(QIAN_QIAN_GROUP.value)
 //                .setMessage("我也要！送到雾之湖畔就行"));
+
+//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Image").setGroup(QIAN_QIAN_GROUP.value)
+//                .setUrl("http://c2cpicdw.qpic.cn/offpic_new/545459363//545459363-233841123-982D642D177D895D8F1609EB111860CB/0?term=2"));
     }
 
 
