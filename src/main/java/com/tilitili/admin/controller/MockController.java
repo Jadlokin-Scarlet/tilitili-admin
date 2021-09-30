@@ -1,10 +1,12 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.mirai.TestRequest;
 import com.tilitili.common.manager.MiraiManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,5 +37,12 @@ public class MockController {
         body = body == null? "": body;
         String cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{})).map(c -> String.format("%s=%s", c.getName(), c.getValue())).collect(Collectors.joining("; "));
         miraiManager.sendFriendMessage("Plain", String.format("%s?%s\nbody=%s\ncookie=%s", requestURL, queryString, body, cookie));
+    }
+
+    @RequestMapping("/test")
+    @ResponseBody
+    public String get(@RequestBody TestRequest request) {
+        System.out.println(request.getTitle());
+        return request.getTitle().toString();
     }
 }

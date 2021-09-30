@@ -4,9 +4,11 @@ import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -14,6 +16,9 @@ import java.util.stream.IntStream;
 
 @Component
 public class NoBakaHandle implements BaseMessageHandle {
+    @Value("${mirai.master-qq}")
+    private Long MASTER_QQ;
+
     private final MiraiManager miraiManager;
 
     @Autowired
@@ -29,6 +34,8 @@ public class NoBakaHandle implements BaseMessageHandle {
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         String text = request.getText();
+        Sender sender = request.getMessage().getSender();
+        Sender sendGroup = sender.getGroup();
         MiraiMessage result = new MiraiMessage();
 
 //        int bdCount = StringUtils.findCount("笨蛋", text);
@@ -41,9 +48,15 @@ public class NoBakaHandle implements BaseMessageHandle {
         int ddCount = StringUtils.findCount("dd", text);
         if (ddCount > 0) {
             String repeat = IntStream.range(0, ddCount).mapToObj(c -> "bd").collect(Collectors.joining());
-            miraiManager.sendGroupMessage("Plain", repeat, request.getMessage().getSender().getGroup().getId());
+            miraiManager.sendGroupMessage("Plain", repeat, sendGroup.getId());
             return result.setMessage("").setMessageType("Plain");
         }
+
+        if (sender.getId().equals(MASTER_QQ) && text.equals("cww")) {
+            miraiManager.sendGroupMessage("Plain", "cww", sendGroup.getId());
+            return result.setMessage("").setMessageType("Plain");
+        }
+
         return null;
     }
 }
