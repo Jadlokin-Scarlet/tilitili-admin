@@ -5,6 +5,7 @@ import com.tilitili.admin.service.MiraiService;
 import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
+import com.tilitili.common.entity.mirai.MiraiMessageViewRequest;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.ResourcesManager;
@@ -39,13 +40,16 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         MiraiMessage result;
         try {
-            MiraiMessageView miraiMessage = new Gson().fromJson(message.getPayload(), MiraiMessageView.class);
-            log.info("Message Received [{}]",miraiMessage);
-            Asserts.notNull(miraiMessage, "未获取到消息");
-            Asserts.notBlank(miraiMessage.getType(), "未获取到消息");
-            Asserts.notNull(miraiMessage.getSender(), "未获取到消息");
-            Asserts.notNull(miraiMessage.getMessageChain(), "未获取到消息");
-            Asserts.notNull(miraiMessage.getSender().getId(), "未获取到消息");
+            MiraiMessageViewRequest miraiMessageViewRequest = new Gson().fromJson(message.getPayload(), MiraiMessageViewRequest.class);
+            log.info("Message Received [{}]",miraiMessageViewRequest);
+            Asserts.notNull(miraiMessageViewRequest, "未获取到消息");
+            Asserts.notNull(miraiMessageViewRequest.getData(), "未获取到消息");
+            Asserts.notBlank(miraiMessageViewRequest.getData().getType(), "未获取到消息");
+            Asserts.notNull(miraiMessageViewRequest.getData().getSender(), "未获取到消息");
+            Asserts.notNull(miraiMessageViewRequest.getData().getMessageChain(), "未获取到消息");
+            Asserts.notNull(miraiMessageViewRequest.getData().getSender().getId(), "未获取到消息");
+
+            MiraiMessageView miraiMessage = miraiMessageViewRequest.getData();
 
 //            Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
             if (miraiMessage.getType().equals("GroupMessage")) {
