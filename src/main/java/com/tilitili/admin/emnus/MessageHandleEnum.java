@@ -18,7 +18,7 @@ public enum MessageHandleEnum {
     NoBakaHandle("NoBakaHandle", Collections.emptyList(), "不笨。", "group", 1, 1),
     RepeatHandle("RepeatHandle", Collections.emptyList(), "复读。", "group", 1, 0),
     VoiceHandle("VoiceHandle", Arrays.asList("说", "s"), "文本转语音（日语）", "group", 0, 0),
-    PixivHandle("PixivHandle", Arrays.asList("色图", "st"), "色图！（其实一点都不色（只有我才能要色图哈哈哈哈", "group", 0, 0),
+    PixivHandle("PixivHandle", Arrays.asList("色图", "st"), "色图！（其实一点都不色（只有我才能要色图哈哈哈哈", "group", 0, 1),
     RecallHandle("RecallHandle", Arrays.asList("撤回", "ch"), "撤回色图！（想看误发的色图？想得美", "friend", 0, 0),
     ;
 
