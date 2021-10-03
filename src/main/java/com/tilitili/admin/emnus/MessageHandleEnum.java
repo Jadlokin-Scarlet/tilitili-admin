@@ -20,6 +20,7 @@ public enum MessageHandleEnum {
     VoiceHandle("VoiceHandle", Arrays.asList("说", "s"), "文本转语音（日语）", "group", 0, 0),
     PixivHandle("PixivHandle", Arrays.asList("色图", "st"), "色图！（其实一点都不色（只有我才能要色图哈哈哈哈", "group", 0, 1),
     RecallHandle("RecallHandle", Arrays.asList("撤回", "ch"), "撤回色图！（想看误发的色图？想得美", "friend", 0, 0),
+    ConfigHandle("ConfigHandle", Arrays.asList("配置", "pz"), "配置参数(管理员功能", "friend", 0, 0),
     ;
 
     private final String name;

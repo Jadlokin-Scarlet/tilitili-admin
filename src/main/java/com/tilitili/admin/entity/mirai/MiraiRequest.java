@@ -35,11 +35,12 @@ public class MiraiRequest {
         String[] bodyList = body.split("\n");
         params = new HashMap<>();
         for (String line : bodyList) {
-            if (!line.contains("=")) {
+            String[] lineSplit = line.split("[=＝]");
+            if (lineSplit.length != 2) {
                 continue;
             }
-            String key = line.split("=")[0];
-            String value = line.split("=")[1];
+            String key = lineSplit[0];
+            String value = lineSplit[1];
             params.put(key.trim(), value.trim());
         }
     }
