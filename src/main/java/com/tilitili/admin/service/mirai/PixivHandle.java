@@ -48,7 +48,7 @@ public class PixivHandle implements BaseMessageHandle {
         String tag = request.getParamOrDefault("tag", "ロリ");
         MiraiMessage result = new MiraiMessage();
 
-        if (sender.getId().equals(MASTER_QQ)) {
+//        if (sender.getId().equals(MASTER_QQ)) {
             Long offset = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
             String url = "https://vilipix.com/api/illust/tag/" + tag + "?limit=1&offset=" + offset;
             String jsonStr = HttpClientUtil.httpGet(url);
@@ -64,8 +64,8 @@ public class PixivHandle implements BaseMessageHandle {
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
 
             return result.setMessage("").setMessageType("Plain");
-        }
+//        }
 
-        return null;
+//        return null;
     }
 }
