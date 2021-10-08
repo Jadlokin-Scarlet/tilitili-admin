@@ -63,7 +63,7 @@ public class PixivHandle implements BaseMessageHandle {
             String imageUrl = dataList.get(index).getUrl();
             String id = dataList.get(index).getId();
             String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
-            String type = StringUtil.matcherGroupOne("((!png|jpg))", imageUrl);
+            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
             if (subUrl == null || type == null) {
                 miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
                 lockFlag.set(false);
