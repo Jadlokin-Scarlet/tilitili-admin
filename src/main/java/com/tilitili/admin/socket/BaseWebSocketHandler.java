@@ -21,14 +21,14 @@ public class BaseWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handlePongMessage(WebSocketSession session, PongMessage message) {
-        log.info("接收到pong消息");
-        sleepAndPing(session);
+//        log.info("接收到pong消息");
+//        sleepAndPing(session);
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         log.info("连接websocket成功，url={}", getUrl());
-        sleepAndPing(session);
+//        sleepAndPing(session);
     }
 
     @Override
@@ -43,10 +43,10 @@ public class BaseWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
     }
 
-    private void sleepAndPing(WebSocketSession session) {
-        Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
-            log.info("发送ping消息");
-            session.sendMessage(new PingMessage());
-        }), 9, TimeUnit.MINUTES);
-    }
+//    private void sleepAndPing(WebSocketSession session) {
+//        Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
+//            log.info("发送ping消息");
+//            session.sendMessage(new PingMessage());
+//        }), 9, TimeUnit.MINUTES);
+//    }
 }
