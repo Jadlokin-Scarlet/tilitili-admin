@@ -63,7 +63,7 @@ public class PixivHandle implements BaseMessageHandle {
             String imageUrl = dataList.get(index).getUrl();
             String id = dataList.get(index).getId();
             String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
-            String type = StringUtil.matcherGroupOne("(.(!png|jpg))", imageUrl);
+            String type = StringUtil.matcherGroupOne("((!png|jpg))", imageUrl);
             if (subUrl == null || type == null) {
                 miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
                 lockFlag.set(false);
@@ -75,9 +75,9 @@ public class PixivHandle implements BaseMessageHandle {
                 lockFlag.set(false);
                 return null;
             }
-            File tempFile = File.createTempFile("pixivImage", ".png");
+            File tempFile = File.createTempFile("pixivImage", "."+type);
             System.out.println(tempFile.getPath());
-            ImageIO.write(image, "png", tempFile);
+            ImageIO.write(image, type, tempFile);
             String imageId = miraiManager.uploadImage(tempFile);
             tempFile.delete();
             Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
