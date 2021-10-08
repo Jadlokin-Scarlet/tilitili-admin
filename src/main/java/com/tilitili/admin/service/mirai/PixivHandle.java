@@ -1,6 +1,5 @@
 package com.tilitili.admin.service.mirai;
 
-import com.google.gson.Gson;
 import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.utils.StringUtil;
@@ -8,16 +7,11 @@ import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
-import com.tilitili.common.entity.vilipix.IllustResponse;
-import com.tilitili.common.entity.vilipix.IllustRows;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivManager;
-import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.HttpClientUtil;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -25,16 +19,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
-import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
-
 @Slf4j
 @Component
 public class PixivHandle implements BaseMessageHandle {
-    @Value("${mirai.master-qq}")
-    private Long MASTER_QQ;
-
-    public static final String typeKey = "pixiv.type";
     public static final String messageIdKey = "pixiv.messageId";
+
+    private Boolean lockFlag = false;
 
     private final RedisCache redisCache;
     private final MiraiManager miraiManager;
@@ -53,7 +43,12 @@ public class PixivHandle implements BaseMessageHandle {
     }
 
     @Override
-    public synchronized MiraiMessage handleMessage(MiraiRequest request) throws Exception {
+    public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
+        if (lockFlag) {
+            return null;
+        }
+        lockFlag = true;
+
         Sender sender = request.getMessage().getSender();
         Sender sendGroup = sender.getGroup();
         String tag = request.getParamOrDefault("tag", "チルノ");
@@ -70,11 +65,13 @@ public class PixivHandle implements BaseMessageHandle {
             String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
             if (subUrl == null) {
                 miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
+                lockFlag = false;
                 return null;
             }
             String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.png", subUrl, id);
             BufferedImage image = pixivManager.downloadImage(bigImageUrl);
             if (image == null) {
+                lockFlag = false;
                 return null;
             }
             File tempFile = File.createTempFile("pixivImage", ".png");
@@ -85,7 +82,7 @@ public class PixivHandle implements BaseMessageHandle {
             Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
         }
-
+        lockFlag = false;
         return result.setMessage("").setMessageType("Plain");
     }
 }
