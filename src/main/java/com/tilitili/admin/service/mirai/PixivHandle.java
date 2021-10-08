@@ -3,22 +3,31 @@ package com.tilitili.admin.service.mirai;
 import com.google.gson.Gson;
 import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
-import com.tilitili.admin.service.MiraiSessionService;
+import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
+import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
 import com.tilitili.common.entity.vilipix.IllustResponse;
 import com.tilitili.common.entity.vilipix.IllustRows;
 import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.manager.PixivManager;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.HttpClientUtil;
 import com.tilitili.common.utils.RedisCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
+import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
+
+@Slf4j
 @Component
 public class PixivHandle implements BaseMessageHandle {
     @Value("${mirai.master-qq}")
@@ -29,11 +38,13 @@ public class PixivHandle implements BaseMessageHandle {
 
     private final RedisCache redisCache;
     private final MiraiManager miraiManager;
+    private final PixivManager pixivManager;
 
     @Autowired
-    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager) {
+    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivManager pixivManager) {
         this.redisCache = redisCache;
         this.miraiManager = miraiManager;
+        this.pixivManager = pixivManager;
     }
 
     @Override
@@ -45,27 +56,36 @@ public class PixivHandle implements BaseMessageHandle {
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         Sender sender = request.getMessage().getSender();
         Sender sendGroup = sender.getGroup();
-        String tag = request.getParamOrDefault("tag", "ロリ");
+        String tag = request.getParamOrDefault("tag", "チルノ");
         MiraiMessage result = new MiraiMessage();
 
-//        if (sender.getId().equals(MASTER_QQ)) {
-            Long offset = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
-            String url = "https://vilipix.com/api/illust/tag/" + tag + "?limit=1&offset=" + offset;
-            String jsonStr = HttpClientUtil.httpGet(url);
-            Asserts.notBlank(jsonStr, "没要到图😇\n"+url);
-            IllustResponse illustResponse = new Gson().fromJson(jsonStr, IllustResponse.class);
-            List<IllustRows> rows = illustResponse.getRows();
-            Asserts.isFalse(rows.isEmpty(), "没了🤕\n"+url);
-            IllustRows image = rows.get(0);
-            String imageUrl = image.getRegular_url();
-            Asserts.notBlank(imageUrl, "没了🤕\n"+url);
-            Integer messageId = miraiManager.sendGroupMessage("Image", imageUrl, sendGroup.getId());
+        Long offset = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
+        Long pageNo = offset / 60 + 1;
+        int index = Math.toIntExact(offset % 60 - 1);
 
+        List<SearchIllustMangaData> dataList = pixivManager.search(tag, pageNo);
+        if (dataList.size() > index) {
+            String imageUrl = dataList.get(index).getUrl();
+            String id = dataList.get(index).getId();
+            String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
+            if (subUrl == null) {
+                miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
+                return null;
+            }
+            String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.png", subUrl, id);
+            BufferedImage image = pixivManager.downloadImage(bigImageUrl);
+            if (image == null) {
+                return null;
+            }
+            File tempFile = File.createTempFile("pixivImage", ".png");
+            System.out.println(tempFile.getPath());
+            ImageIO.write(image, "png", tempFile);
+            String imageId = miraiManager.uploadImage(tempFile);
+            tempFile.delete();
+            Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
+        }
 
-            return result.setMessage("").setMessageType("Plain");
-//        }
-
-//        return null;
+        return result.setMessage("").setMessageType("Plain");
     }
 }

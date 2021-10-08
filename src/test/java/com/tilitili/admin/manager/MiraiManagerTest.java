@@ -16,8 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
-import static com.tilitili.common.emnus.GroupEmum.QIAN_QIAN_GROUP;
-import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
+import static com.tilitili.common.emnus.GroupEmum.*;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -40,14 +39,14 @@ public class MiraiManagerTest {
 
     @Test
     public void test0() {
-        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("temp").setMessageType("Plain").setQq(1578611368L).setGroup(QIAN_QIAN_GROUP.value)
-                .setMessage("[手动回复]有红点就是私聊和特关"));
+//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("temp").setMessageType("Plain").setQq(906892635L).setGroup(XIAO_HEI_HE_GROUP.value)
+//                .setMessage("[手动回复]私聊没有色图"));
 
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Plain").setGroup(QIAN_QIAN_GROUP.value)
 //                .setMessage("我也要！送到雾之湖畔就行"));
 
-//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Image").setGroup(QIAN_QIAN_GROUP.value)
-//                .setUrl("http://c2cpicdw.qpic.cn/offpic_new/545459363//545459363-233841123-982D642D177D895D8F1609EB111860CB/0?term=2"));
+        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Image").setGroup(TEST_GROUP.value)
+                .setUrl("https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2021/10/08/16/31/07/93301850_p0_custom1200.jpg"));
     }
 
 

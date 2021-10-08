@@ -1,37 +1,20 @@
 package com.tilitili.admin;
 
-import com.google.common.collect.ImmutableMap;
 import com.tilitili.StartApplication;
-import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.service.mirai.FindImageHandle;
-import com.tilitili.common.emnus.GroupEmum;
-import com.tilitili.common.entity.Ip;
+import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.manager.PixivManager;
 import com.tilitili.common.manager.VideoDataManager;
-import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.FileUtil;
-import com.tilitili.common.utils.HttpClientHelper;
-import com.tilitili.common.utils.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
-import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,10 +26,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -59,6 +44,8 @@ public class MainTest {
     private VideoDataManager videoDataManager;
     @Resource
     private FindImageHandle findImageHandle;
+    @Resource
+    private PixivManager pixivManager;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -69,12 +56,23 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-//        String url = "https://www.pixiv.net/ajax/search/artworks/チルノ?word=チルノ&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh";
-        String url = "https://www.google.com/";
-        String result = HttpClientUtil.httpGetProxy(url, new Ip().setIp("47.243.156.0").setPort(8999));
-        System.out.println(result);
+        List<SearchIllustMangaData> dataList = pixivManager.search("チルノ", 1L);
+        String imageUrl = dataList.get(0).getUrl();
+        String id = dataList.get(0).getId();
+        System.out.println(imageUrl);
+        String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
+        System.out.println(subUrl);
+        String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.png", subUrl, id);
+        System.out.println(bigImageUrl);
+        BufferedImage image = pixivManager.downloadImage(bigImageUrl);
+        File tempFile = File.createTempFile("pixivImage", ".png");
+        System.out.println(tempFile.getPath());
+        ImageIO.write(image, "png", tempFile);
+        String imageId = miraiManager.uploadImage(tempFile);
+        miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(TEST_GROUP.value));
     }
-
+//https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2021/10/08/16/31/07/93301850_p0_custom1200.jpg
+//https://i.pximg.net/img-original/img/2021/10/07/20/33/46/93286081_p0.jpg
 
 
     @Test
