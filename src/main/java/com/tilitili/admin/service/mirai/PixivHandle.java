@@ -54,7 +54,7 @@ public class PixivHandle implements BaseMessageHandle {
         String tag = request.getParamOrDefault("tag", "チルノ");
         MiraiMessage result = new MiraiMessage();
 
-        Long offset = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
+        Long offset = (Long) redisCache.getMapValue(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
         Long pageNo = offset / 60 + 1;
         int index = Math.toIntExact(offset % 60 - 1);
 
@@ -80,6 +80,7 @@ public class PixivHandle implements BaseMessageHandle {
             String imageId = miraiManager.uploadImage(tempFile);
             tempFile.delete();
             Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
+            redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
         }
         lockFlag.set(false);
