@@ -7,6 +7,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PingMessage;
 import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -15,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class BaseWebSocketHandler extends TextWebSocketHandler {
+
+    private WebSocketConnectionManager webSocketConnectionManager;
+
     public String getUrl() {
         return null;
     }
@@ -41,6 +45,12 @@ public class BaseWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("连接关闭，reason={}", status.getReason());
         super.afterConnectionClosed(session, status);
+        webSocketConnectionManager.stop();
+        webSocketConnectionManager.start();
+    }
+
+    public void setWebSocketConnectionManager(WebSocketConnectionManager webSocketConnectionManager) {
+        this.webSocketConnectionManager = webSocketConnectionManager;
     }
 
 //    private void sleepAndPing(WebSocketSession session) {

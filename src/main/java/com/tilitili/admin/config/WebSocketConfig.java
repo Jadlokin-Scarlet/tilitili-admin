@@ -25,7 +25,9 @@ public class WebSocketConfig {
         for (BaseWebSocketHandler webSocketHandler : webSocketHandlerList) {
             try {
                 StandardWebSocketClient standardWebSocketClient = new StandardWebSocketClient();
-                new WebSocketConnectionManager(standardWebSocketClient, webSocketHandler, webSocketHandler.getUrl()).start();
+                WebSocketConnectionManager webSocketConnectionManager = new WebSocketConnectionManager(standardWebSocketClient, webSocketHandler, webSocketHandler.getUrl());
+                webSocketConnectionManager.start();
+                webSocketHandler.setWebSocketConnectionManager(webSocketConnectionManager);
             } catch (Exception e) {
                 log.error("异常", e);
             }
