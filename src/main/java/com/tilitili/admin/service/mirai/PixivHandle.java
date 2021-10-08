@@ -49,42 +49,49 @@ public class PixivHandle implements BaseMessageHandle {
             return null;
         }
 
-        Sender sender = request.getMessage().getSender();
-        Sender sendGroup = sender.getGroup();
-        String tag = request.getParamOrDefault("tag", "チルノ");
-        MiraiMessage result = new MiraiMessage();
+        try {
 
-        Long offset = (Long) redisCache.getMapValue(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
-        Long pageNo = offset / 60 + 1;
-        int index = Math.toIntExact(offset % 60 - 1);
+            Sender sender = request.getMessage().getSender();
+            Sender sendGroup = sender.getGroup();
+            String tag = request.getParamOrDefault("tag", "チルノ");
+            MiraiMessage result = new MiraiMessage();
 
-        List<SearchIllustMangaData> dataList = pixivManager.search(tag, pageNo);
-        if (dataList.size() > index) {
-            String imageUrl = dataList.get(index).getUrl();
-            String id = dataList.get(index).getId();
-            String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
-            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-            if (subUrl == null || type == null) {
-                miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
-                lockFlag.set(false);
-                return null;
+            Long offset = (Long) redisCache.getMapValue(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
+            Long pageNo = offset / 60 + 1;
+            int index = Math.toIntExact(offset % 60 - 1);
+
+            List<SearchIllustMangaData> dataList = pixivManager.search(tag, pageNo);
+            if (dataList.size() > index) {
+                String imageUrl = dataList.get(index).getUrl();
+                String id = dataList.get(index).getId();
+                String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
+                String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
+                if (subUrl == null || type == null) {
+                    miraiManager.sendFriendMessage("Plain", "异常 id = " + id + " url=" + imageUrl);
+                    lockFlag.set(false);
+                    return null;
+                }
+                String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.%s", subUrl, id, type);
+                BufferedImage image = pixivManager.downloadImage(bigImageUrl);
+                if (image == null) {
+                    lockFlag.set(false);
+                    return null;
+                }
+                File tempFile = File.createTempFile("pixivImage", "."+type);
+                System.out.println(tempFile.getPath());
+                ImageIO.write(image, type, tempFile);
+                String imageId = miraiManager.uploadImage(tempFile);
+                tempFile.delete();
+                Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
+                redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
+                redisCache.setValue(messageIdKey, String.valueOf(messageId));
             }
-            String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.%s", subUrl, id, type);
-            BufferedImage image = pixivManager.downloadImage(bigImageUrl);
-            if (image == null) {
-                lockFlag.set(false);
-                return null;
-            }
-            File tempFile = File.createTempFile("pixivImage", "."+type);
-            System.out.println(tempFile.getPath());
-            ImageIO.write(image, type, tempFile);
-            String imageId = miraiManager.uploadImage(tempFile);
-            tempFile.delete();
-            Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(sendGroup.getId()));
-            redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_OFFSET.getKey(), tag);
-            redisCache.setValue(messageIdKey, String.valueOf(messageId));
+            lockFlag.set(false);
+            return result.setMessage("").setMessageType("Plain");
+        } catch (Exception e) {
+            log.error("找色图失败",e);
+            lockFlag.set(false);
+            return null;
         }
-        lockFlag.set(false);
-        return result.setMessage("").setMessageType("Plain");
     }
 }
