@@ -53,7 +53,7 @@ public class PixivHandle implements BaseMessageHandle {
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
+    public synchronized MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         Sender sender = request.getMessage().getSender();
         Sender sendGroup = sender.getGroup();
         String tag = request.getParamOrDefault("tag", "チルノ");
