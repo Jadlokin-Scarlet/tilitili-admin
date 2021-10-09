@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -76,6 +77,7 @@ public class PixivHandle implements BaseMessageHandle {
                 bigImageList = pixivManager.getBigImageList(noUsedImage.getPid());
                 Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
                 pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
+                TimeUnit.MILLISECONDS.sleep(100);
             } else {
                 bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
             }
