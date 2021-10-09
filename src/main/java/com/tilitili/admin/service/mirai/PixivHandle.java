@@ -85,7 +85,7 @@ public class PixivHandle implements BaseMessageHandle {
             List<String> imageIdList = bigImageList.stream().map(StreamUtil.tryMap(imageUrl -> {
                 String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
                 BufferedImage image = pixivManager.downloadImage(imageUrl);
-                File tempFile = File.createTempFile("pixivImage", "."+type);//
+                File tempFile = File.createTempFile("pixivImage", "."+type);
                 ImageIO.write(image, type, tempFile);
                 String imageId = miraiManager.uploadImage(tempFile);
                 tempFile.delete();
