@@ -71,11 +71,13 @@ public class PixivHandle implements BaseMessageHandle {
                 noUsedImage = pixivImageMapper.getNoUsedImage(searchKey);
             }
 
-            List<String> bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
-            if (bigImageList.isEmpty()) {
+            List<String> bigImageList;
+            if (noUsedImage.getUrlList() == null) {
                 bigImageList = pixivManager.getBigImageList(noUsedImage.getPid());
                 Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
                 pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
+            } else {
+                bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
             }
 
             List<String> imageIdList = bigImageList.stream().map(StreamUtil.tryMap(imageUrl -> {
