@@ -56,20 +56,21 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        List<SearchIllustMangaData> dataList = pixivManager.search("チルノ", 1L);
-        String imageUrl = dataList.get(0).getUrl();
-        String id = dataList.get(0).getId();
-        System.out.println(imageUrl);
-        String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
-        System.out.println(subUrl);
-        String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.png", subUrl, id);
-        System.out.println(bigImageUrl);
-        BufferedImage image = pixivManager.downloadImage(bigImageUrl);
-        File tempFile = File.createTempFile("pixivImage", ".png");
-        System.out.println(tempFile.getPath());
-        ImageIO.write(image, "png", tempFile);
-        String imageId = miraiManager.uploadImage(tempFile);
-        miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(TEST_GROUP.value));
+//        List<SearchIllustMangaData> dataList = pixivManager.search("チルノ", 1L);
+//        String imageUrl = dataList.get(0).getUrl();
+//        String id = dataList.get(0).getId();
+//        System.out.println(imageUrl);
+//        String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
+//        String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
+//        System.out.println(subUrl);
+//        String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.%s", subUrl, id, type);
+//        System.out.println(bigImageUrl);
+//        BufferedImage image = pixivManager.downloadImage(bigImageUrl);
+//        File tempFile = File.createTempFile("pixivImage", "."+type);
+//        System.out.println(tempFile.getPath());
+//        ImageIO.write(image, type, tempFile);
+//        String imageId = miraiManager.uploadImage(tempFile);
+//        miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(TEST_GROUP.value));
     }
 //https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2021/10/08/16/31/07/93301850_p0_custom1200.jpg
 //https://i.pximg.net/img-original/img/2021/10/07/20/33/46/93286081_p0.jpg

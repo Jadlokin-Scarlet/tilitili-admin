@@ -34,24 +34,16 @@ public class MiraiService {
         this.messageHandleList = messageHandleList;
         this.resourcesManager = resourcesManager;
         this.miraiManager = miraiManager;
+        this.messageHandleList.sort(Comparator.comparing(a -> a.getType().getSort(), Comparator.reverseOrder()));
     }
 
     public MiraiMessage handleGroupMessage(MiraiMessageView message, MiraiSessionService.MiraiSession miraiSession) {
         try {
             MiraiRequest miraiRequest = new MiraiRequest(message, miraiSession);
 
-            List<BaseMessageHandle> groupList = messageHandleList.stream().filter(handle -> handle.getType().getSendType().equals("group")).filter(handle -> Arrays.asList(1, 2).contains(handle.getType().getType()))
-                    .sorted(Comparator.comparing(a -> a.getType().getSort(), Comparator.reverseOrder())).collect(Collectors.toList());
-            for (BaseMessageHandle handle : groupList) {
-                MiraiMessage result = handle.handleMessage(miraiRequest);
-                if (result != null) {
-                    return result;
-                }
-            }
-
             for (BaseMessageHandle handle : messageHandleList) {
-                if (handle.getType().getSendType().equals("group") && handle.getType().getType().equals(0)) {
-                    if (handle.getType().getKeyword().contains(miraiRequest.getTitle())) {
+                if (handle.getType().getSendType().equals("group")) {
+                    if (handle.getType().getKeyword().contains(miraiRequest.getTitle()) || handle.getType().getKeyword().isEmpty()) {
                         MiraiMessage result = handle.handleMessage(miraiRequest);
                         if (result != null) {
                             return result;
