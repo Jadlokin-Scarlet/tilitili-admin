@@ -22,11 +22,13 @@ import org.springframework.stereotype.Component;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -82,18 +84,19 @@ public class PixivHandle implements BaseMessageHandle {
                 bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
             }
 
-            List<String> imageIdList = bigImageList.stream().map(StreamUtil.tryMap(imageUrl -> {
+            List<String> imageIdList = new ArrayList<>();
+            for (String imageUrl : bigImageList) {
                 String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-                if (! imageUrl.contains("_p0")) {
+                if (!imageUrl.contains("_p0")) {
                     TimeUnit.MILLISECONDS.sleep(200);
                 }
                 BufferedImage image = pixivManager.downloadImage(imageUrl);
-                File tempFile = File.createTempFile("pixivImage", "."+type);
+                File tempFile = File.createTempFile("pixivImage", "." + type);
                 ImageIO.write(image, type, tempFile);
                 String imageId = miraiManager.uploadImage(tempFile);
                 tempFile.delete();
-                return imageId;
-            })).collect(Collectors.toList());
+                imageIdList.add(imageId);
+            }
             Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageList").setSendType("group").setImageIdList(imageIdList).setGroup(sendGroup.getId()));
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
             pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
