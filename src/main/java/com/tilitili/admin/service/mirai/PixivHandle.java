@@ -96,9 +96,10 @@ public class PixivHandle implements BaseMessageHandle {
         String pid = String.valueOf(data.getPid());
         String imageUrl = data.getUrls().getOriginal();
 
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
+
         List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
         if (oldDataList.isEmpty()) {
-            Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
 
             PixivImage pixivImage = new PixivImage();
             pixivImage.setPid(pid);
@@ -112,9 +113,8 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setStatus(1);
             pixivImage.setMessageId(messageId);
             pixivImageMapper.insertPixivImage(pixivImage);
-            return messageId;
         }
-        return null;
+        return messageId;
     }
 
     private Integer sendPixivImage(Sender sendGroup, String searchKey, String source) throws InterruptedException, IOException {
