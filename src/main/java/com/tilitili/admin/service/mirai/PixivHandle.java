@@ -5,16 +5,17 @@ import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.PixivImage;
+import com.tilitili.common.entity.lolicon.SetuData;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
 import com.tilitili.common.exception.AssertException;
+import com.tilitili.common.manager.LoliconManager;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivManager;
 import com.tilitili.common.mapper.PixivImageMapper;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.RedisCache;
-import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,13 +23,11 @@ import org.springframework.stereotype.Component;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,13 +41,15 @@ public class PixivHandle implements BaseMessageHandle {
     private final MiraiManager miraiManager;
     private final PixivManager pixivManager;
     private final PixivImageMapper pixivImageMapper;
+    private final LoliconManager loliconManager;
 
     @Autowired
-    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivManager pixivManager, PixivImageMapper pixivImageMapper) {
+    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivManager pixivManager, PixivImageMapper pixivImageMapper, LoliconManager loliconManager) {
         this.redisCache = redisCache;
         this.miraiManager = miraiManager;
         this.pixivManager = pixivManager;
         this.pixivImageMapper = pixivImageMapper;
+        this.loliconManager = loliconManager;
     }
 
     @Override
@@ -62,45 +63,21 @@ public class PixivHandle implements BaseMessageHandle {
             log.warn("色图锁了，跳过");
             return null;
         }
-        String searchKey = "";
         try {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
-            searchKey = request.getParamOrDefault("tag", "チルノ");
+            String searchKey = request.getParamOrDefault("tag", "チルノ");
+            String source = request.getParamOrDefault("source", "lolicon");
             MiraiMessage result = new MiraiMessage();
 
-            PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey);
-            if (noUsedImage == null) {
-                supplePixivImage(searchKey);
-                noUsedImage = pixivImageMapper.getNoUsedImage(searchKey);
+            Integer messageId;
+            switch (source) {
+                case "pixiv": messageId = sendPixivImage(sendGroup, searchKey, source); break;
+                case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source); break;
+                default: throw new AssertException("不支持的平台");
             }
-
-            List<String> bigImageList;
-            if (noUsedImage.getUrlList() == null) {
-                bigImageList = pixivManager.getBigImageList(noUsedImage.getPid());
-                Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
-                pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
-                TimeUnit.MILLISECONDS.sleep(200);
-            } else {
-                bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
-            }
-
-            List<String> imageIdList = new ArrayList<>();
-            for (String imageUrl : bigImageList) {
-                String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-                if (!imageUrl.contains("_p0")) {
-                    TimeUnit.MILLISECONDS.sleep(200);
-                }
-                BufferedImage image = pixivManager.downloadImage(imageUrl);
-                File tempFile = File.createTempFile("pixivImage", "." + type);
-                ImageIO.write(image, type, tempFile);
-                String imageId = miraiManager.uploadImage(tempFile);
-                tempFile.delete();
-                imageIdList.add(imageId);
-            }
-            Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageList").setSendType("group").setImageIdList(imageIdList).setGroup(sendGroup.getId()));
+            Asserts.notNull(messageId, "发送失败");
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
-            pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
             lockFlag.set(false);
             return result.setMessage("").setMessageType("Plain");
         } catch (AssertException e) {
@@ -112,6 +89,64 @@ public class PixivHandle implements BaseMessageHandle {
             lockFlag.set(false);
             return null;
         }
+    }
+
+    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source) throws InterruptedException, IOException {
+        SetuData data = loliconManager.getAImage(searchKey);
+        String pid = String.valueOf(data.getPid());
+        String imageUrl = data.getUrls().getOriginal();
+
+        List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
+        if (oldDataList.isEmpty()) {
+            Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
+
+            PixivImage pixivImage = new PixivImage();
+            pixivImage.setPid(pid);
+            pixivImage.setTitle(data.getTitle());
+            pixivImage.setPageCount(1);
+            pixivImage.setSmallUrl(imageUrl);
+            pixivImage.setUserId(String.valueOf(data.getUid()));
+            pixivImage.setUrlList(imageUrl);
+            pixivImage.setSearchKey(searchKey);
+            pixivImage.setSource("lolicon");
+            pixivImage.setStatus(1);
+            pixivImage.setMessageId(messageId);
+            pixivImageMapper.insertPixivImage(pixivImage);
+            return messageId;
+        }
+        return null;
+    }
+
+    private Integer sendPixivImage(Sender sendGroup, String searchKey, String source) throws InterruptedException, IOException {
+
+        PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
+        if (noUsedImage == null) {
+            supplePixivImage(searchKey);
+            noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
+        }
+
+        List<String> bigImageList;
+        if (noUsedImage.getUrlList() == null) {
+            bigImageList = pixivManager.getBigImageList(noUsedImage.getPid());
+            Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
+            pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
+        } else {
+            bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
+        }
+
+        List<String> imageIdList = new ArrayList<>();
+        for (String imageUrl : bigImageList) {
+            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
+            BufferedImage image = pixivManager.downloadImage(imageUrl);
+            File tempFile = File.createTempFile("pixivImage", "." + type);
+            ImageIO.write(image, type, tempFile);
+            String imageId = miraiManager.uploadImage(tempFile);
+            tempFile.delete();
+            imageIdList.add(imageId);
+        }
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageList").setSendType("group").setImageIdList(imageIdList).setGroup(sendGroup.getId()));
+        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
+        return messageId;
     }
 
     private void supplePixivImage(String searchKey) {
@@ -141,7 +176,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setSearchKey(searchKey);
             pixivImage.setSource("pixiv");
 
-            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid));
+            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("pixiv"));
             if (oldDataList.isEmpty()) {
                 pixivImageMapper.insertPixivImage(pixivImage);
             }

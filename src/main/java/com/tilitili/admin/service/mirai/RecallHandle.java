@@ -2,14 +2,17 @@ package com.tilitili.admin.service.mirai;
 
 import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
-import com.tilitili.admin.service.MiraiSessionService;
+import com.tilitili.common.entity.PixivImage;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.mapper.PixivImageMapper;
 import com.tilitili.common.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static org.jsoup.helper.StringUtil.isBlank;
 
@@ -20,11 +23,13 @@ public class RecallHandle implements BaseMessageHandle {
 
     private final MiraiManager miraiManager;
     private final RedisCache redisCache;
+    private final PixivImageMapper pixivImageMapper;
 
     @Autowired
-    public RecallHandle(MiraiManager miraiManager, RedisCache redisCache) {
+    public RecallHandle(MiraiManager miraiManager, RedisCache redisCache, PixivImageMapper pixivImageMapper) {
         this.miraiManager = miraiManager;
         this.redisCache = redisCache;
+        this.pixivImageMapper = pixivImageMapper;
     }
 
     @Override
@@ -35,16 +40,29 @@ public class RecallHandle implements BaseMessageHandle {
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         Sender sender = request.getMessage().getSender();
-        MiraiSessionService.MiraiSession session = request.getSession();
+        String pid = request.getParam("pid");
         MiraiMessage result = new MiraiMessage();
 
         if (sender.getId().equals(MASTER_QQ)) {
-            String messageIdStr = (String) redisCache.getValue(PixivHandle.messageIdKey);
-            if (! isBlank(messageIdStr)) {
-                long messageId = Long.parseLong(messageIdStr);
-                miraiManager.recallMessage(messageId);
-                return result;
+            if (pid == null) {
+                String messageIdStr = (String) redisCache.getValue(PixivHandle.messageIdKey);
+                if (! isBlank(messageIdStr)) {
+                    int messageId = Integer.parseInt(messageIdStr);
+                    miraiManager.recallMessage(messageId);
+                    return result;
+                }
+            } else {
+                List<PixivImage> pixivImageList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid));
+                for (PixivImage pixivImage : pixivImageList) {
+                    Integer messageId = pixivImage.getMessageId();
+                    if (messageId != null) {
+                        miraiManager.recallMessage(messageId);
+                        return result;
+                    }
+                }
             }
+
+
         }
         return null;
     }
