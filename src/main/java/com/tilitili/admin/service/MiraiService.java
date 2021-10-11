@@ -89,7 +89,7 @@ public class MiraiService {
 
             for (BaseMessageHandle handle : messageHandleList) {
                 if (handle.getType().getSendType().equals("group")) {
-                    if (handle.getType().getKeyword().contains(miraiRequest.getTitle()) || handle.getType().getKeyword().isEmpty()) {
+                    if (handle.getType().getKeyword().contains(miraiRequest.getTitleKey()) || handle.getType().getKeyword().isEmpty()) {
                         MiraiMessage result = handle.handleMessage(miraiRequest);
                         if (result != null) {
                             return result;

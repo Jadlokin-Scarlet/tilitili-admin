@@ -19,6 +19,8 @@ public class MiraiRequest {
     private final String body;
     private final String url;
     private final String title;
+    private final String titleKey;
+    private final String titleValue;
     private final String[] textList;
 
     public MiraiRequest(MiraiMessageView message, MiraiSessionService.MiraiSession session) {
@@ -30,6 +32,8 @@ public class MiraiRequest {
         url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
         textList = text.split("\n");
         title = textList.length > 0? textList[0]: "";
+        titleKey = title.split(" ")[0];
+        titleValue = title.split(" ").length > 1? title.split(" ")[1]: null;
         body = textList.length > 1? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
 
         String[] bodyList = body.split("\n");
@@ -79,5 +83,17 @@ public class MiraiRequest {
 
     public String[] getTextList() {
         return textList;
+    }
+
+    public String getTitleKey() {
+        return titleKey;
+    }
+
+    public String getTitleValue() {
+        return titleValue;
+    }
+
+    public String getTitleValueOrDefault(String defaultValue) {
+        return titleValue == null? defaultValue: titleValue;
     }
 }

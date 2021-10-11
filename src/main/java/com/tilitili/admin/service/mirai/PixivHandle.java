@@ -66,7 +66,7 @@ public class PixivHandle implements BaseMessageHandle {
         try {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
-            String searchKey = request.getParamOrDefault("tag", "チルノ");
+            String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
             String source = request.getParamOrDefault("source", "lolicon");
             MiraiMessage result = new MiraiMessage();
 
@@ -95,12 +95,16 @@ public class PixivHandle implements BaseMessageHandle {
         SetuData data = loliconManager.getAImage(searchKey);
         String pid = String.valueOf(data.getPid());
         String imageUrl = data.getUrls().getOriginal();
-
-        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
+        boolean isSese = data.getTags().contains("R-18") || data.getR18();
+        Integer messageId;
+        if (isSese) {
+            messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Plain").setSendType("group").setMessage(imageUrl).setGroup(sendGroup.getId()));
+        } else {
+            messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
+        }
 
         List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
         if (oldDataList.isEmpty()) {
-
             PixivImage pixivImage = new PixivImage();
             pixivImage.setPid(pid);
             pixivImage.setTitle(data.getTitle());
