@@ -59,6 +59,7 @@ public class PixivHandle implements BaseMessageHandle {
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         if (!lockFlag.compareAndSet(false, true)) {
+            log.warn("色图锁了，跳过");
             return null;
         }
         String searchKey = "";
@@ -138,6 +139,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setUserName(data.getUserName());
             pixivImage.setUserId(data.getUserId());
             pixivImage.setSearchKey(searchKey);
+            pixivImage.setSource("pixiv");
 
             List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid));
             if (oldDataList.isEmpty()) {
