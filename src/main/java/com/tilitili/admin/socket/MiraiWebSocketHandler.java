@@ -28,7 +28,8 @@ public class MiraiWebSocketHandler extends BaseWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        miraiService.syncHandleTextMessage(session, message);
+        log.info("Message Received [{}]",message.getPayload());
+        miraiService.syncHandleTextMessage(message.getPayload());
     }
 
 }

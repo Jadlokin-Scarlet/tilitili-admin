@@ -44,11 +44,9 @@ public class MiraiService {
     }
 
     @Async
-    public void syncHandleTextMessage(WebSocketSession session, TextMessage message) {
-        MiraiMessage result;
+    public void syncHandleTextMessage(String message) {
         try {
-            MiraiMessageViewRequest miraiMessageViewRequest = new Gson().fromJson(message.getPayload(), MiraiMessageViewRequest.class);
-            log.info("Message Received [{}]",miraiMessageViewRequest);
+            MiraiMessageViewRequest miraiMessageViewRequest = new Gson().fromJson(message, MiraiMessageViewRequest.class);
             Asserts.notNull(miraiMessageViewRequest, "未获取到消息");
             Asserts.notNull(miraiMessageViewRequest.getData(), "未获取到消息");
             Asserts.notBlank(miraiMessageViewRequest.getData().getType(), "未获取到消息");
@@ -57,6 +55,7 @@ public class MiraiService {
             Asserts.notNull(miraiMessageViewRequest.getData().getSender().getId(), "未获取到消息");
 
             MiraiMessageView miraiMessage = miraiMessageViewRequest.getData();
+            MiraiMessage result;
 
 //            Asserts.isFalse(miraiMessage.getType().equals("GroupMessage"), "不支持群聊回复");
             if (miraiMessage.getType().equals("GroupMessage")) {
