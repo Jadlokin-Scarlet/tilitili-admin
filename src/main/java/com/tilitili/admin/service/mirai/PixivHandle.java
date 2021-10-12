@@ -6,6 +6,7 @@ import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.PixivImage;
 import com.tilitili.common.entity.lolicon.SetuData;
+import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
@@ -93,31 +94,42 @@ public class PixivHandle implements BaseMessageHandle {
     }
 
     private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException, IOException {
-        SetuData data = loliconManager.getAImage(searchKey, num);
-        String pid = String.valueOf(data.getPid());
-        String imageUrl = data.getUrls().getOriginal();
-        boolean isSese = data.getTags().contains("R-18") || data.getR18();
+        List<SetuData> dataList = loliconManager.getAImage(searchKey, num);
+        ArrayList<MessageChain> messageChainList = new ArrayList<>();
         Integer messageId;
-        if (isSese) {
-            messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("Plain").setSendType("group").setMessage(imageUrl).setGroup(sendGroup.getId()));
-        } else {
-            messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageUrl).setMessage(pid).setGroup(sendGroup.getId()));
+        for (SetuData data : dataList) {
+            String pid = String.valueOf(data.getPid());
+            String imageUrl = data.getUrls().getOriginal();
+            boolean isSese = data.getTags().contains("R-18") || data.getR18();
+            if (isSese) {
+                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl + "\n"));
+            } else {
+                messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
+                messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
+                messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
+            }
         }
+        messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("group").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
 
-        List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
-        if (oldDataList.isEmpty()) {
-            PixivImage pixivImage = new PixivImage();
-            pixivImage.setPid(pid);
-            pixivImage.setTitle(data.getTitle());
-            pixivImage.setPageCount(1);
-            pixivImage.setSmallUrl(imageUrl);
-            pixivImage.setUserId(String.valueOf(data.getUid()));
-            pixivImage.setUrlList(imageUrl);
-            pixivImage.setSearchKey(searchKey);
-            pixivImage.setSource("lolicon");
-            pixivImage.setStatus(1);
-            pixivImage.setMessageId(messageId);
-            pixivImageMapper.insertPixivImage(pixivImage);
+        for (SetuData data : dataList) {
+            String pid = String.valueOf(data.getPid());
+            String imageUrl = data.getUrls().getOriginal();
+
+            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
+            if (oldDataList.isEmpty()) {
+                PixivImage pixivImage = new PixivImage();
+                pixivImage.setPid(pid);
+                pixivImage.setTitle(data.getTitle());
+                pixivImage.setPageCount(1);
+                pixivImage.setSmallUrl(imageUrl);
+                pixivImage.setUserId(String.valueOf(data.getUid()));
+                pixivImage.setUrlList(imageUrl);
+                pixivImage.setSearchKey(searchKey);
+                pixivImage.setSource("lolicon");
+                pixivImage.setStatus(1);
+                pixivImage.setMessageId(messageId);
+                pixivImageMapper.insertPixivImage(pixivImage);
+            }
         }
         return messageId;
     }
