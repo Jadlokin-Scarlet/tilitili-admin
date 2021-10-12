@@ -115,21 +115,18 @@ public class PixivHandle implements BaseMessageHandle {
             String pid = String.valueOf(data.getPid());
             String imageUrl = data.getUrls().getOriginal();
 
-            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("lolicon"));
-            if (oldDataList.isEmpty()) {
-                PixivImage pixivImage = new PixivImage();
-                pixivImage.setPid(pid);
-                pixivImage.setTitle(data.getTitle());
-                pixivImage.setPageCount(1);
-                pixivImage.setSmallUrl(imageUrl);
-                pixivImage.setUserId(String.valueOf(data.getUid()));
-                pixivImage.setUrlList(imageUrl);
-                pixivImage.setSearchKey(searchKey);
-                pixivImage.setSource("lolicon");
-                pixivImage.setStatus(1);
-                pixivImage.setMessageId(messageId);
-                pixivImageMapper.insertPixivImage(pixivImage);
-            }
+            PixivImage pixivImage = new PixivImage();
+            pixivImage.setPid(pid);
+            pixivImage.setTitle(data.getTitle());
+            pixivImage.setPageCount(1);
+            pixivImage.setSmallUrl(imageUrl);
+            pixivImage.setUserId(String.valueOf(data.getUid()));
+            pixivImage.setUrlList(imageUrl);
+            pixivImage.setSearchKey(searchKey);
+            pixivImage.setSource("lolicon");
+            pixivImage.setStatus(1);
+            pixivImage.setMessageId(messageId);
+            pixivImageMapper.insertPixivImage(pixivImage);
         }
         return messageId;
     }
