@@ -68,12 +68,13 @@ public class PixivHandle implements BaseMessageHandle {
             Sender sendGroup = sender.getGroup();
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
             String source = request.getParamOrDefault("source", "lolicon");
+            String num = request.getParamOrDefault("num", "1");
             MiraiMessage result = new MiraiMessage();
 
             Integer messageId;
             switch (source) {
                 case "pixiv": messageId = sendPixivImage(sendGroup, searchKey, source); break;
-                case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source); break;
+                case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num); break;
                 default: throw new AssertException("不支持的平台");
             }
             Asserts.notNull(messageId, "发送失败");
@@ -91,8 +92,8 @@ public class PixivHandle implements BaseMessageHandle {
         }
     }
 
-    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source) throws InterruptedException, IOException {
-        SetuData data = loliconManager.getAImage(searchKey);
+    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException, IOException {
+        SetuData data = loliconManager.getAImage(searchKey, num);
         String pid = String.valueOf(data.getPid());
         String imageUrl = data.getUrls().getOriginal();
         boolean isSese = data.getTags().contains("R-18") || data.getR18();
