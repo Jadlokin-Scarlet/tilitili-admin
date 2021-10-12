@@ -1,10 +1,13 @@
 package com.tilitili.admin.socket;
 
+import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class BaseWebSocketHandler implements WebSocketHandler {
@@ -18,13 +21,15 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         log.info("连接websocket成功，url={}", getUrl());
-//        sleepAndPing(session);
+        sleepAndPing(session);
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (message instanceof TextMessage) {
             handleTextMessage(session, (TextMessage) message);
+        } else if (message instanceof PongMessage) {
+            sleepAndPing(session);
         } else {
             log.error("Unexpected WebSocket message type: " + message);
         }
@@ -56,10 +61,10 @@ public class BaseWebSocketHandler implements WebSocketHandler {
         this.webSocketConnectionManager = webSocketConnectionManager;
     }
 
-//    private void sleepAndPing(WebSocketSession session) {
-//        Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
-//            log.info("发送ping消息");
-//            session.sendMessage(new PingMessage());
-//        }), 9, TimeUnit.MINUTES);
-//    }
+    private void sleepAndPing(WebSocketSession session) {
+        Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
+            log.info("发送ping消息");
+            session.sendMessage(new PingMessage());
+        }), 30, TimeUnit.MINUTES);
+    }
 }

@@ -4,6 +4,7 @@ import com.tilitili.admin.service.MiraiSessionService;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.utils.StreamUtil;
+import com.tilitili.common.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ public class MiraiRequest {
         this.session = session;
 
         List<MessageChain> messageChain = message.getMessageChain();
-        text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).collect(Collectors.joining("\n"));
-        url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).findFirst().orElse("");
+        text = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Plain")).map(MessageChain::getText).filter(StringUtils::isNotBlank).collect(Collectors.joining("\n"));
+        url = messageChain.stream().filter(StreamUtil.isEqual(MessageChain::getType, "Image")).map(MessageChain::getUrl).filter(StringUtils::isNotBlank).findFirst().orElse("");
         textList = text.split("\n");
         title = textList.length > 0? textList[0]: "";
         titleKey = title.split(" ")[0];
