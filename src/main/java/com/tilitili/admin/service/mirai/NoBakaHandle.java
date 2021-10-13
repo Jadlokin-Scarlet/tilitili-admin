@@ -45,7 +45,7 @@ public class NoBakaHandle implements BaseMessageHandle {
 //            return result.setMessage("").setMessageType("Plain");
 //        }
 
-        int ddCount = StringUtils.findCount("dd", text);
+        int ddCount = StringUtils.findCount("dd|DD|dD|Dd", text);
         if (ddCount > 0) {
             String repeat = IntStream.range(0, ddCount).mapToObj(c -> "bd").collect(Collectors.joining());
             miraiManager.sendGroupMessage("Plain", repeat, sendGroup.getId());
