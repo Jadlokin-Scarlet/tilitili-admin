@@ -68,7 +68,7 @@ public class PixivHandle implements BaseMessageHandle {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
-            String source = request.getParamOrDefault("source", "lolicon");
+            String source = request.getParamOrDefault("source", "pixiv");
             String num = request.getParamOrDefault("num", "1");
             MiraiMessage result = new MiraiMessage();
 
@@ -139,9 +139,11 @@ public class PixivHandle implements BaseMessageHandle {
             noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         }
 
+        String pid = noUsedImage.getPid();
+
         List<String> bigImageList;
         if (noUsedImage.getUrlList() == null) {
-            bigImageList = pixivManager.getBigImageList(noUsedImage.getPid());
+            bigImageList = pixivManager.getBigImageList(pid);
             Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
             pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
         } else {
@@ -150,15 +152,16 @@ public class PixivHandle implements BaseMessageHandle {
 
         List<String> imageIdList = new ArrayList<>();
         for (String imageUrl : bigImageList) {
-            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-            BufferedImage image = pixivManager.downloadImage(imageUrl);
-            File tempFile = File.createTempFile("pixivImage", "." + type);
-            ImageIO.write(image, type, tempFile);
-            String imageId = miraiManager.uploadImage(tempFile);
-            tempFile.delete();
-            imageIdList.add(imageId);
+//            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
+//            BufferedImage image = pixivManager.downloadImage(imageUrl);
+//            File tempFile = File.createTempFile("pixivImage", "." + type);
+//            ImageIO.write(image, type, tempFile);
+//            String imageId = miraiManager.uploadImage(tempFile);
+//            tempFile.delete();
+//            imageIdList.add(imageId);
+            imageIdList.add(imageUrl.replace("https://", "https://api.pixiv.moe/image/"));
         }
-        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageList").setSendType("group").setImageIdList(imageIdList).setGroup(sendGroup.getId()));
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageIdList.get(0)).setMessage(pid).setGroup(sendGroup.getId()));
         pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
         return messageId;
     }
