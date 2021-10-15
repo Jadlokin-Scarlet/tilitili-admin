@@ -151,7 +151,7 @@ public class PixivHandle implements BaseMessageHandle {
         List<String> imageIdList = new ArrayList<>();
         for (String imageUrl : bigImageList) {
             String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-            BufferedImage image = pixivManager.downloadImage(imageUrl.replaceAll("https://", "https://api.pixiv.moe/image/"));
+            BufferedImage image = pixivManager.downloadImage(imageUrl);
             File tempFile = File.createTempFile("pixivImage", "." + type);
             ImageIO.write(image, type, tempFile);
             String imageId = miraiManager.uploadImage(tempFile);
