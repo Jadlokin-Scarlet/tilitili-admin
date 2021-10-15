@@ -43,7 +43,7 @@ public class FranslateHandle implements BaseMessageHandle{
         String text = request.getParamOrDefault("t", "");
         Asserts.notBlank(body + url + text, "格式错啦(内容)");
 
-        String enText = StringUtils.convertToSmallWord(text + body);
+        String enText = (text + body);
         String cnText;
         if (to != null) {
             cnText = baiduManager.translate(to, enText);
