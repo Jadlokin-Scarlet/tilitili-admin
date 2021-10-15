@@ -39,6 +39,10 @@ public class MiraiManagerTest {
 
     @Test
     public void test0() {
+//        String session = miraiManager.auth();
+//        System.out.println(session);
+//        miraiManager.verify(session);
+
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("temp").setMessageType("Plain").setQq(906892635L).setGroup(XIAO_HEI_HE_GROUP.value)
 //                .setMessage("[手动回复]私聊没有色图"));
 
@@ -46,7 +50,7 @@ public class MiraiManagerTest {
 //                .setMessage("我也要！送到雾之湖畔就行"));
 
         Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("group").setMessageType("Image").setGroup(TEST_GROUP.value)
-                .setUrl("https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2021/10/08/16/31/07/93301850_p0_custom1200.jpg"));
+                .setUrl("https://api.lolicon.app/assets/img/lx.jpg"));
     }
 
 
