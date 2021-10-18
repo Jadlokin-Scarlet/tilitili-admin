@@ -139,19 +139,19 @@ public class PixivHandle implements BaseMessageHandle {
             noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         }
 
-        String pid = noUsedImage.getPid();
+        String url = noUsedImage.getSmallUrl();
 
-        List<String> bigImageList;
-        if (noUsedImage.getUrlList() == null) {
-            bigImageList = pixivManager.getBigImageList(pid);
-            Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
-            pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
-        } else {
-            bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
-        }
-
-        List<String> imageIdList = new ArrayList<>();
-        for (String imageUrl : bigImageList) {
+//        List<String> bigImageList;
+//        if (noUsedImage.getUrlList() == null) {
+//            bigImageList = pixivManager.getBigImageList(pid);
+//            Asserts.isFalse(bigImageList.isEmpty(), "读不到大图");
+//            pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setUrlList(String.join(",", bigImageList)));
+//        } else {
+//            bigImageList = Arrays.stream(noUsedImage.getUrlList().split(",")).collect(Collectors.toList());
+//        }
+//
+//        List<String> imageIdList = new ArrayList<>();
+//        for (String imageUrl : bigImageList) {
 //            String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
 //            BufferedImage image = pixivManager.downloadImage(imageUrl);
 //            File tempFile = File.createTempFile("pixivImage", "." + type);
@@ -159,9 +159,9 @@ public class PixivHandle implements BaseMessageHandle {
 //            String imageId = miraiManager.uploadImage(tempFile);
 //            tempFile.delete();
 //            imageIdList.add(imageId);
-            imageIdList.add(imageUrl.replace("https://", "https://api.pixiv.moe/image/"));
-        }
-        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(imageIdList.get(0)).setMessage(pid).setGroup(sendGroup.getId()));
+//            imageIdList.add(imageUrl.replace("https://", "https://api.pixiv.moe/image/"));
+//        }
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url).setMessage(url).setGroup(sendGroup.getId()));
         pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
         return messageId;
     }
