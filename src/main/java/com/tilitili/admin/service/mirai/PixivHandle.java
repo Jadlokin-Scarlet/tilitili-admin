@@ -160,7 +160,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setPid(pid);
             pixivImage.setTitle(data.getTitle());
             pixivImage.setPageCount(data.getPage_count());
-            pixivImage.setSmallUrl(data.getUrl());
+            pixivImage.setSmallUrl(data.getImage_urls().getOriginal());
             pixivImage.setUserName(data.getUser().getName());
             pixivImage.setUserId(data.getUser().getId());
             pixivImage.setSearchKey(searchKey);
