@@ -162,7 +162,7 @@ public class PixivHandle implements BaseMessageHandle {
 //            imageIdList.add(imageId);
 //            imageIdList.add(imageUrl.replace("https://", "https://api.pixiv.moe/image/"));
 //        }
-        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid).setGroup(sendGroup.getId()));
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid+"\n").setGroup(sendGroup.getId()));
         pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
         return messageId;
     }
