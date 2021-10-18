@@ -24,6 +24,5 @@ public class PixivManagerTest {
     @Test
     public void test() {
         List<SearchIllust> list = pixivManager.search("チルノ", 1L);
-        System.out.println(list);
     }
 }
