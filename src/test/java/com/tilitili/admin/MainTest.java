@@ -2,10 +2,7 @@ package com.tilitili.admin;
 
 import com.tilitili.StartApplication;
 import com.tilitili.admin.service.mirai.FindImageHandle;
-import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.VideoData;
-import com.tilitili.common.entity.mirai.MiraiMessage;
-import com.tilitili.common.entity.pixiv.SearchIllustMangaData;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivManager;
@@ -22,16 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
-
-import static com.tilitili.common.emnus.GroupEmum.TEST_GROUP;
 
 @Slf4j
 @RunWith(SpringRunner.class)
