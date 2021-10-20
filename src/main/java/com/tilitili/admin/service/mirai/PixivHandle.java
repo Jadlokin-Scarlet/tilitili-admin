@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -108,7 +110,12 @@ public class PixivHandle implements BaseMessageHandle {
         String pid = noUsedImage.getPid();
 
         GetIllust illust = pixivMoeManager.get(pid);
-        List<String> urlList = illust.getMeta_pages().stream().map(GetMetaPages::getImage_urls).map(GetImageUrls::getOriginal).collect(Collectors.toList());
+        List<String> urlList;
+        if (illust.getMeta_pages() == null) {
+            urlList = Collections.singletonList(illust.getImage_urls().getOriginal());
+        } else {
+            urlList = illust.getMeta_pages().stream().map(GetMetaPages::getImage_urls).map(GetImageUrls::getOriginal).collect(Collectors.toList());
+        }
 
         ArrayList<MessageChain> messageChainList = new ArrayList<>();
         messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
