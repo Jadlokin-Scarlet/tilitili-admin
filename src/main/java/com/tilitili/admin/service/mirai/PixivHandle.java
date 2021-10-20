@@ -9,6 +9,9 @@ import com.tilitili.common.entity.lolicon.SetuData;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
+import com.tilitili.common.entity.pixivmoe.GetIllust;
+import com.tilitili.common.entity.pixivmoe.GetImageUrls;
+import com.tilitili.common.entity.pixivmoe.GetMetaPages;
 import com.tilitili.common.entity.pixivmoe.SearchIllust;
 import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.exception.AssertException;
@@ -102,17 +105,32 @@ public class PixivHandle implements BaseMessageHandle {
             return null;
         }
 
-        String url = noUsedImage.getSmallUrl();
         String pid = noUsedImage.getPid();
 
-        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid+"\n").setGroup(sendGroup.getId()));
-        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1).setMessageId(messageId));
+        GetIllust illust = pixivMoeManager.get(pid);
+        List<String> urlList = illust.getMeta_pages().stream().map(GetMetaPages::getImage_urls).map(GetImageUrls::getOriginal).collect(Collectors.toList());
+
+        ArrayList<MessageChain> messageChainList = new ArrayList<>();
+        messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
+        for (String imageUrl : urlList) {
+//            boolean isSese = data.getTags().contains("R-18") || data.getR18();
+//            if (isSese) {
+//                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl + "\n"));
+//            } else {
+//                messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
+                messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
+                messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
+//            }
+        }
+//        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid+"\n").setGroup(sendGroup.getId()));
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("group").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
+        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1).setUrlList(String.join(",", urlList)).setMessageId(messageId));
         return messageId;
     }
 
     private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException {
         List<SetuData> dataList = loliconManager.getAImage(searchKey, num);
-        ArrayList<MessageChain> messageChainList = new ArrayList<>();
+        List<MessageChain> messageChainList = new ArrayList<>();
         Integer messageId;
         for (SetuData data : dataList) {
             String pid = String.valueOf(data.getPid());
