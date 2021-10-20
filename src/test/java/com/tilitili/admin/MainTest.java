@@ -2,10 +2,13 @@ package com.tilitili.admin;
 
 import com.tilitili.StartApplication;
 import com.tilitili.admin.service.mirai.FindImageHandle;
+import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.query.VideoDataQuery;
+import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.manager.MiraiManager;
-import com.tilitili.common.manager.PixivManager;
+import com.tilitili.common.manager.PixivMoeManager;
+import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
@@ -34,7 +37,9 @@ public class MainTest {
     @Resource
     private FindImageHandle findImageHandle;
     @Resource
-    private PixivManager pixivManager;
+    private PixivMoeManager pixivMoeManager;
+    @Resource
+    private TaskManager taskManager;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -45,24 +50,8 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-//        List<SearchIllustMangaData> dataList = pixivManager.search("チルノ", 1L);
-//        String imageUrl = dataList.get(0).getUrl();
-//        String id = dataList.get(0).getId();
-//        System.out.println(imageUrl);
-//        String subUrl = StringUtil.matcherGroupOne("(/img/..../../../../../../)", imageUrl);
-//        String type = StringUtil.matcherGroupOne("((?:png|jpg))", imageUrl);
-//        System.out.println(subUrl);
-//        String bigImageUrl = String.format("https://i.pximg.net/img-original%s%s_p0.%s", subUrl, id, type);
-//        System.out.println(bigImageUrl);
-//        BufferedImage image = pixivManager.downloadImage(bigImageUrl);
-//        File tempFile = File.createTempFile("pixivImage", "."+type);
-//        System.out.println(tempFile.getPath());
-//        ImageIO.write(image, type, tempFile);
-//        String imageId = miraiManager.uploadImage(tempFile);
-//        miraiManager.sendMessage(new MiraiMessage().setMessageType("Image").setSendType("group").setImageId(imageId).setGroup(TEST_GROUP.value));
+        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue("cirno").setValue2("1"));
     }
-//https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2021/10/08/16/31/07/93301850_p0_custom1200.jpg
-//https://i.pximg.net/img-original/img/2021/10/07/20/33/46/93286081_p0.jpg
 
 
     @Test

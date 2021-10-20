@@ -1,8 +1,8 @@
 package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
-import com.tilitili.common.entity.pixiv.SearchIllust;
-import com.tilitili.common.manager.PixivManager;
+import com.tilitili.common.entity.pixivmoe.SearchIllust;
+import com.tilitili.common.manager.PixivMoeManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +19,10 @@ import java.util.List;
 @EnableAutoConfiguration
 public class PixivManagerTest {
     @Resource
-    PixivManager pixivManager;
+    PixivMoeManager pixivMoeManager;
 
     @Test
     public void test() {
-        List<SearchIllust> list = pixivManager.search("チルノ", 1L);
+        List<SearchIllust> list = pixivMoeManager.search("チルノ", 1L);
     }
 }

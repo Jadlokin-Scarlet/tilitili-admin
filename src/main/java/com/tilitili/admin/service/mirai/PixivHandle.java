@@ -9,12 +9,12 @@ import com.tilitili.common.entity.lolicon.SetuData;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
-import com.tilitili.common.entity.pixiv.SearchIllust;
+import com.tilitili.common.entity.pixivmoe.SearchIllust;
 import com.tilitili.common.entity.view.SimpleTaskView;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.LoliconManager;
 import com.tilitili.common.manager.MiraiManager;
-import com.tilitili.common.manager.PixivManager;
+import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.PixivImageMapper;
 import com.tilitili.common.utils.Asserts;
@@ -37,16 +37,16 @@ public class PixivHandle implements BaseMessageHandle {
 
     private final RedisCache redisCache;
     private final MiraiManager miraiManager;
-    private final PixivManager pixivManager;
+    private final PixivMoeManager pixivMoeManager;
     private final PixivImageMapper pixivImageMapper;
     private final LoliconManager loliconManager;
     private final TaskManager taskManager;
 
     @Autowired
-    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivManager pixivManager, PixivImageMapper pixivImageMapper, LoliconManager loliconManager, TaskManager taskManager) {
+    public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivMoeManager pixivMoeManager, PixivImageMapper pixivImageMapper, LoliconManager loliconManager, TaskManager taskManager) {
         this.redisCache = redisCache;
         this.miraiManager = miraiManager;
-        this.pixivManager = pixivManager;
+        this.pixivMoeManager = pixivMoeManager;
         this.pixivImageMapper = pixivImageMapper;
         this.loliconManager = loliconManager;
         this.taskManager = taskManager;
@@ -151,13 +151,13 @@ public class PixivHandle implements BaseMessageHandle {
     private Integer sendPixivMoeImage(Sender sendGroup, String searchKey, String source) {
         PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         if (noUsedImage == null) {
-            List<SearchIllust> dataList = pixivManager.search(searchKey, 1L);
+            List<SearchIllust> dataList = pixivMoeManager.search(searchKey, 1L);
             Asserts.isFalse(dataList.isEmpty(), "搜不到tag");
             List<SearchIllust> filterDataList = dataList.stream().filter(data -> pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(data.getId())).isEmpty()).collect(Collectors.toList());
 
             if (filterDataList.isEmpty()) {
                 Long pageNo = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), searchKey);
-                filterDataList = pixivManager.search(searchKey, pageNo);
+                filterDataList = pixivMoeManager.search(searchKey, pageNo);
                 Asserts.isFalse(filterDataList.isEmpty(), "搜不到tag");
             }
 
