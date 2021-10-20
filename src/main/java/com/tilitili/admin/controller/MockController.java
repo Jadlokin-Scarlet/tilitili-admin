@@ -2,6 +2,7 @@ package com.tilitili.admin.controller;
 
 import com.tilitili.admin.entity.mirai.TestRequest;
 import com.tilitili.common.manager.MiraiManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/api/mock")
 public class MockController {
@@ -135,10 +137,10 @@ public class MockController {
             HttpResponse response = client.execute(request, context);
             if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 String result = EntityUtils.toString(response.getEntity());
-                System.out.println(result);
+                log.info(result);
             }
         } catch (Exception e) {
-            System.out.println(e.toString());
+            log.info(e.toString());
         }
     }
 }
