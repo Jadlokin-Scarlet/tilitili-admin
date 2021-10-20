@@ -50,7 +50,7 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue("cirno").setValue2("1"));
+        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue("白丝").setValue2("1"));
     }
 
 
