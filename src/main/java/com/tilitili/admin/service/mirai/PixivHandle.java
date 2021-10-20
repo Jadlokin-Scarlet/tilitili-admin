@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static org.apache.http.util.TextUtils.isBlank;
+
 @Slf4j
 @Component
 public class PixivHandle implements BaseMessageHandle {
@@ -120,6 +122,9 @@ public class PixivHandle implements BaseMessageHandle {
         ArrayList<MessageChain> messageChainList = new ArrayList<>();
         messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
         for (String imageUrl : urlList) {
+            if (isBlank(imageUrl)) {
+                continue;
+            }
 //            boolean isSese = data.getTags().contains("R-18") || data.getR18();
 //            if (isSese) {
 //                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl + "\n"));
