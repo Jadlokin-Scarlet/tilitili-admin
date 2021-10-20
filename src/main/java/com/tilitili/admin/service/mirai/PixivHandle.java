@@ -166,7 +166,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setSearchKey(searchKey);
             pixivImage.setSource("pixiv.moe");
 
-            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("pixiv"));
+            List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource("pixiv.moe"));
             if (oldDataList.isEmpty()) {
                 pixivImageMapper.insertPixivImage(pixivImage);
             }

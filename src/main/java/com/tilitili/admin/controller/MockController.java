@@ -63,8 +63,13 @@ public class MockController {
 
     @RequestMapping("/test")
     @ResponseBody
-    public void get(@RequestBody TestRequest request) throws IOException {
-        proxy_no_auth_socks("", "127.0.0.1:23334","https://www.pixiv.net/ajax/search/artworks/チルノ?word=チルノ&order=date_d&mode=all&p=6&s_mode=s_tag&type=all&lang=zh");
+    public void get(@RequestBody TestRequest request) {
+        try {
+            proxy_no_auth_socks("", "127.0.0.1:23334","https://www.pixiv.net/ajax/search/artworks/チルノ?word=チルノ&order=date_d&mode=all&p=6&s_mode=s_tag&type=all&lang=zh");
+        } catch (Exception e) {
+            log.error("?", e);
+        }
+
     }
 
     // HttpClient 支持socks5代理的自定义类
