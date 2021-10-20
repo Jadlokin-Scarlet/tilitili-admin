@@ -111,7 +111,7 @@ public class PixivHandle implements BaseMessageHandle {
 
         GetIllust illust = pixivMoeManager.get(pid);
         List<String> urlList;
-        if (illust.getMeta_pages() == null) {
+        if (illust.getMeta_pages().isEmpty()) {
             urlList = Collections.singletonList(illust.getImage_urls().getOriginal());
         } else {
             urlList = illust.getMeta_pages().stream().map(GetMetaPages::getImage_urls).map(GetImageUrls::getOriginal).collect(Collectors.toList());
