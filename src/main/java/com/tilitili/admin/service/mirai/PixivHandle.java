@@ -105,38 +105,23 @@ public class PixivHandle implements BaseMessageHandle {
         if (noUsedImage == null) {
             Long pageNo = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), searchKey);
             taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2("1"));
-            taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2(String.valueOf(pageNo)));
+            if (pageNo != 1) {
+                taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2(String.valueOf(pageNo)));
+            }
             return null;
         }
 
         String pid = noUsedImage.getPid();
-
-        GetIllust illust = pixivMoeManager.get(pid);
-        List<String> urlList;
-        if (illust.getMeta_pages().isEmpty()) {
-            urlList = Collections.singletonList(illust.getImage_urls().getOriginal());
-        } else {
-            urlList = illust.getMeta_pages().stream().map(GetMetaPages::getImage_urls).map(GetImageUrls::getOriginal).collect(Collectors.toList());
-        }
+        String[] urlList = noUsedImage.getUrlList().split(",");
 
         ArrayList<MessageChain> messageChainList = new ArrayList<>();
-        messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
-        for (String imageUrl : urlList) {
-            if (isBlank(imageUrl)) {
-                continue;
-            }
-//            boolean isSese = data.getTags().contains("R-18") || data.getR18();
-//            if (isSese) {
-//                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl + "\n"));
-//            } else {
-//                messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
-                messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
-                messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
-//            }
+        messageChainList.add(new MessageChain().setType("Plain").setText("https://pixiv.moe/illust/"+pid+"\n"));
+        messageChainList.add(new MessageChain().setType("Image").setUrl(urlList[0]));
+        if (urlList.length > 1) {
+            messageChainList.add(new MessageChain().setType("Plain").setText("\n(更多略)"));
         }
-//        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid+"\n").setGroup(sendGroup.getId()));
         Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("group").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
-        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1).setUrlList(String.join(",", urlList)).setMessageId(messageId));
+        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1).setMessageId(messageId));
         return messageId;
     }
 
@@ -178,7 +163,7 @@ public class PixivHandle implements BaseMessageHandle {
         return messageId;
     }
 
-    private Integer sendPixivMoeImage(Sender sendGroup, String searchKey, String source) {
+    private Integer sendPixivMoeImage(Sender sendGroup, String searchKey, String source) throws InterruptedException {
         PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         if (noUsedImage == null) {
             List<SearchIllust> dataList = pixivMoeManager.search(searchKey, 1L);

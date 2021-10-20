@@ -22,7 +22,7 @@ public class PixivManagerTest {
     PixivMoeManager pixivMoeManager;
 
     @Test
-    public void test() {
+    public void test() throws InterruptedException {
         List<SearchIllust> list = pixivMoeManager.search("チルノ", 1L);
     }
 }
