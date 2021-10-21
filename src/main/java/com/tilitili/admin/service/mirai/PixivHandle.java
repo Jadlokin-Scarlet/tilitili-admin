@@ -120,6 +120,7 @@ public class PixivHandle implements BaseMessageHandle {
         if (urlList.length > 1) {
             messageChainList.add(new MessageChain().setType("Plain").setText("\n(更多略)"));
         }
+        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
         Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("group").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
         pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1).setMessageId(messageId));
         return messageId;
