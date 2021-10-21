@@ -108,6 +108,7 @@ public class PixivHandle implements BaseMessageHandle {
             if (pageNo != 1) {
                 taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2(String.valueOf(pageNo)));
             }
+            miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setMessage(String.format("[%s]还没有，我找找。", searchKey)).setUrl("http://gchat.qpic.cn/gchatpic_new/545459363/902813629-2385307943-99D0157B56ABB1C58B0BB2AC1680DB3E/0?term=2").setGroup(sendGroup.getId()));
             return null;
         }
 
