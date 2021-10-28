@@ -46,8 +46,8 @@ public class MiraiManagerTest {
 //        System.out.println(session);
 //        miraiManager.verify(session);
 
-//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("TempMessage").setMessageType("Plain").setQq(906892635L).setGroup(XIAO_HEI_HE_GROUP.value)
-//                .setMessage("[手动回复]私聊没有色图"));
+//        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("TempMessage").setMessageType("Plain").setQq(2010851224L).setGroup(QIAN_QIAN_GROUP.value)
+//                .setMessage("¿"));
 
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("GroupMessage").setMessageType("Plain").setGroup(QIAN_QIAN_GROUP.value)
 //                .setMessage("我也要！送到雾之湖畔就行"));
@@ -55,7 +55,7 @@ public class MiraiManagerTest {
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("GroupMessage").setMessageType("Image").setGroup(TEST_GROUP.value)
 //                .setUrl("https://api.lolicon.app/assets/img/lx.jpg"));
 
-        miraiManager.sendMessage(new MiraiMessage().setSendType("GroupMessage").setGroup(TEST_GROUP.value).setMessageType("List").setQuote(1048L).setMessageChainList(Arrays.asList(
+        miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setQuote(1048L).setMessageChainList(Arrays.asList(
                 new MessageChain().setType("Plain").setText("?")
         )));
     }
