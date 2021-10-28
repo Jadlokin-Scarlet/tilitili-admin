@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.tilitili.common.emnus.TaskReason.NO_REASON;
@@ -136,7 +137,7 @@ public class RecommendController extends BaseController {
         }
 
         recommendMapper.insert(recommend);
-        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(NO_REASON.value).setValue(String.valueOf(recommend.getAv())));
+        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(NO_REASON.value).setValueList(Arrays.asList(String.valueOf(recommend.getAv()))));
         return new BaseModel("推荐成功",true);
     }
 

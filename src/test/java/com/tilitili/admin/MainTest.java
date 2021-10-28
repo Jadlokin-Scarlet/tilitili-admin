@@ -2,6 +2,7 @@ package com.tilitili.admin;
 
 import com.tilitili.StartApplication;
 import com.tilitili.admin.service.mirai.FindImageHandle;
+import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.query.VideoDataQuery;
@@ -10,6 +11,7 @@ import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -40,6 +42,8 @@ public class MainTest {
     private PixivMoeManager pixivMoeManager;
     @Resource
     private TaskManager taskManager;
+    @Resource
+    private RedisCache redisCache;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -50,9 +54,8 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue("チルノ").setValue2("1"));
+        System.out.println(redisCache.getMapValue(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "チルノ"));
     }
-
 
     @Test
     public void test3() {

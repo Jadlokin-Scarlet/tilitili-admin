@@ -76,12 +76,13 @@ public class PixivHandle implements BaseMessageHandle {
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
             String source = request.getParamOrDefault("source", "pixiv.moe");
             String num = request.getParamOrDefault("num", "1");
+            Long sendMessageId = request.getMessageId();
             MiraiMessage result = new MiraiMessage();
 
             Integer messageId;
             switch (source) {
                 case "pixiv.moe": messageId = sendPixivMoeImage(sendGroup, searchKey, source); break;
-                case "pixiv": messageId = sendPixivImage(sendGroup, searchKey, source); break;
+                case "pixiv": messageId = sendPixivImage(sendGroup, searchKey, source, sendMessageId); break;
                 case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num); break;
                 default: throw new AssertException("不支持的平台");
             }
@@ -100,14 +101,11 @@ public class PixivHandle implements BaseMessageHandle {
         }
     }
 
-    private Integer sendPixivImage(Sender sendGroup, String searchKey, String source) {
+    private Integer sendPixivImage(Sender sendGroup, String searchKey, String source, Long sendMessageId) {
         PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         if (noUsedImage == null) {
             Long pageNo = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), searchKey);
-            taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2("1"));
-            if (pageNo != 1) {
-                taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValue(searchKey).setValue2(String.valueOf(pageNo)));
-            }
+            taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList(searchKey, String.valueOf(pageNo), String.valueOf(sendMessageId))));
             miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setMessage(String.format("[%s]还没有，我找找。", searchKey)).setUrl("http://gchat.qpic.cn/gchatpic_new/545459363/902813629-2385307943-99D0157B56ABB1C58B0BB2AC1680DB3E/0?term=2").setGroup(sendGroup.getId()));
             return null;
         }

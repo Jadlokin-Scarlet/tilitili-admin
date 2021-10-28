@@ -66,7 +66,7 @@ public class TaskController extends BaseController{
     @ResponseBody
     public BaseModel spiderVideo(@RequestBody SimpleTaskView simpleTaskView) {
         Asserts.notNull(simpleTaskView, "参数有误");
-        Asserts.notNull(simpleTaskView.getValue(), "参数有误");
+        Asserts.notNull(simpleTaskView.getValueList(), "参数有误");
 
         if (simpleTaskView.getReason() == null) {
             simpleTaskView.setReason(TaskReason.NO_REASON.getValue());

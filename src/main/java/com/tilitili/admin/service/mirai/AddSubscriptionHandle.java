@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
         Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
         subscriptionMapper.insertSubscription(add);
 
-        SimpleTaskView simpleTaskView = new SimpleTaskView().setValue(uid).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
+        SimpleTaskView simpleTaskView = new SimpleTaskView().setValueList(Collections.singletonList(uid)).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
         taskManager.simpleSpiderVideo(simpleTaskView);
         return result.setMessage("关注成功！").setMessageType("Plain");
     }
