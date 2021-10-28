@@ -9,11 +9,8 @@ import com.tilitili.common.entity.lolicon.SetuData;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
-import com.tilitili.common.entity.pixivmoe.GetIllust;
-import com.tilitili.common.entity.pixivmoe.GetImageUrls;
-import com.tilitili.common.entity.pixivmoe.GetMetaPages;
 import com.tilitili.common.entity.pixivmoe.SearchIllust;
-import com.tilitili.common.entity.view.SimpleTaskView;
+import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.LoliconManager;
 import com.tilitili.common.manager.MiraiManager;
@@ -28,12 +25,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-
-import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @Component
@@ -105,7 +99,7 @@ public class PixivHandle implements BaseMessageHandle {
         PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
         if (noUsedImage == null) {
             Long pageNo = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), searchKey);
-            taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList(searchKey, String.valueOf(pageNo), String.valueOf(sendMessageId))));
+            taskManager.simpleSpiderVideo(new SimpleTask().setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList(searchKey, String.valueOf(pageNo), String.valueOf(sendMessageId))));
             miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("group").setMessage(String.format("[%s]还没有，我找找。", searchKey)).setUrl("http://gchat.qpic.cn/gchatpic_new/545459363/902813629-2385307943-99D0157B56ABB1C58B0BB2AC1680DB3E/0?term=2").setGroup(sendGroup.getId()));
             return null;
         }

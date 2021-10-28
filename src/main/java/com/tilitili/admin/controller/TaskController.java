@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.SimpleTaskView;
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.emnus.TaskStatus;
@@ -7,17 +8,18 @@ import com.tilitili.common.entity.Task;
 import com.tilitili.common.entity.query.TaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.entity.view.SimpleTaskView;
+import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.TaskMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,13 +68,14 @@ public class TaskController extends BaseController{
     @ResponseBody
     public BaseModel spiderVideo(@RequestBody SimpleTaskView simpleTaskView) {
         Asserts.notNull(simpleTaskView, "参数有误");
-        Asserts.notNull(simpleTaskView.getValueList(), "参数有误");
+        Asserts.notNull(simpleTaskView.getValue(), "参数有误");
 
-        if (simpleTaskView.getReason() == null) {
-            simpleTaskView.setReason(TaskReason.NO_REASON.getValue());
+        SimpleTask simpleTask = new SimpleTask().setReason(simpleTaskView.getReason()).setValueList(Collections.singletonList(simpleTaskView.getValue()));
+        if (simpleTask.getReason() == null) {
+            simpleTask.setReason(TaskReason.NO_REASON.getValue());
         }
 
-        taskManager.simpleSpiderVideo(simpleTaskView);
+        taskManager.simpleSpiderVideo(simpleTask);
         return new BaseModel("添加任务成功", true);
     }
 

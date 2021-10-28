@@ -6,7 +6,7 @@ import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.Subscription;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
-import com.tilitili.common.entity.view.SimpleTaskView;
+import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.SubscriptionMapper;
 import com.tilitili.common.utils.Asserts;
@@ -14,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -53,8 +51,8 @@ public class AddSubscriptionHandle implements BaseMessageHandle {
         Subscription add = new Subscription().setValue(uid).setType(1).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
         subscriptionMapper.insertSubscription(add);
 
-        SimpleTaskView simpleTaskView = new SimpleTaskView().setValueList(Collections.singletonList(uid)).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
-        taskManager.simpleSpiderVideo(simpleTaskView);
+        SimpleTask simpleTask = new SimpleTask().setValueList(Collections.singletonList(uid)).setReason(TaskReason.SUPPLEMENT_VIDEO_OWNER.value);
+        taskManager.simpleSpiderVideo(simpleTask);
         return result.setMessage("关注成功！").setMessageType("Plain");
     }
 }

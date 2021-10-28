@@ -8,7 +8,7 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.entity.view.SimpleTaskView;
+import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.manager.TaskManager;
@@ -137,7 +137,7 @@ public class RecommendController extends BaseController {
         }
 
         recommendMapper.insert(recommend);
-        taskManager.simpleSpiderVideo(new SimpleTaskView().setReason(NO_REASON.value).setValueList(Arrays.asList(String.valueOf(recommend.getAv()))));
+        taskManager.simpleSpiderVideo(new SimpleTask().setReason(NO_REASON.value).setValueList(Arrays.asList(String.valueOf(recommend.getAv()))));
         return new BaseModel("推荐成功",true);
     }
 
