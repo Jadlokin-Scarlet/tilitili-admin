@@ -70,11 +70,11 @@ public class MiraiService {
             Asserts.notNull(result, "无回复");
             Asserts.notBlank((""+result.getMessage()+result.getUrl()+result.getVoiceId()).replaceAll("null", ""), "回复为空");
             if (miraiMessage.getType().equals("FriendMessage")) {
-                miraiManager.sendMessage(result.setSendType("friend").setQq(miraiMessage.getSender().getId()));
+                miraiManager.sendMessage(result.setSendType("FriendMessage").setQq(miraiMessage.getSender().getId()));
             } else if (miraiMessage.getType().equals("TempMessage")){
-                miraiManager.sendMessage(result.setSendType("temp").setQq(miraiMessage.getSender().getId()).setGroup(miraiMessage.getSender().getGroup().getId()));
+                miraiManager.sendMessage(result.setSendType("TempMessage").setQq(miraiMessage.getSender().getId()).setGroup(miraiMessage.getSender().getGroup().getId()));
             } else {
-                miraiManager.sendMessage(result.setSendType("group").setGroup(miraiMessage.getSender().getGroup().getId()));
+                miraiManager.sendMessage(result.setSendType("GroupMessage").setGroup(miraiMessage.getSender().getGroup().getId()));
             }
         } catch (AssertException e) {
             log.error(e.getMessage());
@@ -88,7 +88,7 @@ public class MiraiService {
             MiraiRequest miraiRequest = new MiraiRequest(message, miraiSession);
 
             for (BaseMessageHandle handle : messageHandleList) {
-                if (handle.getType().getSendType().equals("group")) {
+                if (handle.getType().getSendType().equals("GroupMessage")) {
                     if (handle.getType().getKeyword().contains(miraiRequest.getTitleKey()) || handle.getType().getKeyword().isEmpty()) {
                         MiraiMessage result = handle.handleMessage(miraiRequest);
                         if (result != null) {
@@ -115,12 +115,12 @@ public class MiraiService {
 
             if (message.getType().equals("TempMessage")) {
                 if (resourcesManager.isForwardTempMessage()) {
-                    miraiManager.sendMessage(new MiraiMessage().setMessage(String.format("%s\n%s", sender, miraiRequest.getText())).setMessageType("Plain").setSendType("friend").setUrl(miraiRequest.getUrl()).setQq(MASTER_QQ));
+                    miraiManager.sendMessage(new MiraiMessage().setMessage(String.format("%s\n%s", sender, miraiRequest.getText())).setMessageType("Plain").setSendType("FriendMessage").setUrl(miraiRequest.getUrl()).setQq(MASTER_QQ));
                 }
             }
 
             for (BaseMessageHandle messageHandle : messageHandleList) {
-                if (messageHandle.getType().getSendType().equals("friend")) {
+                if (messageHandle.getType().getSendType().equals("FriendMessage")) {
                     if (messageHandle.getType().getKeyword().contains(sbc2dbcCase(miraiRequest.getTitle()))) {
                         return messageHandle.handleMessage(miraiRequest);
                     }

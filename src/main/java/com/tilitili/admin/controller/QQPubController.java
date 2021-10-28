@@ -51,7 +51,7 @@ public class QQPubController extends BaseController{
         String voiceId = miraiManager.uploadVoice(slkFile);
         Asserts.notBlank(voiceId, "上传失败");
 
-        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId(voiceId).setSendType("group").setGroup(GroupEmum.TEST_GROUP.getValue()));
+        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId(voiceId).setSendType("GroupMessage").setGroup(GroupEmum.TEST_GROUP.getValue()));
         return BaseModel.success();
     }
 }

@@ -78,7 +78,7 @@ public class CalendarHandle implements BaseMessageHandle {
         }
         calendar.set(Calendar.SECOND, 0);
 
-        BotCalendar botCalendar = new BotCalendar().setSendTime(calendar.getTime()).setText(AESUtils.encrypt(something)).setSendGroup(group).setSendQq(qq).setSendType(group == null? "friend": "temp");
+        BotCalendar botCalendar = new BotCalendar().setSendTime(calendar.getTime()).setText(AESUtils.encrypt(something)).setSendGroup(group).setSendQq(qq).setSendType(group == null? "FriendMessage": "TempMessage");
         botCalendarMapper.insertBotCalendar(botCalendar);
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH时mm分");
