@@ -6,7 +6,7 @@ import com.tilitili.common.entity.BotCalendar;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.mirai.Sender;
-import com.tilitili.common.mapper.BotCalendarMapper;
+import com.tilitili.common.mapper.tilitili.BotCalendarMapper;
 import com.tilitili.common.utils.AESUtils;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.StringUtils;

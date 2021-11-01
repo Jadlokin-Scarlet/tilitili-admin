@@ -8,7 +8,7 @@ import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.manager.RecommendManager;
-import com.tilitili.common.mapper.*;
+import com.tilitili.common.mapper.tilitili.*;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

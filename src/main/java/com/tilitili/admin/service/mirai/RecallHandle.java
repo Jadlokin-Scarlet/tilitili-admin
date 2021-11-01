@@ -6,7 +6,7 @@ import com.tilitili.common.entity.PixivImage;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.manager.MiraiManager;
-import com.tilitili.common.mapper.PixivImageMapper;
+import com.tilitili.common.mapper.tilitili.PixivImageMapper;
 import com.tilitili.common.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

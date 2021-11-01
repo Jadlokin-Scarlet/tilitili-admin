@@ -5,7 +5,7 @@ import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.manager.MiraiManager;
-import com.tilitili.common.mapper.*;
+import com.tilitili.common.mapper.tilitili.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

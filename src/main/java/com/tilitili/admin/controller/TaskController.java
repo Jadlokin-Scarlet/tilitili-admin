@@ -10,7 +10,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
-import com.tilitili.common.mapper.TaskMapper;
+import com.tilitili.common.mapper.tilitili.TaskMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

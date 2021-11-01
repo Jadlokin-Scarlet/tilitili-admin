@@ -5,7 +5,7 @@ import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.OwnerMapper;
+import com.tilitili.common.mapper.tilitili.OwnerMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

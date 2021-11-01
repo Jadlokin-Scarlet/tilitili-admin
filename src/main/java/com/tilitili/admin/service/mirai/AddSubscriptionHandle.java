@@ -8,7 +8,7 @@ import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
-import com.tilitili.common.mapper.SubscriptionMapper;
+import com.tilitili.common.mapper.tilitili.SubscriptionMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

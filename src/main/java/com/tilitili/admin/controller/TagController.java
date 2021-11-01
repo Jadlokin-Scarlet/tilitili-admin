@@ -5,7 +5,7 @@ import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.TagQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.TagMapper;
+import com.tilitili.common.mapper.tilitili.TagMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

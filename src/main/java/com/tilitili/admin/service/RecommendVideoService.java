@@ -7,9 +7,9 @@ import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.query.RecommendVideoQuery;
 import com.tilitili.common.entity.resource.RecommendVideoIssueResource;
 import com.tilitili.common.entity.resource.Resource;
-import com.tilitili.common.mapper.RecommendMapper;
-import com.tilitili.common.mapper.RecommendTalkMapper;
-import com.tilitili.common.mapper.RecommendVideoMapper;
+import com.tilitili.common.mapper.tilitili.RecommendMapper;
+import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
+import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

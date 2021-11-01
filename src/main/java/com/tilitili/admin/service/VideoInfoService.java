@@ -7,7 +7,7 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.manager.VideoInfoManager;
-import com.tilitili.common.mapper.VideoInfoMapper;
+import com.tilitili.common.mapper.tilitili.VideoInfoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

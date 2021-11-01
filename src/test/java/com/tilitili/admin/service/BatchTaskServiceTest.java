@@ -7,7 +7,7 @@ import com.tilitili.common.entity.BatchTask;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.BatchTaskMapper;
+import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
