@@ -5,13 +5,16 @@ import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.emnus.TaskReason;
 import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
+import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.SimpleTask;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
@@ -45,6 +48,8 @@ public class MainTest {
     private TaskManager taskManager;
     @Resource
     private RedisCache redisCache;
+    @Resource
+    private BatchTaskMapper batchTaskMapper;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -60,8 +65,8 @@ public class MainTest {
 
     @Test
     public void test3() {
-        VideoData videoData = videoDataManager.getByAvAndIssue(706L, 27);
-        System.out.println(fun(videoData));
+        List<BatchTaskIpCount> videoData = batchTaskMapper.listCount(new BatchTaskQuery());
+        System.out.println(videoData.size());
     }
 
     public static Double fun(VideoData data) {

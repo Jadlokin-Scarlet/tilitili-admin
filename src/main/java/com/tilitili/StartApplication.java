@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableRetry
 @EnableCaching
 @SpringBootApplication
-@MapperScan("com.tilitili.common.mapper")
 public class StartApplication {
 
     public static void main(String[] args) {
