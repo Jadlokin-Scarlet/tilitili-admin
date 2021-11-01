@@ -2,6 +2,8 @@ package com.tilitili.admin.socket;
 
 import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
@@ -59,6 +61,15 @@ public class BaseWebSocketHandler implements WebSocketHandler {
 
     public void setWebSocketConnectionManager(WebSocketConnectionManager webSocketConnectionManager) {
         this.webSocketConnectionManager = webSocketConnectionManager;
+    }
+
+    @Async
+    @Scheduled(fixedRate = 60 * 1000)
+    public void heartBeat() {
+        if (!webSocketConnectionManager.isRunning()) {
+            log.error("连接断开，重连");
+            webSocketConnectionManager.start();
+        }
     }
 
     private void sleepAndPing(WebSocketSession session) {
