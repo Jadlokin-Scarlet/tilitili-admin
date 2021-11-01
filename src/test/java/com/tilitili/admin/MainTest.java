@@ -4,6 +4,8 @@ import com.tilitili.StartApplication;
 import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.emnus.TaskReason;
+import com.tilitili.common.entity.Admin;
+import com.tilitili.common.entity.BotBill;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
@@ -14,6 +16,8 @@ import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.mapper.mysql.BotBillMapper;
+import com.tilitili.common.mapper.tilitili.AdminMapper;
 import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +27,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,6 +58,22 @@ public class MainTest {
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
+
+
+    @Autowired
+    private AdminMapper adminMapper;
+    @Autowired
+    private BotBillMapper botBillMapper;
+
+    @Test
+    public void test4() {
+
+        Admin admin = adminMapper.getById(1L);
+        System.out.println(admin.getUserName());
+
+        List<BotBill> botBills = botBillMapper.selectAll();
+        System.out.println(botBills.size());
+    }
 
     static {
         RequestConfig config = RequestConfig.custom().setConnectTimeout(TIME_OUT).setSocketTimeout(TIME_OUT).setConnectionRequestTimeout(TIME_OUT).build();
