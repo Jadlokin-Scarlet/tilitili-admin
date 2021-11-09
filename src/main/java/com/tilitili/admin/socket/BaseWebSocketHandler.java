@@ -21,18 +21,21 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         log.info("连接websocket成功，url={}", getUrl());
-        sleepAndPing(session);
+        session.sendMessage(new PingMessage());
+//        sleepAndPing(session);
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (message instanceof TextMessage) {
             handleTextMessage(session, (TextMessage) message);
-        } else if (message instanceof PongMessage) {
-            sleepAndPing(session);
-        } else {
+        }
+//        else if (message instanceof PongMessage) {
+//            sleepAndPing(session);
+//        }
+        else {
             log.error("Unexpected WebSocket message type: " + message);
         }
     }
@@ -61,14 +64,6 @@ public class BaseWebSocketHandler implements WebSocketHandler {
 
     public void setWebSocketConnectionManager(WebSocketConnectionManager webSocketConnectionManager) {
         this.webSocketConnectionManager = webSocketConnectionManager;
-    }
-
-    @Async
-    @Scheduled(fixedRate = 60 * 60 * 1000)
-    public void heartBeat() throws Exception {
-        log.error("连接断开，重连");
-        webSocketConnectionManager.stopInternal();
-        webSocketConnectionManager.startInternal();
     }
 
     private void sleepAndPing(WebSocketSession session) {
