@@ -54,7 +54,7 @@ public class PixivHandle implements BaseMessageHandle {
     }
 
     @Override
-    public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
+    public MiraiMessage handleMessage(MiraiRequest request) {
         if (!lockFlag.compareAndSet(false, true)) {
             log.warn("色图锁了，跳过");
             return null;

@@ -79,7 +79,7 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        System.out.println(redisCache.getMapValue(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "チルノ"));
+        System.out.println(redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "チルノ", -1));
     }
 
     @Test
