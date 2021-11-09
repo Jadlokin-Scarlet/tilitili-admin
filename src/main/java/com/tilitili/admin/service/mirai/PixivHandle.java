@@ -80,7 +80,7 @@ public class PixivHandle implements BaseMessageHandle {
             lockFlag.set(false);
             return result.setMessage("").setMessageType("Plain");
         } catch (AssertException e) {
-            log.error("找色图失败",e);
+            log.error(e.getMessage());
             lockFlag.set(false);
             throw e;
         } catch (Exception e) {

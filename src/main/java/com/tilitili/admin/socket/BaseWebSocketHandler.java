@@ -62,15 +62,15 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     public void setWebSocketConnectionManager(WebSocketConnectionManager webSocketConnectionManager) {
         this.webSocketConnectionManager = webSocketConnectionManager;
     }
-//
-//    @Async
-//    @Scheduled(fixedRate = 60 * 1000)
-//    public void heartBeat() {
-//        if (!webSocketConnectionManager.isRunning()) {
-//            log.error("连接断开，重连");
-//            webSocketConnectionManager.start();
-//        }
-//    }
+
+    @Async
+    @Scheduled(fixedRate = 60 * 1000)
+    public void heartBeat() {
+        if (!webSocketConnectionManager.isRunning()) {
+            log.error("连接断开，重连");
+            webSocketConnectionManager.start();
+        }
+    }
 
     private void sleepAndPing(WebSocketSession session) {
         Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {

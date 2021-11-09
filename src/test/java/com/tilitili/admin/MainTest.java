@@ -67,12 +67,10 @@ public class MainTest {
 
     @Test
     public void test4() {
-
-        Admin admin = adminMapper.getById(1L);
-        System.out.println(admin.getUserName());
-
-        List<BotBill> botBills = botBillMapper.selectAll();
-        System.out.println(botBills.size());
+        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
+        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
+        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
+        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
     }
 
     static {
