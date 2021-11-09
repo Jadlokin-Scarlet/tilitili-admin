@@ -52,7 +52,7 @@ public class RecallHandle implements BaseMessageHandle {
                     return result;
                 }
             } else {
-                List<PixivImage> pixivImageList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid));
+                List<PixivImage> pixivImageList = pixivImageMapper.getPixivImageByCondition(new PixivImage().setPid(pid));
                 for (PixivImage pixivImage : pixivImageList) {
                     Integer messageId = pixivImage.getMessageId();
                     if (messageId != null) {

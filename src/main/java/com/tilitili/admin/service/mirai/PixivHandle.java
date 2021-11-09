@@ -123,7 +123,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setSource("lolicon");
             pixivImage.setMessageId(messageId);
             pixivImage.setStatus(1);
-            pixivImageMapper.insertPixivImage(pixivImage);
+            pixivImageMapper.addPixivImageSelective(pixivImage);
         }
         return messageId;
     }
@@ -133,7 +133,7 @@ public class PixivHandle implements BaseMessageHandle {
         if (noUsedImage == null) {
             List<SearchIllust> dataList = pixivMoeManager.search(searchKey, 1L);
             Asserts.isFalse(dataList.isEmpty(), "搜不到tag");
-            List<SearchIllust> filterDataList = dataList.stream().filter(data -> pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(data.getId())).isEmpty()).collect(Collectors.toList());
+            List<SearchIllust> filterDataList = dataList.stream().filter(data -> pixivImageMapper.getPixivImageByCondition(new PixivImage().setPid(data.getId())).isEmpty()).collect(Collectors.toList());
 
             if (filterDataList.isEmpty()) {
                 Long pageNo = redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), searchKey);
@@ -154,9 +154,9 @@ public class PixivHandle implements BaseMessageHandle {
                 pixivImage.setSearchKey(searchKey);
                 pixivImage.setSource(source);
 
-                List<PixivImage> oldDataList = pixivImageMapper.listPixivImageByCondition(new PixivImage().setPid(pid).setSource(source));
+                List<PixivImage> oldDataList = pixivImageMapper.getPixivImageByCondition(new PixivImage().setPid(pid).setSource(source));
                 if (oldDataList.isEmpty()) {
-                    pixivImageMapper.insertPixivImage(pixivImage);
+                    pixivImageMapper.addPixivImageSelective(pixivImage);
                 }
             }
             noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
@@ -165,9 +165,9 @@ public class PixivHandle implements BaseMessageHandle {
         String url = noUsedImage.getSmallUrl();
         String pid = noUsedImage.getPid();
 
-        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
+        pixivImageMapper.updatePixivImageSelective(new PixivImage().setId(noUsedImage.getId()).setStatus(1));
         Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("ImageText").setSendType("GroupMessage").setUrl(url.replace("https://", "https://api.pixiv.moe/image/")).setMessage("https://pixiv.moe/illust/"+pid+"\n").setGroup(sendGroup.getId()));
-        pixivImageMapper.updatePixivImage(new PixivImage().setId(noUsedImage.getId()).setMessageId(messageId));
+        pixivImageMapper.updatePixivImageSelective(new PixivImage().setId(noUsedImage.getId()).setMessageId(messageId));
         return messageId;
     }
 }
