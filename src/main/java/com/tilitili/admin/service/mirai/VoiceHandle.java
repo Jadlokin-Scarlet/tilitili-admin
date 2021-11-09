@@ -40,8 +40,8 @@ public class VoiceHandle implements BaseMessageHandle {
         File wavFile = new File("/home/admin/silk/voice.wav");
         File slkFile = new File("/home/admin/silk/voice.slk");
 
-        Asserts.isTrue(slkFile.delete(), "删除slk失败");
-        Asserts.isTrue(wavFile.delete(), "删除wav失败");
+        if (wavFile.exists()) Asserts.isTrue(wavFile.delete(), "删除wav失败");
+        if (slkFile.exists()) Asserts.isTrue(slkFile.delete(), "删除slk失败");
 
         String text = request.getBody();
 

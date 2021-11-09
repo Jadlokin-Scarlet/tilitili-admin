@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -22,6 +23,7 @@ import java.io.IOException;
 public class QQPubController extends BaseController{
     private final MiraiManager miraiManager;
     private final BaiduManager baiduManager;
+    private String lastMessage = null;
 
     @Autowired
     public QQPubController(MiraiManager miraiManager, BaiduManager baiduManager) {
@@ -39,11 +41,17 @@ public class QQPubController extends BaseController{
 
     @PostMapping("/downloadVoice")
     public void runShell(String message, HttpServletRequest request, HttpServletResponse response) throws IOException, InterruptedException {
-
         File wavFile = new File("/home/admin/silk/voice.wav");
         File slkFile = new File("/home/admin/silk/voice.slk");
-        Asserts.isTrue(slkFile.delete(), "删除slk失败");
-        Asserts.isTrue(wavFile.delete(), "删除wav失败");
+
+        if (Objects.equals(lastMessage, message)) {
+            download(request, response, wavFile);
+            return;
+        }
+        lastMessage = message;
+
+        if (wavFile.exists()) Asserts.isTrue(wavFile.delete(), "删除wav失败");
+        if (slkFile.exists()) Asserts.isTrue(slkFile.delete(), "删除slk失败");
 
         String jpText = baiduManager.translate("jp", message);
 
