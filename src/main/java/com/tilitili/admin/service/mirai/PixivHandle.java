@@ -121,8 +121,8 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setUrlList(imageUrl);
             pixivImage.setSearchKey(searchKey);
             pixivImage.setSource("lolicon");
-            pixivImage.setStatus(1);
             pixivImage.setMessageId(messageId);
+            pixivImage.setStatus(1);
             pixivImageMapper.insertPixivImage(pixivImage);
         }
         return messageId;
