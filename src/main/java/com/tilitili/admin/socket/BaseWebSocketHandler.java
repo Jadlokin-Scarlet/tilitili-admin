@@ -64,12 +64,11 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     }
 
     @Async
-    @Scheduled(fixedRate = 60 * 1000)
+    @Scheduled(fixedRate = 60 * 60 * 1000)
     public void heartBeat() {
-        if (!webSocketConnectionManager.isRunning()) {
-            log.error("连接断开，重连");
-            webSocketConnectionManager.start();
-        }
+        log.error("连接断开，重连");
+        webSocketConnectionManager.stop();
+        webSocketConnectionManager.start();
     }
 
     private void sleepAndPing(WebSocketSession session) {
