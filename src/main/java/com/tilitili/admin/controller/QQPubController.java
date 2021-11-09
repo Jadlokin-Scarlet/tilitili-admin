@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -35,23 +37,21 @@ public class QQPubController extends BaseController{
         return BaseModel.success();
     }
 
-    @PostMapping("/sendVoice")
-    @ResponseBody
-    public BaseModel runShell(String message) throws IOException, InterruptedException {
-        String jpMessage = baiduManager.translate("jp", message);
+    @PostMapping("/downloadVoice")
+    public void runShell(String message, HttpServletRequest request, HttpServletResponse response) throws IOException, InterruptedException {
 
-        String speakShell = String.format("sh /home/admin/slik/run.sh %s", jpMessage);
+        File wavFile = new File("/home/admin/silk/voice.wav");
+        File slkFile = new File("/home/admin/silk/voice.slk");
+        Asserts.isTrue(slkFile.delete(), "删除slk失败");
+        Asserts.isTrue(wavFile.delete(), "删除wav失败");
+
+        String jpText = baiduManager.translate("jp", message);
+
+        String speakShell = String.format("sh /home/admin/silk/run.sh %s", jpText);
         Runtime.getRuntime().exec(speakShell);
 
         Thread.sleep(1000);
 
-        File slkFile = new File("/home/admin/silk/voice.slk");
-        Asserts.isTrue(slkFile.exists(), "转码slk失败");
-
-        String voiceId = miraiManager.uploadVoice(slkFile);
-        Asserts.notBlank(voiceId, "上传失败");
-
-        miraiManager.sendMessage(new MiraiMessage().setMessageType("Voice").setVoiceId(voiceId).setSendType("GroupMessage").setGroup(GroupEmum.TEST_GROUP.getValue()));
-        return BaseModel.success();
+        download(request, response, wavFile);
     }
 }

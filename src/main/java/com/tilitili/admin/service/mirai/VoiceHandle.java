@@ -37,6 +37,12 @@ public class VoiceHandle implements BaseMessageHandle {
 
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws IOException, InterruptedException {
+        File wavFile = new File("/home/admin/silk/voice.wav");
+        File slkFile = new File("/home/admin/silk/voice.slk");
+
+        Asserts.isTrue(slkFile.delete(), "删除slk失败");
+        Asserts.isTrue(wavFile.delete(), "删除wav失败");
+
         String text = request.getBody();
 
         String jpText = baiduManager.translate("jp", text);
@@ -48,15 +54,10 @@ public class VoiceHandle implements BaseMessageHandle {
 
         Thread.sleep(1000);
 
-        File wavFile = new File("/home/admin/silk/voice.wav");
-        File slkFile = new File("/home/admin/silk/voice.slk");
         Asserts.isTrue(slkFile.exists(), "转码slk失败");
 
         String voiceId = miraiManager.uploadVoice(slkFile);
         Asserts.notBlank(voiceId, "上传失败");
-
-        Asserts.isTrue(wavFile.delete(), "删除wav失败");
-        Asserts.isTrue(slkFile.delete(), "删除slk失败");
 
         return new MiraiMessage().setVoiceId(voiceId).setMessageType("Voice");
     }
