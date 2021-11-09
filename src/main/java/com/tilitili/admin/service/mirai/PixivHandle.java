@@ -63,7 +63,7 @@ public class PixivHandle implements BaseMessageHandle {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
-            String source = request.getParamOrDefault("source", "pixiv.moe");
+            String source = request.getParamOrDefault("source", "pixiv");
             String num = request.getParamOrDefault("num", "1");
             Long sendMessageId = request.getMessageId();
             MiraiMessage result = new MiraiMessage();
