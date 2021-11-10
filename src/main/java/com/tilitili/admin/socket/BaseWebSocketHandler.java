@@ -23,19 +23,17 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         log.info("连接websocket成功，url={}", getUrl());
-        session.sendMessage(new PingMessage());
-//        sleepAndPing(session);
+//        session.sendMessage(new PingMessage());
+        sleepAndPing(session);
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (message instanceof TextMessage) {
             handleTextMessage(session, (TextMessage) message);
-        }
-//        else if (message instanceof PongMessage) {
-//            sleepAndPing(session);
-//        }
-        else {
+        } else if (message instanceof PongMessage) {
+            sleepAndPing(session);
+        } else {
             log.error("Unexpected WebSocket message type: " + message);
         }
     }
@@ -70,6 +68,6 @@ public class BaseWebSocketHandler implements WebSocketHandler {
         Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
             log.info("发送ping消息");
             session.sendMessage(new PingMessage());
-        }), 30, TimeUnit.MINUTES);
+        }), 1, TimeUnit.MINUTES);
     }
 }
