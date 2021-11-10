@@ -62,7 +62,7 @@ public class PixivHandle implements BaseMessageHandle {
         try {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
-            String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ"));
+            String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ 東方Project100users入り"));
             String source = request.getParamOrDefault("source", "pixiv");
             String num = request.getParamOrDefault("num", "1");
             Long sendMessageId = request.getMessageId();
