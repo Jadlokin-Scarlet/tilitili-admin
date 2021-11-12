@@ -71,11 +71,11 @@ public class BaseWebSocketHandler implements WebSocketHandler {
         }), 1, TimeUnit.MINUTES);
     }
 
-    @Async
-    @Scheduled(fixedRate = 60 * 60 * 1000)
-    public void heartBeat() throws Exception {
-        log.error("连接断开，重连");
-        webSocketConnectionManager.stop();
-        webSocketConnectionManager.start();
-    }
+//    @Async
+//    @Scheduled(fixedRate = 60 * 60 * 1000)
+//    public void heartBeat() throws Exception {
+//        log.error("连接断开，重连");
+//        webSocketConnectionManager.stop();
+//        webSocketConnectionManager.start();
+//    }
 }
