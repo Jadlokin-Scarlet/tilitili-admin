@@ -48,8 +48,8 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("连接关闭，reason={}", status.getReason());
-        webSocketConnectionManager.stop();
-        webSocketConnectionManager.start();
+//        webSocketConnectionManager.stop();
+//        webSocketConnectionManager.start();
     }
 
     @Override
@@ -69,5 +69,13 @@ public class BaseWebSocketHandler implements WebSocketHandler {
             log.info("发送ping消息");
             session.sendMessage(new PingMessage());
         }), 1, TimeUnit.MINUTES);
+    }
+
+    @Async
+    @Scheduled(fixedRate = 60 * 60 * 1000)
+    public void heartBeat() throws Exception {
+        log.error("连接断开，重连");
+        webSocketConnectionManager.stop();
+        webSocketConnectionManager.start();
     }
 }
