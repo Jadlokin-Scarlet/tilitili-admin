@@ -33,7 +33,8 @@ public class VideoDataFileService {
         Integer pageSize = videoDataQuery.getPageSize();
         Integer current = videoDataQuery.getCurrent();
         videoDataQuery.setHasLevel(true).setSorter("point", "desc");
-        int total = videoDataManager.count(videoDataQuery);;;
+        int total = videoDataManager.count(videoDataQuery);
+        videoDataQuery.setPageSize(Math.min(videoDataQuery.getPageSize(), total));
         List<VideoData> videoDataList = videoDataManager.list(videoDataQuery);
         List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
