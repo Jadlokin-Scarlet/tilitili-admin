@@ -57,8 +57,8 @@ public class VideoDataFileService {
             long oldCoin = Optional.ofNullable(videoData.getOldCoin()).orElse(0L);
             long oldReply = Optional.ofNullable(videoData.getOldReply()).orElse(0L);
 
-            Integer oldRank = videoData.getHisRank();
-            Integer moreOldRank = videoData.getMoreHisRank();
+            Integer oldRank = Optional.ofNullable(videoData.getHisRank()).orElse(0);
+            Integer moreOldRank = Optional.ofNullable(videoData.getMoreHisRank()).orElse(0);
 
             BeanUtils.copyProperties(videoData, video);
             video.setHisRank(oldRank);
