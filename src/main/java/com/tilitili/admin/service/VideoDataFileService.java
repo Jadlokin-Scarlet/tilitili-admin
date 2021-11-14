@@ -35,7 +35,7 @@ public class VideoDataFileService {
         videoDataQuery.setHasLevel(true).setSorter("point", "desc");
         int total = videoDataManager.count(videoDataQuery);
         videoDataQuery.setPageSize(Math.min(videoDataQuery.getPageSize(), total));
-        List<VideoData> videoDataList = videoDataManager.list(videoDataQuery);
+        List<VideoData> videoDataList = videoDataManager.listForDataFile(videoDataQuery);
         List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
             VideoDataFileItem video = new VideoDataFileItem();
             Integer rank = videoData.getRank();
@@ -52,16 +52,13 @@ public class VideoDataFileService {
                 case 4: video.setShowLength(10);break;
             }
 
-            VideoData oldVideo = videoDataManager.getByAvAndIssue(videoData.getAv(), videoData.getIssue() - 1);
-            VideoData moreOldVideo = videoDataManager.getByAvAndIssue(videoData.getAv(), videoData.getIssue() - 2);
+            long oldView = Optional.ofNullable(videoData.getOldView()).orElse(0L);
+            long oldFavorite = Optional.ofNullable(videoData.getOldFavorite()).orElse(0L);
+            long oldCoin = Optional.ofNullable(videoData.getOldCoin()).orElse(0L);
+            long oldReply = Optional.ofNullable(videoData.getOldReply()).orElse(0L);
 
-            long oldView = Optional.ofNullable(oldVideo).map(VideoData::getView).orElse(0);
-            long oldFavorite = Optional.ofNullable(oldVideo).map(VideoData::getFavorite).orElse(0);
-            long oldCoin = Optional.ofNullable(oldVideo).map(VideoData::getCoin).orElse(0);
-            long oldReply = Optional.ofNullable(oldVideo).map(VideoData::getReply).orElse(0);
-
-            Integer oldRank = Optional.ofNullable(oldVideo).map(VideoData::getRank).orElse(0);
-            Integer moreOldRank = Optional.ofNullable(moreOldVideo).map(VideoData::getRank).orElse(0);
+            Integer oldRank = videoData.getHisRank();
+            Integer moreOldRank = videoData.getMoreHisRank();
 
             BeanUtils.copyProperties(videoData, video);
             video.setHisRank(oldRank);
