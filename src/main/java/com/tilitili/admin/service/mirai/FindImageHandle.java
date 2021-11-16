@@ -36,8 +36,6 @@ public class FindImageHandle implements BaseMessageHandle{
         Asserts.isFalse(imageList.isEmpty(), "没找到🤕\n"+url);
         Element image = imageList.get(0);
 
-        List<MessageChain> messageChainArrayList = new ArrayList<>();
-
         String rate = image.select(".resultsimilarityinfo").text();
         String imageUrl = image.select(".resulttableimage img").attr("src");
         Elements linkList = image.select(".resultcontentcolumn a.linkify");
@@ -46,7 +44,6 @@ public class FindImageHandle implements BaseMessageHandle{
         Asserts.isFalse(linkList.isEmpty(), "没找到😑\n"+url);
 
         String link = linkList.get(0).attr("href");
-
         return result.setMessage(String.format("找到啦😊！相似度%s\n%s", rate, link)).setUrl(imageUrl).setMessageType("ImageText");
     }
 }
