@@ -6,7 +6,7 @@ COPY libAqUsrDic.so.4 /usr/lib/
 
 CMD ldconfig
 
-COPY silk /home/admin/
+COPY silk /home/admin/silk/
 
 ADD target/*.jar tilitili-admin.jar
 
