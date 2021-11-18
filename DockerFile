@@ -6,8 +6,7 @@ COPY libAqUsrDic.so.4 /usr/lib/
 
 CMD ldconfig
 
-COPY silk /home/admin/silk/
-CMD chmod 500 /home/admin/silk/*
+COPY --chown=500 silk /home/admin/silk/
 
 ADD target/*.jar tilitili-admin.jar
 
