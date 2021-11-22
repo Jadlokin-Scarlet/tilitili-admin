@@ -95,7 +95,7 @@ public class MainTest {
     }
     @Test
     public void test() throws IOException {
-        System.out.println(redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "チルノ", -1));
+        System.out.println(redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "チルノ 東方Project100users入り", -1));
     }
 
     @Test
