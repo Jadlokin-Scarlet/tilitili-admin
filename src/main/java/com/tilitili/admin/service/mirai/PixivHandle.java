@@ -40,8 +40,8 @@ public class PixivHandle implements BaseMessageHandle {
     private final MiraiManager miraiManager;
     private final PixivMoeManager pixivMoeManager;
     private final PixivImageMapper pixivImageMapper;
-    private final LoliconManager loliconManager;
     private final PixivManager pixivManager;
+    private final LoliconManager loliconManager;
 
     private final Map<String, String> keyMap = ImmutableMap.of("ss", "1", "bs", "0");
 
