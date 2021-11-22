@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ public class PixivHandle implements BaseMessageHandle {
         }
     }
 
-    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException {
+    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException, UnsupportedEncodingException {
         List<SetuData> dataList = loliconManager.getAImage(searchKey, num);
         List<MessageChain> messageChainList = new ArrayList<>();
         Integer messageId;
