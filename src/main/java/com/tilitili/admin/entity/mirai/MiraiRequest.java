@@ -9,6 +9,7 @@ import com.tilitili.common.utils.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,7 +37,7 @@ public class MiraiRequest {
         textList = text.split("\n");
         title = textList.length > 0? textList[0]: "";
         titleKey = title.split(" ")[0];
-        titleValue = title.split(" ").length > 1? title.split(" ")[1]: null;
+        titleValue = title.substring(title.indexOf(" ") + 1);
         body = textList.length > 1? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
 
         String[] bodyList = body.split("\n");
@@ -97,7 +98,7 @@ public class MiraiRequest {
     }
 
     public String getTitleValueOrDefault(String defaultValue) {
-        return titleValue == null? defaultValue: titleValue;
+        return Objects.equals(titleValue, "") ? defaultValue: titleValue;
     }
 
     public Long getMessageId() {
