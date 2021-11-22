@@ -101,7 +101,7 @@ public class MainTest {
     @Test
     public void test3() {
 //        IntStream.range(0, 1).boxed().map(StreamUtil.tryRun(a -> Math.floorDiv(a, 0))).collect()
-        List<BatchTaskIpCount> videoData = batchTaskMapper.listCount(new BatchTaskQuery());
+        List<BatchTaskIpCount> videoData = batchTaskMapper.listIpCount(new BatchTaskQuery());
         System.out.println(videoData.size());
     }
 
