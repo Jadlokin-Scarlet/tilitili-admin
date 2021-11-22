@@ -37,7 +37,7 @@ public class MiraiRequest {
         textList = text.split("\n");
         title = textList.length > 0? textList[0]: "";
         titleKey = title.split(" ")[0];
-        titleValue = title.substring(title.indexOf(" ") + 1);
+        titleValue = title.contains(" ")? title.substring(title.indexOf(" ") + 1): null;
         body = textList.length > 1? Stream.of(textList).skip(1).collect(Collectors.joining("\n")): "";
 
         String[] bodyList = body.split("\n");
@@ -98,7 +98,7 @@ public class MiraiRequest {
     }
 
     public String getTitleValueOrDefault(String defaultValue) {
-        return Objects.equals(titleValue, "") ? defaultValue: titleValue;
+        return titleValue == null ? defaultValue: titleValue;
     }
 
     public Long getMessageId() {
