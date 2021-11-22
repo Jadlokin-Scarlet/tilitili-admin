@@ -103,16 +103,19 @@ public class PixivHandle implements BaseMessageHandle {
         List<SetuData> dataList = loliconManager.getAImage(searchKey, num);
         List<MessageChain> messageChainList = new ArrayList<>();
         Integer messageId;
-        for (SetuData data : dataList) {
+        for (int i = 0; i < dataList.size(); i++) {
+            SetuData data = dataList.get(i);
             String pid = String.valueOf(data.getPid());
             String imageUrl = data.getUrls().getOriginal();
             boolean isSese = data.getTags().contains("R-18") || data.getR18();
+            if (i != 0) {
+                messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
+            }
             if (isSese) {
-                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl + "\n"));
+                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl));
             } else {
                 messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
                 messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
-                messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
             }
         }
         messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("GroupMessage").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
