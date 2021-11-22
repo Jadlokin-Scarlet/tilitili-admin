@@ -10,6 +10,7 @@ import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.Sender;
 import com.tilitili.common.entity.pixivmoe.SearchIllust;
+import com.tilitili.common.entity.query.PixivImageQuery;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.LoliconManager;
 import com.tilitili.common.manager.MiraiManager;
@@ -140,7 +141,7 @@ public class PixivHandle implements BaseMessageHandle {
     }
 
     private Integer sendPixivMoeImage(Sender sendGroup, String searchKey, String source) throws InterruptedException {
-        PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
+        PixivImage noUsedImage = pixivImageMapper.getNoUsedImage(new PixivImageQuery().setSearchKey(searchKey).setSource(source));
         if (noUsedImage == null) {
             List<SearchIllust> dataList = pixivMoeManager.search(searchKey, 1L);
             Asserts.isFalse(dataList.isEmpty(), "搜不到tag");
@@ -170,7 +171,7 @@ public class PixivHandle implements BaseMessageHandle {
                     pixivImageMapper.addPixivImageSelective(pixivImage);
                 }
             }
-            noUsedImage = pixivImageMapper.getNoUsedImage(searchKey, source);
+            noUsedImage = pixivImageMapper.getNoUsedImage(new PixivImageQuery().setSearchKey(searchKey).setSource(source));
         }
 
         String url = noUsedImage.getSmallUrl();
