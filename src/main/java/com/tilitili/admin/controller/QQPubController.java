@@ -7,10 +7,7 @@ import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +27,14 @@ public class QQPubController extends BaseController{
     public QQPubController(MiraiManager miraiManager, BaiduManager baiduManager) {
         this.miraiManager = miraiManager;
         this.baiduManager = baiduManager;
+    }
+
+    @PostMapping("/group/{group}")
+    @ResponseBody
+    public BaseModel sendMessage(@RequestBody String message, @PathVariable Long group) {
+        Asserts.notBlank(message, "消息为空");
+        miraiManager.sendGroupMessage("Plain", message, group);
+        return BaseModel.success();
     }
 
     @PostMapping
