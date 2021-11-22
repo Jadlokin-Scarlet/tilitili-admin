@@ -1,6 +1,10 @@
 package com.tilitili.admin;
 
+import com.google.gson.Gson;
 import com.tilitili.StartApplication;
+import com.tilitili.admin.controller.RedisController;
+import com.tilitili.admin.entity.view.RedisQuery;
+import com.tilitili.admin.entity.view.RedisView;
 import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.emnus.TaskReason;
@@ -12,6 +16,7 @@ import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.SimpleTask;
+import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
@@ -20,6 +25,7 @@ import com.tilitili.common.mapper.mysql.BotBillMapper;
 import com.tilitili.common.mapper.tilitili.AdminMapper;
 import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import com.tilitili.common.utils.RedisCache;
+import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,11 +36,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -55,6 +65,8 @@ public class MainTest {
     private RedisCache redisCache;
     @Resource
     private BatchTaskMapper batchTaskMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -64,13 +76,17 @@ public class MainTest {
     private AdminMapper adminMapper;
     @Autowired
     private BotBillMapper botBillMapper;
+    @Autowired
+    private RedisController redisController;
 
     @Test
     public void test4() {
-        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
-        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
-        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
-        taskManager.simpleSpiderVideo((new SimpleTask()).setReason(TaskReason.SPIDER_PIXIV.value).setValueList(Arrays.asList("チルノ", String.valueOf(1), String.valueOf(1155L))));
+
+//        System.out.println(stringSet);
+        System.out.println(new Gson().toJson(redisController.listRedis(new RedisQuery())));
+
+//        Map<Object, Object> map = redisTemplate.opsForHash().entries("group-729412455");
+//        System.out.println();
     }
 
     static {
@@ -84,6 +100,7 @@ public class MainTest {
 
     @Test
     public void test3() {
+//        IntStream.range(0, 1).boxed().map(StreamUtil.tryRun(a -> Math.floorDiv(a, 0))).collect()
         List<BatchTaskIpCount> videoData = batchTaskMapper.listCount(new BatchTaskQuery());
         System.out.println(videoData.size());
     }

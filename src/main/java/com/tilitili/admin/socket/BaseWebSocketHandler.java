@@ -65,10 +65,15 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     }
 
     private void sleepAndPing(WebSocketSession session) {
-        Executors.newSingleThreadScheduledExecutor().schedule(StreamUtil.tryRun(() -> {
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             log.info("发送ping消息");
-            session.sendMessage(new PingMessage());
-        }), 1, TimeUnit.MINUTES);
+            try {
+                session.sendMessage(new PingMessage());
+            } catch (IOException e) {
+                log.error("发送心跳异常", e);
+                this.webSocketConnectionManager.start();
+            }
+        }, 1, TimeUnit.MINUTES);
     }
 
 //    @Async
