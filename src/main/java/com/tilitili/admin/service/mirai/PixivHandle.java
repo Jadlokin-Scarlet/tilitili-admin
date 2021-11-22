@@ -1,5 +1,6 @@
 package com.tilitili.admin.service.mirai;
 
+import com.google.common.collect.ImmutableMap;
 import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
 import com.tilitili.common.emnus.RedisKeyEnum;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,8 @@ public class PixivHandle implements BaseMessageHandle {
     private final PixivImageMapper pixivImageMapper;
     private final LoliconManager loliconManager;
     private final PixivManager pixivManager;
+
+    private final Map<String, String> keyMap = ImmutableMap.of("sst", "1", "bst", "0");
 
     @Autowired
     public PixivHandle(RedisCache redisCache, MiraiManager miraiManager, PixivMoeManager pixivMoeManager, PixivImageMapper pixivImageMapper, LoliconManager loliconManager, PixivManager pixivManager) {
@@ -64,16 +69,20 @@ public class PixivHandle implements BaseMessageHandle {
         try {
             Sender sender = request.getMessage().getSender();
             Sender sendGroup = sender.getGroup();
+            String titleKey = request.getTitleKey();
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ 東方Project100users入り"));
             String source = request.getParamOrDefault("source", "pixiv");
             String num = request.getParamOrDefault("num", "1");
+            String r18 = keyMap.getOrDefault(titleKey, request.getParam("r18"));
             Long sendMessageId = request.getMessageId();
             MiraiMessage result = new MiraiMessage();
+
+            Boolean HasSese = Objects.equals(r18, "1") ? Boolean.TRUE: Objects.equals(r18, "0") ? Boolean.FALSE: null;
 
             Integer messageId;
             switch (source) {
                 case "pixiv.moe": messageId = sendPixivMoeImage(sendGroup, searchKey, source); break;
-                case "pixiv": messageId = pixivManager.sendPixivImage(sendMessageId, searchKey, source); break;
+                case "pixiv": messageId = pixivManager.sendPixivImage(sendMessageId, searchKey, source, HasSese); break;
                 case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num); break;
                 default: throw new AssertException("不支持的平台");
             }

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sun.jvm.hotspot.utilities.Assert;
@@ -32,7 +34,7 @@ public class RedisController {
         this.redisCache = redisCache;
     }
 
-    @RequestMapping("/list")
+    @RequestMapping("")
     @ResponseBody
     public BaseModel<PageModel<RedisView>> listRedis(RedisQuery query) {
         int start = query.getStart();
@@ -72,7 +74,7 @@ public class RedisController {
         return PageModel.of(total, pageSize, current, redisViewList);
     }
 
-    @RequestMapping("/del")
+    @DeleteMapping("")
     @ResponseBody
     public BaseModel<?> delRedisKey(String key) {
         Asserts.notBlank(key, "参数异常");
@@ -83,7 +85,7 @@ public class RedisController {
         return BaseModel.success();
     }
 
-    @RequestMapping("/edit")
+    @PatchMapping("")
     @ResponseBody
     public BaseModel<?> editRedisKey(RedisView redisView) {
         Asserts.notNull(redisView, "参数异常");
