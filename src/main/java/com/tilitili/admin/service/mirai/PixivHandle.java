@@ -80,8 +80,8 @@ public class PixivHandle implements BaseMessageHandle {
             Integer messageId;
             switch (source) {
                 case "pixiv": messageId = pixivManager.sendPixivImage(sendMessageId, searchKey, source, r18); break;
-                case "pixiv.moe": messageId = sendPixivMoeImage(sendGroup, searchKey, source); break;
                 case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num); break;
+                case "pixiv.moe": messageId = sendPixivMoeImage(sendGroup, searchKey, source); break;
                 default: throw new AssertException("不支持的平台");
             }
             Asserts.notNull(messageId, "发送失败");
