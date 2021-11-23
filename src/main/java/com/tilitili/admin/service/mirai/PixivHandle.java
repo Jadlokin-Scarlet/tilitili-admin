@@ -37,8 +37,8 @@ public class PixivHandle implements BaseMessageHandle {
 
     private final AtomicBoolean lockFlag = new AtomicBoolean(false);
 
-    private final MiraiManager miraiManager;
     private final RedisCache redisCache;
+    private final MiraiManager miraiManager;
     private final PixivMoeManager pixivMoeManager;
     private final PixivImageMapper pixivImageMapper;
     private final LoliconManager loliconManager;
