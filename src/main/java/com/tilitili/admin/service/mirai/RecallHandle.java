@@ -40,7 +40,7 @@ public class RecallHandle implements BaseMessageHandle {
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) throws Exception {
         Sender sender = request.getMessage().getSender();
-        String pid = request.getParam("pid");
+        String pid = request.getParamOrDefault("pid", request.getTitleValue());
         MiraiMessage result = new MiraiMessage();
 
         if (sender.getId().equals(MASTER_QQ)) {
