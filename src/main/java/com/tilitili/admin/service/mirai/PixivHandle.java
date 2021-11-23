@@ -18,6 +18,7 @@ import com.tilitili.common.manager.PixivManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.mapper.tilitili.PixivImageMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.OSSUtil;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,7 @@ public class PixivHandle implements BaseMessageHandle {
             Integer messageId;
             switch (source) {
                 case "pixiv": messageId = pixivManager.sendPixivImage(sendMessageId, searchKey, source, r18); break;
-                case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num); break;
+                case "lolicon": messageId = sendLoliconImage(sendGroup, searchKey, source, num, r18); break;
                 case "pixiv.moe": messageId = sendPixivMoeImage(sendGroup, searchKey, source); break;
                 default: throw new AssertException("不支持的平台");
             }
@@ -99,8 +100,8 @@ public class PixivHandle implements BaseMessageHandle {
         }
     }
 
-    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num) throws InterruptedException, UnsupportedEncodingException {
-        List<SetuData> dataList = loliconManager.getAImage(searchKey, num);
+    private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num, String r18) throws InterruptedException, UnsupportedEncodingException {
+        List<SetuData> dataList = loliconManager.getAImage(searchKey, num, r18);
         List<MessageChain> messageChainList = new ArrayList<>();
         Integer messageId;
         for (int i = 0; i < dataList.size(); i++) {
@@ -112,7 +113,8 @@ public class PixivHandle implements BaseMessageHandle {
                 messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
             }
             if (isSese) {
-                messageChainList.add(new MessageChain().setType("Plain").setText(imageUrl));
+                String ossUrl = OSSUtil.uploadOSSByUrl(imageUrl);
+                messageChainList.add(new MessageChain().setType("Plain").setText(ossUrl));
             } else {
                 messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
                 messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
@@ -132,7 +134,7 @@ public class PixivHandle implements BaseMessageHandle {
             pixivImage.setUserId(String.valueOf(data.getUid()));
             pixivImage.setUrlList(imageUrl);
             pixivImage.setSearchKey(searchKey);
-            pixivImage.setSource("lolicon");
+            pixivImage.setSource(source);
             pixivImage.setMessageId(messageId);
             pixivImage.setStatus(1);
             pixivImageMapper.addPixivImageSelective(pixivImage);
