@@ -102,8 +102,10 @@ public class PixivHandle implements BaseMessageHandle {
 
     private Integer sendLoliconImage(Sender sendGroup, String searchKey, String source, String num, String r18) throws InterruptedException, UnsupportedEncodingException {
         List<SetuData> dataList = loliconManager.getAImage(searchKey, num, r18);
+        if (dataList.isEmpty()) {
+            return miraiManager.sendGroupMessage("Plain", "没库存啦！", sendGroup.getId());
+        }
         List<MessageChain> messageChainList = new ArrayList<>();
-        Integer messageId;
         for (int i = 0; i < dataList.size(); i++) {
             SetuData data = dataList.get(i);
             String pid = String.valueOf(data.getPid());
@@ -120,7 +122,8 @@ public class PixivHandle implements BaseMessageHandle {
                 messageChainList.add(new MessageChain().setType("Image").setUrl(imageUrl));
             }
         }
-        messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("GroupMessage").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
+
+        Integer messageId = miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setSendType("GroupMessage").setMessageChainList(messageChainList).setGroup(sendGroup.getId()));
 
         for (SetuData data : dataList) {
             String pid = String.valueOf(data.getPid());
