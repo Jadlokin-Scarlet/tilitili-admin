@@ -113,7 +113,7 @@ public class PixivHandle implements BaseMessageHandle {
                 messageChainList.add(new MessageChain().setType("Plain").setText("\n"));
             }
             if (isSese) {
-                String ossUrl = OSSUtil.uploadOSSByUrl(imageUrl);
+                String ossUrl = OSSUtil.getCacheOSSOrUploadByUrl(imageUrl);
                 messageChainList.add(new MessageChain().setType("Plain").setText(ossUrl));
             } else {
                 messageChainList.add(new MessageChain().setType("Plain").setText(pid + "\n"));
