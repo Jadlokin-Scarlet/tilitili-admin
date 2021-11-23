@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MiraiRequest {
-    private final MiraiMessageView message;
     private final MiraiSessionService.MiraiSession session;
+    private final MiraiMessageView message;
     private final Map<String, String> params;
     private final String text;
     private final String body;
