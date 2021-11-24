@@ -3,9 +3,11 @@ package com.tilitili.admin.config;
 import com.tilitili.admin.socket.BaseWebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -33,5 +35,15 @@ public class WebSocketConfig {
                 log.error("异常", e);
             }
         }
+    }
+
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        // ws 传输数据的时候，数据过大有时候会接收不到，所以在此处设置bufferSize
+        container.setMaxTextMessageBufferSize(512000);
+        container.setMaxBinaryMessageBufferSize(512000);
+        container.setMaxSessionIdleTimeout(15 * 60000L);
+        return container;
     }
 }
