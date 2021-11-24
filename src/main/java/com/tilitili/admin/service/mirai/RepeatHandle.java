@@ -10,6 +10,7 @@ import com.tilitili.common.manager.MiraiManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,7 +51,9 @@ public class RepeatHandle implements BaseMessageHandle {
 
         String newNumber = session.get(numberKey);
         if (Objects.equals(newNumber, "3")) {
-            miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setMessageChainList(messageChainList).setSendType("GroupMessage").setGroup(message.getSender().getGroup().getId()));
+            List<String> typeList = Arrays.asList("Plain", "Image");
+            List<MessageChain> newMessageChainList = messageChainList.stream().filter(messageChain -> typeList.contains(message.getType())).collect(Collectors.toList());
+            miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setMessageChainList(newMessageChainList).setSendType("GroupMessage").setGroup(message.getSender().getGroup().getId()));
         }
         return null;
     }
