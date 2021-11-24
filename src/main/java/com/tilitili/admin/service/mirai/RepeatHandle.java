@@ -46,8 +46,8 @@ public class RepeatHandle implements BaseMessageHandle {
         if (oldKey.equals(key)) {
             session.put(numberKey, String.valueOf(oldNumber + 1));
         } else {
-            session.put(KeyKey, key);
             session.put(numberKey, "1");
+            session.put(KeyKey, key);
         }
 
         String newNumber = session.get(numberKey);
