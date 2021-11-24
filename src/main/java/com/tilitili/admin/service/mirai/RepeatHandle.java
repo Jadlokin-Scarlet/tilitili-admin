@@ -7,6 +7,7 @@ import com.tilitili.common.entity.mirai.MessageChain;
 import com.tilitili.common.entity.mirai.MiraiMessage;
 import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.utils.QQUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,8 +52,15 @@ public class RepeatHandle implements BaseMessageHandle {
 
         String newNumber = session.get(numberKey);
         if (Objects.equals(newNumber, "3")) {
-            List<String> typeList = Arrays.asList("Plain", "Image");
-            List<MessageChain> newMessageChainList = messageChainList.stream().filter(messageChain -> typeList.contains(message.getType())).collect(Collectors.toList());
+            List<MessageChain> newMessageChainList = messageChainList.stream().map(messageChain -> {
+                if (messageChain.getType().equals("Plain")) {
+                    return new MessageChain().setType("Plain").setText(messageChain.getText());
+                } else if (messageChain.getType().equals("Image")) {
+                    return new MessageChain().setType("Image").setUrl(QQUtil.getImageUrl(messageChain.getUrl()));
+                } else {
+                    return null;
+                }
+            }).filter(Objects::nonNull).collect(Collectors.toList());
             miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setMessageChainList(newMessageChainList).setSendType("GroupMessage").setGroup(message.getSender().getGroup().getId()));
         }
         return null;
