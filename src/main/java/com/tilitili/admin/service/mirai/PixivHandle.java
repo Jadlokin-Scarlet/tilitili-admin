@@ -3,6 +3,7 @@ package com.tilitili.admin.service.mirai;
 import com.google.common.collect.ImmutableMap;
 import com.tilitili.admin.emnus.MessageHandleEnum;
 import com.tilitili.admin.entity.mirai.MiraiRequest;
+import com.tilitili.common.emnus.GroupEmum;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.PixivImage;
 import com.tilitili.common.entity.lolicon.SetuData;
@@ -68,14 +69,19 @@ public class PixivHandle implements BaseMessageHandle {
         if (!lockFlag.compareAndSet(false, true)) {
             return result.setMessage("出门找图了，一会儿再来吧Σ（ﾟдﾟlll）").setMessageType("Plain");
         }
+        Sender sender = request.getMessage().getSender();
+        Sender sendGroup = sender.getGroup();
+        String titleKey = request.getTitleKey();
+        String r18 = keyMap.getOrDefault(titleKey, request.getParamOrDefault("r18", "2"));
+        if (! sendGroup.getId().equals(GroupEmum.HOMO_LIVE_GROUP.value)) {
+            if (! r18.equals("0")) {
+                return result.setMessage("不准色色o(*////▽////*)q").setMessageType("Plain");
+            }
+        }
         try {
-            Sender sender = request.getMessage().getSender();
-            Sender sendGroup = sender.getGroup();
             String searchKey = request.getTitleValueOrDefault(request.getParamOrDefault("tag", "チルノ 東方Project100users入り"));
-            String titleKey = request.getTitleKey();
             String source = request.getParamOrDefault("source", "pixiv");
             String num = request.getParamOrDefault("num", "1");
-            String r18 = keyMap.getOrDefault(titleKey, request.getParamOrDefault("r18", "2"));
             Long sendMessageId = request.getMessageId();
 
             Integer messageId;

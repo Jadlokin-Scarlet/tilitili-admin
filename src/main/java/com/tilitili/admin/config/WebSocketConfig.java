@@ -3,6 +3,7 @@ package com.tilitili.admin.config;
 import com.tilitili.admin.socket.BaseWebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -16,6 +17,8 @@ import java.util.List;
 @Configuration
 public class WebSocketConfig {
     final List<BaseWebSocketHandler> webSocketHandlerList;
+    @Value("${project.ignore-null-websocket-container:false}")
+    private boolean ignoreNullWsContainer;
 
     @Autowired
     public WebSocketConfig(List<BaseWebSocketHandler> webSocketHandlerList) {
@@ -39,6 +42,10 @@ public class WebSocketConfig {
 
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
+        if (ignoreNullWsContainer) {
+            log.error("Could not initialize Websocket Container in Testcase.");
+            return null;
+        }
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
         // ws 传输数据的时候，数据过大有时候会接收不到，所以在此处设置bufferSize
         container.setMaxTextMessageBufferSize(512000);
