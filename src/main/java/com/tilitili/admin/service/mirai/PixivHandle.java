@@ -93,7 +93,6 @@ public class PixivHandle implements BaseMessageHandle {
             }
             Asserts.notNull(messageId, "发送失败");
             redisCache.setValue(messageIdKey, String.valueOf(messageId));
-            lockFlag.set(false);
             return result.setMessage("").setMessageType("Plain");
         } catch (AssertException e) {
             log.error(e.getMessage());
@@ -103,6 +102,8 @@ public class PixivHandle implements BaseMessageHandle {
             log.error("找色图失败",e);
             lockFlag.set(false);
             return null;
+        } finally {
+            lockFlag.set(false);
         }
     }
 
