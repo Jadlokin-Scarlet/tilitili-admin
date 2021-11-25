@@ -48,9 +48,9 @@ public class BaseWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("连接关闭，reason={}", status.getReason());
-        sleepAndPing(session);
-//        webSocketConnectionManager.stop();
-//        webSocketConnectionManager.start();
+//        sleepAndPing(session);
+        webSocketConnectionManager.stop();
+        webSocketConnectionManager.start();
     }
 
     @Override
