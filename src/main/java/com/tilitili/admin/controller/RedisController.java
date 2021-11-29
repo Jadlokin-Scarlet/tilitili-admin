@@ -2,6 +2,7 @@ package com.tilitili.admin.controller;
 
 import com.tilitili.admin.entity.view.RedisQuery;
 import com.tilitili.admin.entity.view.RedisView;
+import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.exception.AssertException;
@@ -23,11 +24,12 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/redis")
 public class RedisController {
-
+    private final RedisService redisService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisCache redisCache;
 
-    public RedisController(RedisTemplate<String, Object> redisTemplate, RedisCache redisCache) {
+    public RedisController(RedisService redisService, RedisTemplate<String, Object> redisTemplate, RedisCache redisCache) {
+        this.redisService = redisService;
         this.redisTemplate = redisTemplate;
         this.redisCache = redisCache;
     }
@@ -58,10 +60,10 @@ public class RedisController {
             String type = Optional.ofNullable(keyType).map(DataType::code).orElse("");
             RedisView redisView = new RedisView().setKey(key).setType(type);
             switch (type) {
-                case "string": redisView.setValue(redisTemplate.opsForValue().get(key)); break;
-                case "list": redisView.setList(redisTemplate.opsForList().range(key, 0, Optional.ofNullable(redisTemplate.opsForList().size(key)).orElse(0L))); break;
-                case "set": redisView.setList(Optional.ofNullable(redisTemplate.opsForSet().members(key)).map(ArrayList::new).orElse(new ArrayList<>())); break;
-                case "hash": redisView.setMap(redisTemplate.opsForHash().entries(key)); break;
+                case "string": redisService.suppleString(redisView); break;
+                case "list": redisService.suppleList(redisView); break;
+                case "set": redisService.suppleSet(redisView); break;
+                case "hash": redisService.suppleMap(redisView); break;
 //                case "none": break;
 //                case "zset": break;
 //                case "stream": break;
@@ -95,18 +97,10 @@ public class RedisController {
         String type = keyType.code();
 
         switch (type) {
-            case "string": redisTemplate.opsForValue().set(key, redisView.getValue()); break;
-            case "list":
-                int size = redisView.getList().size();
-                Long oldSize = redisTemplate.opsForList().size(key);
-                Asserts.notNull(oldSize, "参数异常");
-                for (int index = 0, bound = Math.toIntExact(Math.max(size, oldSize)); index < bound; index++) {
-                    Object item = redisView.getList().get(index);
-                    redisTemplate.opsForList().set(key, index, item);
-                }
-                break;
-            case "set": Optional.ofNullable(redisTemplate.opsForSet().members(key)).map(ArrayList::new).orElse(new ArrayList<>()); break;
-            case "hash": redisTemplate.opsForHash().entries(key); break;
+            case "string": redisService.editString(redisView); break;
+            case "list": redisService.editList(redisView); break;
+            case "set": redisService.editSet(redisView); break;
+            case "hash": redisService.editHash(redisView); break;
 //                case "none": break;
 //                case "zset": break;
 //                case "stream": break;

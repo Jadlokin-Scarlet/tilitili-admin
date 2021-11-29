@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -78,7 +79,9 @@ public class PixivHandle implements BaseMessageHandle {
             Sender sendGroup = sender.getGroup();
             String titleKey = request.getTitleKey();
             String r18 = keyMap.getOrDefault(titleKey, request.getParamOrDefault("r18", "2"));
-            if (! sendGroup.getId().equals(GroupEmum.HOMO_LIVE_GROUP.value)) {
+
+            List<Long> groupList = Arrays.asList(GroupEmum.HOMO_LIVE_GROUP.value, GroupEmum.TEST_GROUP.value);
+            if (! groupList.contains(sendGroup.getId())) {
                 if (! r18.equals("0")) {
                     return result.setMessage("不准色色o(*////▽////*)q").setMessageType("Plain");
                 }

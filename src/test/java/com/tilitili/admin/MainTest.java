@@ -1,6 +1,7 @@
 package com.tilitili.admin;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.entity.view.RedisQuery;
@@ -81,9 +82,23 @@ public class MainTest {
 
     @Test
     public void test4() {
+        String key = "test";
+        redisTemplate.delete(key);
+        redisTemplate.opsForValue().set(key, 1);
+        Object value = redisTemplate.opsForValue().get("test");
+        System.out.println(value.getClass().getName());
+        System.out.println((Integer) value);
 
-//        System.out.println(stringSet);
-        System.out.println(new Gson().toJson(redisController.listRedis(new RedisQuery())));
+        RedisView redisView = new Gson().fromJson("{\"key\": \""+key+"\", \"value\": 2}", new RedisView<>().setValue(value).getClass());
+        redisTemplate.opsForValue().set(key, redisView.getValue());
+        Object value2 = redisTemplate.opsForValue().get("test");
+        System.out.println(value2.getClass().getName());
+        System.out.println(value2.getClass().cast(value2));
+
+        Object value3 = redisTemplate.opsForValue().increment(key);
+        System.out.println(value3.getClass().getName());
+        System.out.println(value3.getClass().cast(value3));
+
 
 //        Map<Object, Object> map = redisTemplate.opsForHash().entries("group-729412455");
 //        System.out.println();

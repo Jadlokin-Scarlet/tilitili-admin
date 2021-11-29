@@ -57,6 +57,11 @@ public class NoBakaHandle implements BaseMessageHandle {
             return result.setMessage("").setMessageType("Plain");
         }
 
+        if (text.equals("让我看看") || text.equals("让我康康")) {
+            miraiManager.sendGroupMessage("Plain", "不要！", sendGroup.getId());
+            return result.setMessage("").setMessageType("Plain");
+        }
+
         return null;
     }
 }
