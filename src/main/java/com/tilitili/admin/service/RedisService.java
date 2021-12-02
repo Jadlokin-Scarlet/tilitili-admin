@@ -3,6 +3,7 @@ package com.tilitili.admin.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tilitili.admin.entity.view.RedisView;
+import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,20 +47,24 @@ public class RedisService {
     }
 
     public List<RedisView> suppleString(RedisView redisView) {
-        return Collections.singletonList(redisView.setValue(redisTemplate.opsForValue().get(redisView.getKey())));
+        Object value = redisTemplate.opsForValue().get(redisView.getKey());
+        if (value == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(redisView.setValue(gson.toJson(value)).setClazz(value.getClass().getName()));
     }
 
     public List<RedisView> suppleMap(RedisView redisView) {
         String key = redisView.getKey();
         Map<Object, Object> map = redisTemplate.opsForHash().entries(key);
-        return map.entrySet().stream().map(entry -> new RedisView().setKey(key).setSubKey(entry.getKey()).setValue(entry.getValue()).setType(redisView.getType())).collect(Collectors.toList());
+        return map.entrySet().stream().map(entry -> new RedisView().setKey(key).setSubKey((String) entry.getKey()).setValue(gson.toJson(entry.getValue())).setType(redisView.getType()).setClazz(entry.getValue().getClass().getName())).collect(Collectors.toList());
     }
 
-    public void editString(RedisView redisView) {
-        redisTemplate.opsForValue().set(redisView.getKey(), redisView.getValue());
+    public void editString(RedisView redisView) throws ClassNotFoundException {
+        redisTemplate.opsForValue().set(redisView.getKey(), gson.fromJson(String.valueOf(redisView.getValue()), Class.forName(redisView.getClazz())));
     }
 
-    public void editHash(RedisView redisView) {
-        redisTemplate.opsForHash().put(redisView.getKey(), redisView.getSubKey(), redisView.getValue());
+    public void editHash(RedisView redisView) throws ClassNotFoundException {
+        redisTemplate.opsForHash().put(redisView.getKey(), redisView.getSubKey(), gson.fromJson(redisView.getValue(), Class.forName(redisView.getClazz())));
     }
 }

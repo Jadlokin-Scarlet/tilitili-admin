@@ -75,7 +75,7 @@ public class RedisController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public BaseModel<?> editRedisKey(@RequestBody RedisView redisView) {
+    public BaseModel<?> editRedisKey(@RequestBody RedisView redisView) throws ClassNotFoundException {
         Asserts.notNull(redisView, "参数异常");
         String key = redisView.getKey();
         Asserts.notBlank(key, "参数异常");

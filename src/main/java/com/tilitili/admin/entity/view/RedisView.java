@@ -2,9 +2,10 @@ package com.tilitili.admin.entity.view;
 
 public class RedisView {
     private String key;
-    private Object subKey;
-    private Object value;
+    private String subKey;
+    private String value;
     private String type;
+    private String clazz;
 
     public String getKey() {
         return key;
@@ -15,11 +16,11 @@ public class RedisView {
         return this;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
-    public RedisView setValue(Object value) {
+    public RedisView setValue(String value) {
         this.value = value;
         return this;
     }
@@ -33,12 +34,21 @@ public class RedisView {
         return this;
     }
 
-    public Object getSubKey() {
+    public String getSubKey() {
         return subKey;
     }
 
-    public RedisView setSubKey(Object subKey) {
+    public RedisView setSubKey(String subKey) {
         this.subKey = subKey;
+        return this;
+    }
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public RedisView setClazz(String clazz) {
+        this.clazz = clazz;
         return this;
     }
 }
