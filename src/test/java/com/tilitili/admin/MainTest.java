@@ -1,23 +1,15 @@
 package com.tilitili.admin;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
-import com.tilitili.admin.entity.view.RedisQuery;
 import com.tilitili.admin.entity.view.RedisView;
+import com.tilitili.admin.service.RedisService;
 import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.RedisKeyEnum;
-import com.tilitili.common.emnus.TaskReason;
-import com.tilitili.common.entity.Admin;
-import com.tilitili.common.entity.BotBill;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.BatchTaskIpCount;
-import com.tilitili.common.entity.mirai.MiraiMessageView;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.entity.view.SimpleTask;
-import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
@@ -26,7 +18,6 @@ import com.tilitili.common.mapper.mysql.BotBillMapper;
 import com.tilitili.common.mapper.tilitili.AdminMapper;
 import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import com.tilitili.common.utils.RedisCache;
-import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,15 +28,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -79,29 +69,34 @@ public class MainTest {
     private BotBillMapper botBillMapper;
     @Autowired
     private RedisController redisController;
+    @Resource
+    private RedisService redisService;
 
     @Test
     public void test4() {
         String key = "test";
-        redisTemplate.delete(key);
-        redisTemplate.opsForValue().set(key, 1);
-        Object value = redisTemplate.opsForValue().get("test");
-        System.out.println(value.getClass().getName());
-        System.out.println((Integer) value);
+//        redisTemplate.delete(key);
+//        redisTemplate.opsForValue().set(key, 1);
+//        Object value = redisTemplate.opsForValue().get("test");
+//        System.out.println(value.getClass().getName());
+//        System.out.println((Integer) value);
+//
+//        RedisView redisView = new Gson().fromJson("{\"key\": \""+key+"\", \"value\": 2}", new RedisView<>().setValue(value).getClass());
+//        redisTemplate.opsForValue().set(key, redisView.getValue());
+//        Object value2 = redisTemplate.opsForValue().get("test");
+//        System.out.println(value2.getClass().getName());
+//        System.out.println(value2.getClass().cast(value2));
+//
+//        Object value3 = redisTemplate.opsForValue().increment(key);
+//        System.out.println(value3.getClass().getName());
+//        System.out.println(value3.getClass().cast(value3));
 
-        RedisView redisView = new Gson().fromJson("{\"key\": \""+key+"\", \"value\": 2}", new RedisView<>().setValue(value).getClass());
-        redisTemplate.opsForValue().set(key, redisView.getValue());
-        Object value2 = redisTemplate.opsForValue().get("test");
-        System.out.println(value2.getClass().getName());
-        System.out.println(value2.getClass().cast(value2));
 
-        Object value3 = redisTemplate.opsForValue().increment(key);
-        System.out.println(value3.getClass().getName());
-        System.out.println(value3.getClass().cast(value3));
+//        Object value4 = redisTemplate.opsForValue().increment(key);
+//        System.out.println(value4);
 
-
-//        Map<Object, Object> map = redisTemplate.opsForHash().entries("group-729412455");
-//        System.out.println();
+        RedisView test = redisService.test(3L);
+        System.out.println(test);
     }
 
     static {

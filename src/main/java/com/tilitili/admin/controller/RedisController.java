@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,9 +58,9 @@ public class RedisController {
             RedisView redisView = new RedisView().setKey(key).setType(type);
             switch (type) {
                 case "string": redisService.suppleString(redisView); break;
-                case "list": redisService.suppleList(redisView); break;
-                case "set": redisService.suppleSet(redisView); break;
                 case "hash": redisService.suppleMap(redisView); break;
+//                case "list": redisService.suppleList(redisView); break;
+//                case "set": redisService.suppleSet(redisView); break;
 //                case "none": break;
 //                case "zset": break;
 //                case "stream": break;
@@ -87,7 +84,7 @@ public class RedisController {
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel<?> editRedisKey(RedisView redisView) {
+    public BaseModel<?> editRedisKey(@RequestBody RedisView redisView) {
         Asserts.notNull(redisView, "参数异常");
         String key = redisView.getKey();
         Asserts.notBlank(key, "参数异常");
@@ -98,12 +95,12 @@ public class RedisController {
 
         switch (type) {
             case "string": redisService.editString(redisView); break;
-            case "list": redisService.editList(redisView); break;
-            case "set": redisService.editSet(redisView); break;
             case "hash": redisService.editHash(redisView); break;
-//                case "none": break;
-//                case "zset": break;
-//                case "stream": break;
+//            case "list": redisService.editList(redisView); break;
+//            case "set": redisService.editSet(redisView); break;
+//            case "none": break;
+//            case "zset": break;
+//            case "stream": break;
             default: throw new AssertException("未知类型");
         }
         return BaseModel.success();
