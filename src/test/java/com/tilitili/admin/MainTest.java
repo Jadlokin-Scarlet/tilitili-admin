@@ -90,13 +90,6 @@ public class MainTest {
 //        Object value3 = redisTemplate.opsForValue().increment(key);
 //        System.out.println(value3.getClass().getName());
 //        System.out.println(value3.getClass().cast(value3));
-
-
-//        Object value4 = redisTemplate.opsForValue().increment(key);
-//        System.out.println(value4);
-
-        RedisView test = redisService.test(3L);
-        System.out.println(test);
     }
 
     static {
