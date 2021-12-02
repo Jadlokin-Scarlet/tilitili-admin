@@ -15,7 +15,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @Controller
@@ -31,47 +34,26 @@ public class RedisController {
         this.redisCache = redisCache;
     }
 
-    @RequestMapping("")
+    @RequestMapping("/list")
     @ResponseBody
     public BaseModel<PageModel<RedisView>> listRedis(RedisQuery query) {
         int start = query.getStart();
         int pageSize = query.getPageSize();
         int current = query.getCurrent();
         String searchKey = query.getKey();
+        String searchSubKey = query.getSubKey();
 
-        int total;
-        Set<String> keyList;
-        if (searchKey == null) {
-            Set<String> allKeyList = Optional.ofNullable(redisTemplate.keys("*")).orElse(new HashSet<>());
-            total = allKeyList.size();
-            keyList = allKeyList.stream().skip(start).limit(pageSize).collect(Collectors.toSet());
-        } else if (Optional.ofNullable(redisTemplate.hasKey(searchKey)).orElse(false)) {
-            keyList = new HashSet<>(Collections.singletonList(searchKey));
-            total = 1;
-        } else {
-            keyList = new HashSet<>(Collections.emptyList());
-            total = 0;
-        }
-        List<RedisView> redisViewList = keyList.stream().map(key -> {
-            DataType keyType = redisTemplate.type(key);
-            String type = Optional.ofNullable(keyType).map(DataType::code).orElse("");
-            RedisView redisView = new RedisView().setKey(key).setType(type);
-            switch (type) {
-                case "string": redisService.suppleString(redisView); break;
-                case "hash": redisService.suppleMap(redisView); break;
-//                case "list": redisService.suppleList(redisView); break;
-//                case "set": redisService.suppleSet(redisView); break;
-//                case "none": break;
-//                case "zset": break;
-//                case "stream": break;
-                default: log.warn("key{}类型未知", key);
-            }
-            return redisView;
-        }).collect(Collectors.toList());
-        return PageModel.of(total, pageSize, current, redisViewList);
+        Set<String> keyList = Optional.ofNullable(redisTemplate.keys("*")).orElse(new HashSet<>());
+        List<RedisView> redisViewList = keyList.stream()
+                .filter(key -> isBlank(searchKey) || Objects.equals(searchKey, key))
+                .map(redisService::getRedisViewByKey)
+                .flatMap(Collection::stream)
+                .filter(redisView -> isBlank(searchSubKey) || Objects.equals(searchSubKey, redisView.getSubKey()))
+                .collect(Collectors.toList());
+        return PageModel.of(redisViewList.size(), pageSize, current, redisViewList.stream().skip(start).limit(pageSize).collect(Collectors.toList()));
     }
 
-    @DeleteMapping("")
+    @PostMapping("/del")
     @ResponseBody
     public BaseModel<?> delRedisKey(@RequestBody RedisView redisView) {
         Asserts.notNull(redisView, "参数异常");
@@ -91,7 +73,7 @@ public class RedisController {
         return BaseModel.success();
     }
 
-    @PatchMapping("")
+    @PostMapping("/edit")
     @ResponseBody
     public BaseModel<?> editRedisKey(@RequestBody RedisView redisView) {
         Asserts.notNull(redisView, "参数异常");

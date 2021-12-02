@@ -4,6 +4,7 @@ import com.tilitili.common.entity.query.BaseQuery;
 
 public class RedisQuery extends BaseQuery<RedisQuery> {
     private String key;
+    private String subKey;
 
     public String getKey() {
         return key;
@@ -11,6 +12,15 @@ public class RedisQuery extends BaseQuery<RedisQuery> {
 
     public RedisQuery setKey(String key) {
         this.key = key;
+        return this;
+    }
+
+    public String getSubKey() {
+        return subKey;
+    }
+
+    public RedisQuery setSubKey(String subKey) {
+        this.subKey = subKey;
         return this;
     }
 }
