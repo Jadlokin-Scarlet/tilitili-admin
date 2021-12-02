@@ -73,11 +73,20 @@ public class RedisController {
 
     @DeleteMapping("")
     @ResponseBody
-    public BaseModel<?> delRedisKey(String key) {
-        Asserts.notBlank(key, "参数异常");
+    public BaseModel<?> delRedisKey(@RequestBody RedisView redisView) {
+        Asserts.notNull(redisView, "参数异常");
+        Asserts.notBlank(redisView.getKey(), "参数异常");
 
-        boolean success = Optional.ofNullable(redisTemplate.delete(key)).orElse(false);
-        Asserts.isTrue(success, "删除失败");
+        String key = redisView.getKey();
+        Object subKey = redisView.getSubKey();
+
+        if (subKey == null) {
+            boolean success = Optional.ofNullable(redisTemplate.delete(key)).orElse(false);
+            Asserts.isTrue(success, "删除失败");
+        } else {
+            boolean success = redisTemplate.opsForHash().delete(key, subKey) == 1;
+            Asserts.isTrue(success, "删除失败");
+        }
 
         return BaseModel.success();
     }

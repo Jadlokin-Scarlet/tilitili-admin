@@ -37,11 +37,6 @@ public class RedisService {
     }
 
     public void editHash(RedisView redisView) {
-
-    }
-
-    @Cacheable(value = "test2")
-    public RedisView test(Long value) {
-        return new RedisView().setKey("test2").setValue(value);
+        redisTemplate.opsForHash().put(redisView.getKey(), redisView.getSubKey(), redisView.getValue());
     }
 }
