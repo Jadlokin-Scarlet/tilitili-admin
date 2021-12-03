@@ -46,10 +46,10 @@ public class RedisController {
 
         Set<String> keyList = Optional.ofNullable(redisTemplate.keys("*")).orElse(new HashSet<>());
         List<RedisView> redisViewList = keyList.stream()
-                .filter(key -> isBlank(searchKey) || Objects.equals(searchKey, key))
+                .filter(key -> isBlank(searchKey) || key.contains(searchKey))
                 .map(redisService::getRedisViewByKey)
                 .flatMap(Collection::stream)
-                .filter(redisView -> isBlank(searchSubKey) || Objects.equals(searchSubKey, redisView.getSubKey()))
+                .filter(redisView -> isBlank(searchSubKey) || (! isBlank(redisView.getSubKey()) && redisView.getSubKey().contains(searchSubKey)))
                 .collect(Collectors.toList());
         List<RedisView> pageRedisViewList = IntStream.range(0, redisViewList.size()).mapToObj(index -> redisViewList.get(index).setIndex(index)).skip(start).limit(pageSize).collect(Collectors.toList());
         return PageModel.of(redisViewList.size(), pageSize, current, pageRedisViewList);
