@@ -90,7 +90,9 @@ public class MainTest {
 //        Object value3 = redisTemplate.opsForValue().increment(key);
 //        System.out.println(value3.getClass().getName());
 //        System.out.println(value3.getClass().cast(value3));
-        redisCache.addMapValue("SPIDER_PIXIV_PAGENO", "桐藤ナギサ\t\n", 0);
+
+        redisCache.addMapValue("SPIDER_PIXIV_PAGENO", "桐藤ナギサ", 0);
+//        System.out.println(redisCache.increment(RedisKeyEnum.SPIDER_PIXIV_PAGENO.getKey(), "桐藤ナギサ"));
     }
 
     static {

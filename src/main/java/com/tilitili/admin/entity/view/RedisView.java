@@ -1,6 +1,7 @@
 package com.tilitili.admin.entity.view;
 
 public class RedisView {
+    private Integer index;
     private String key;
     private String subKey;
     private String value;
@@ -49,6 +50,15 @@ public class RedisView {
 
     public RedisView setClazz(String clazz) {
         this.clazz = clazz;
+        return this;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public RedisView setIndex(Integer index) {
+        this.index = index;
         return this;
     }
 }

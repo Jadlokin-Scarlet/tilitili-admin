@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.apache.http.util.TextUtils.isBlank;
 
@@ -50,7 +51,8 @@ public class RedisController {
                 .flatMap(Collection::stream)
                 .filter(redisView -> isBlank(searchSubKey) || Objects.equals(searchSubKey, redisView.getSubKey()))
                 .collect(Collectors.toList());
-        return PageModel.of(redisViewList.size(), pageSize, current, redisViewList.stream().skip(start).limit(pageSize).collect(Collectors.toList()));
+        List<RedisView> pageRedisViewList = IntStream.range(0, redisViewList.size()).mapToObj(index -> redisViewList.get(index).setIndex(index)).skip(start).limit(pageSize).collect(Collectors.toList());
+        return PageModel.of(redisViewList.size(), pageSize, current, pageRedisViewList);
     }
 
     @PostMapping("/del")
