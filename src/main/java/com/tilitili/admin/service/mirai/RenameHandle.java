@@ -42,18 +42,19 @@ public class RenameHandle implements BaseMessageHandle {
     @Override
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiSessionService.MiraiSession session = request.getSession();
-        MiraiMessage result = new MiraiMessage();
         Long group = request.getMessage().getSender().getGroup().getId();
         Long sender = request.getMessage().getSender().getId();
+        String name = "<&?>cirno";
+
         if (Objects.equals(sender, MASTER_QQ) && Objects.equals(group, listenGroup)) {
             String status = session.getOrDefault(statusKey, "冒泡！");
             String lastSendTimeStr = session.get(lastSendTimeKey);
             boolean isUp = lastSendTimeStr == null || DateUtils.parseDateYMDHMS(lastSendTimeStr).before(getLimitDate());
             if (status.equals("冒泡！") && !isUp) {
-                miraiManager.changeGroupNick(listenGroup, MASTER_QQ, "cirno | 水群ing");
+                miraiManager.changeGroupNick(listenGroup, MASTER_QQ, name + " | 水群ing");
                 session.put(statusKey, "水群ing");
-            }else if (isUp) {
-                miraiManager.changeGroupNick(listenGroup, MASTER_QQ, "cirno | 冒泡！");
+            } else if (isUp) {
+                miraiManager.changeGroupNick(listenGroup, MASTER_QQ, name + " | 冒泡！");
                 session.put(statusKey, "冒泡！");
             }
 
@@ -61,7 +62,7 @@ public class RenameHandle implements BaseMessageHandle {
                 String lastSendTime2Str = session.get(lastSendTimeKey);
                 boolean isDown = lastSendTime2Str == null || DateUtils.parseDateYMDHMS(lastSendTime2Str).before(getLimitDate());
                 if (isDown) {
-                    miraiManager.changeGroupNick(listenGroup, MASTER_QQ, "cirno | 潜水。");
+                    miraiManager.changeGroupNick(listenGroup, MASTER_QQ, name + " | 潜水。");
                     session.put(statusKey, "潜水。");
                 }
             }, waitTime, TimeUnit.MINUTES);
