@@ -44,7 +44,7 @@ public class RenameHandle implements BaseMessageHandle {
         MiraiSessionService.MiraiSession session = request.getSession();
         Long group = request.getMessage().getSender().getGroup().getId();
         Long sender = request.getMessage().getSender().getId();
-        String name = "<&?>cirno";
+        String name = "<&ÿ?Çý>cirno";
 
         if (Objects.equals(sender, MASTER_QQ) && Objects.equals(group, listenGroup)) {
             String status = session.getOrDefault(statusKey, "冒泡！");
