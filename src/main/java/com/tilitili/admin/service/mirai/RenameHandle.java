@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Component
+//@Component
 public class RenameHandle implements BaseMessageHandle {
     @Value("${mirai.master-qq}")
     private Long MASTER_QQ;
