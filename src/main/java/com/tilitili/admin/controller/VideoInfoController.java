@@ -35,10 +35,20 @@ public class VideoInfoController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getVideoInfoByCondition(VideoInfoQuery query) {
-        int count = videoInfoMapper.count(query);
+    public BaseModel<?> getVideoInfoByCondition(VideoInfoQuery query) {
+        Asserts.notNull(query, "参数异常");
+        Asserts.notNull(query.getAv(), "参数异常");
+        Asserts.notNull(query.getName(), "参数异常");
+        Asserts.notNull(query.getType(), "参数异常");
+        Asserts.notNull(query.getOwner(), "参数异常");
+        Asserts.notNull(query.getIsDelete(), "参数异常");
+        Asserts.notNull(query.getStatus(), "参数异常");
+        Asserts.notNull(query.getBv(), "参数异常");
+        Asserts.notNull(query.getCopyright(), "参数异常");
+
+        int count = videoInfoMapper.countVideoInfoByCondition(query);
         List<VideoInfo> videoInfoList = videoInfoMapper.list(query);
-        return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoInfoList);
+        return PageModel.of(count, query.getPageSize(), query.getPageNo(), videoInfoList);
     }
 
     @GetMapping("/count")

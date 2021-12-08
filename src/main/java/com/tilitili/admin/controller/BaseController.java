@@ -30,13 +30,9 @@ public class BaseController {
 
     /**
      * 下载服务器已存在的文件,支持断点续传
-     *
-     * @param request
-     *            请求对象
-     * @param response
-     *            响应对象
-     * @param path
-     *            文件路径(绝对)
+     * @param request 请求对象
+     * @param response 响应对象
+     * @param file 文件路径(绝对)
      */
     public void download(HttpServletRequest request, HttpServletResponse response, File file) {
         log.debug("下载文件路径：" + file.getPath());
