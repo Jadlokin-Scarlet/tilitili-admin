@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class WebSocketConfig {
     final List<BaseWebSocketHandler> webSocketHandlerList;
     @Value("${project.ignore-null-websocket-container:false}")
