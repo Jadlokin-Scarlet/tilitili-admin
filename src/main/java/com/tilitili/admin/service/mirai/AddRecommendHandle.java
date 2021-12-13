@@ -37,8 +37,8 @@ public class AddRecommendHandle implements BaseMessageHandle {
     public MiraiMessage handleMessage(MiraiRequest request) {
         MiraiMessage result = new MiraiMessage();
 
-        String avStr = request.getParam("视频号");
         String operator = request.getParam("推荐人");
+        String avStr = request.getParam("视频号");
         String text = request.getParam("推荐语");
         int startTime = Integer.parseInt(request.getParamOrDefault("开始时间", "0"));
         int endTime = Integer.parseInt(request.getParamOrDefault("结束时间", String.valueOf(startTime + 30)));
