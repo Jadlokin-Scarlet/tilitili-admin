@@ -19,8 +19,8 @@ import java.util.List;
 @Component
 public class AddRecommendHandle implements BaseMessageHandle {
 
-    private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
+    private final RecommendMapper recommendMapper;
 
     @Autowired
     public AddRecommendHandle(RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper) {
