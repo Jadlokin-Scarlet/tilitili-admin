@@ -69,9 +69,9 @@ public class PubController extends BaseController{
         download(request, response, wavFile);
     }
 
-    @GetMapping("/translate")
+    @PostMapping("/translate")
     @ResponseBody
-    public String translate(String text) {
+    public String translate(@RequestBody String text) {
         return baiduManager.translate(text);
     }
 }
