@@ -19,8 +19,8 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/api/pub/qq")
 public class PubController extends BaseController{
-    private final MiraiManager miraiManager;
     private final BaiduManager baiduManager;
+    private final MiraiManager miraiManager;
     private String lastMessage = null;
 
     @Autowired
