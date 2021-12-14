@@ -18,13 +18,13 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/api/pub/qq")
-public class QQPubController extends BaseController{
+public class PubController extends BaseController{
     private final MiraiManager miraiManager;
     private final BaiduManager baiduManager;
     private String lastMessage = null;
 
     @Autowired
-    public QQPubController(MiraiManager miraiManager, BaiduManager baiduManager) {
+    public PubController(MiraiManager miraiManager, BaiduManager baiduManager) {
         this.miraiManager = miraiManager;
         this.baiduManager = baiduManager;
     }
@@ -67,5 +67,11 @@ public class QQPubController extends BaseController{
         Thread.sleep(1000);
 
         download(request, response, wavFile);
+    }
+
+    @GetMapping("/translate")
+    @ResponseBody
+    public String translate(String text) {
+        return baiduManager.translate(text);
     }
 }
