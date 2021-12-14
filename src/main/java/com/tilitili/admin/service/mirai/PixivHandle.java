@@ -54,9 +54,9 @@ public class PixivHandle implements BaseMessageHandle {
         this.redisCache = redisCache;
         this.miraiManager = miraiManager;
         this.pixivMoeManager = pixivMoeManager;
-        this.pixivImageMapper = pixivImageMapper;
         this.loliconManager = loliconManager;
         this.pixivManager = pixivManager;
+        this.pixivImageMapper = pixivImageMapper;
     }
 
     @Override
