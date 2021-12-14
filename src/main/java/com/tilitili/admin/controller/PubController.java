@@ -71,7 +71,7 @@ public class PubController extends BaseController{
 
     @PostMapping("/translate")
     @ResponseBody
-    public String translate(@RequestBody String text) {
-        return baiduManager.translate(text);
+    public BaseModel<String> translate(@RequestBody String text) {
+        return BaseModel.success(baiduManager.translate(text));
     }
 }
