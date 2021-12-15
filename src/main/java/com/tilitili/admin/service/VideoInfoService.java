@@ -57,7 +57,7 @@ public class VideoInfoService {
         calendar.add(Calendar.DAY_OF_YEAR, - countTime);
         Date createTimeStart = calendar.getTime();
 
-        VideoInfoQuery videoInfoQuery = new VideoInfoQuery().setStatus(0).setIsDelete(false).setPubTimeStart(createTimeStart).setPubTimeEnd(createTimeEnd).setType(request.getType()).setStart(0).setPageSize(20);
+        VideoInfoQuery videoInfoQuery = new VideoInfoQuery().setStatus(0).setIsDelete(false).setPubTimeStart(createTimeStart).setPubTimeEnd(createTimeEnd).setType(request.getType()).setPageNo(1).setPageSize(20);
         Map<String, Integer> groupMap = videoInfoManager.groupByPubTime(videoInfoQuery);
 
         VideoInfoQuery videoInfoQuery1 = new VideoInfoQuery().setStatus(0).setIsDelete(false).setPubTimeEnd(createTimeStart).setType(request.getType());

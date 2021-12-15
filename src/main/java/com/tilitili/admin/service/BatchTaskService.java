@@ -66,7 +66,7 @@ public class BatchTaskService {
 
     public void testBatchSpiderVideo() {
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(NO_REASON.value);
-        List<String> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L).setStart(0).setPageSize(20)).stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
+        List<String> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L).setPageNo(1).setPageSize(20)).stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
         taskManager.batchSpiderVideo(batchTask, avList);
     }
 

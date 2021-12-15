@@ -37,9 +37,8 @@ public class VideoInfoController extends BaseController {
     @ResponseBody
     public BaseModel getVideoInfoByCondition(VideoInfoQuery query) {
         if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getStart() == null) query.setStart(0);
+        if (query.getPageNo() == null) query.setPageNo(1);
         if (query.getPageSize() == null) query.setPageSize(20);
-        if (query.getCurrent() == null) query.setCurrent(1);
         int count = videoInfoMapper.count(query);
         List<VideoInfo> videoInfoList = videoInfoMapper.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoInfoList);
