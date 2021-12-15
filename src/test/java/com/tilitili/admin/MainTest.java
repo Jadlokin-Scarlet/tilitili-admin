@@ -2,9 +2,7 @@ package com.tilitili.admin;
 
 import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
-import com.tilitili.admin.entity.view.RedisView;
 import com.tilitili.admin.service.RedisService;
-import com.tilitili.admin.service.mirai.FindImageHandle;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.BatchTaskIpCount;
@@ -46,8 +44,6 @@ public class MainTest {
     private MiraiManager miraiManager;
     @Resource
     private VideoDataManager videoDataManager;
-    @Resource
-    private FindImageHandle findImageHandle;
     @Resource
     private PixivMoeManager pixivMoeManager;
     @Resource

@@ -1,15 +1,10 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.mirai.TestRequest;
 import com.tilitili.common.manager.MiraiManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
@@ -18,9 +13,7 @@ import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
@@ -30,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.Cookie;
@@ -59,17 +51,6 @@ public class MockController {
         body = body == null? "": body;
         String cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{})).map(c -> String.format("%s=%s", c.getName(), c.getValue())).collect(Collectors.joining("; "));
         miraiManager.sendFriendMessage("Plain", String.format("%s?%s\nbody=%s\ncookie=%s", requestURL, queryString, body, cookie));
-    }
-
-    @RequestMapping("/test")
-    @ResponseBody
-    public void get(@RequestBody TestRequest request) {
-        try {
-            proxy_no_auth_socks("", "127.0.0.1:23334","https://www.pixiv.net/ajax/search/artworks/チルノ?word=チルノ&order=date_d&mode=all&p=6&s_mode=s_tag&type=all&lang=zh");
-        } catch (Exception e) {
-            log.error("?", e);
-        }
-
     }
 
     // HttpClient 支持socks5代理的自定义类
