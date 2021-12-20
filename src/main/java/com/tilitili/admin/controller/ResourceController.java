@@ -36,8 +36,8 @@ import java.util.List;
 @Validated
 @Slf4j
 public class ResourceController extends BaseController {
-    private final RecommendManager recommendManager;
     private final ResourceService resourceService;
+    private final RecommendManager recommendManager;
     private final VideoDataFileService videoDataFileService;
     private final RecommendService recommendService;
     private final RecommendMapper recommendMapper;
