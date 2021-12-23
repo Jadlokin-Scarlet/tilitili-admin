@@ -13,11 +13,24 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
-public class VideoDataFileItem {
+public class VideoDataAdminFileItem {
 	private Long av;
 	private String name;
 	private String img;
+	private String type;
+	private String owner;
+	private String externalOwner;
+	private Boolean copyright;
+	private String pubTime;
 	private Long startTime;
+	private Long duration;
+
+	private Integer view;
+	private Integer reply;
+	private Integer favorite;
+	private Integer coin;
+	private Integer point;
+	private Integer rank;
 
 	private Integer hisRank;
 	private Boolean isUp;
@@ -27,6 +40,7 @@ public class VideoDataFileItem {
 
 	//视频中的占位字段
 	private String avStr;
+	private String nameStr;
 	private String typeStr;
 	private String ownerStr;
 	private String subOwnerStr;
@@ -41,7 +55,16 @@ public class VideoDataFileItem {
 
 	private String hisRankStr;
 
-	public VideoDataFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
+	//不导出至视频的数据
+	private String bv;
+	private Integer page;
+	private Boolean isPointWarning;
+	private Long viewPoint;
+	private String a;
+	private String b;
+	private Long checkPoint;
+
+	public VideoDataAdminFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
 		boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0;
 		isLen &= rank <= 30 && hisRank <= 30 && moreHisRank <=30;
 		return setIsLen(isLen);

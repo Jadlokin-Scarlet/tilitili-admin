@@ -2,10 +2,12 @@ package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.count.sub.VideoDataAddCount;
 import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.dto.VideoDataGroup;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.resource.Resource;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,6 +26,7 @@ import java.util.stream.IntStream;
 public class VideoDataService {
 
     private final Integer RANK_LIMIT = 1000;
+    private final AtomicBoolean isRanking = new AtomicBoolean(false);
 
     private final VideoDataManager videoDataManager;
 
@@ -32,36 +36,31 @@ public class VideoDataService {
     }
 
     public List<Resource> getIssueResource() {
-        return videoDataManager.listIssue().stream()
-                .map(Resource::new)
-                .collect(Collectors.toList());
+        return videoDataManager.listIssue().stream().map(Resource::new).collect(Collectors.toList());
     }
 
-    @Transactional
     public void reRank(int issue) {
+        Asserts.isTrue(isRanking.compareAndSet(false, true), "正在重排，请稍后再试。");
         log.info("清理rank level");
         videoDataManager.clearRank(issue);
         log.info("清理完毕");
-        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setStatus(0).setIsDelete(false).setPageSize(1000).setSorter("point", "desc"));
+        List<VideoDTO> videoDataList = videoDataManager.listForReRank(issue);
         log.info("size={}", videoDataList.size());
-        List<VideoData> updList = new ArrayList<>();
         int rankWithoutLen = 1;
         for (int index = 0; index < videoDataList.size(); index++) {
-            VideoData videoData = videoDataList.get(index);
-            int rank = index + 1;
-            Long av = videoData.getAv();
+            VideoDTO videoDTO = videoDataList.get(index);
+            long rank = index + 1;
+            Long av = videoDTO.getAv();
+            Long oldRank = videoDTO.getRank();
+            Integer hisRank = videoDTO.getHisRank();
+            Integer moreHisRank = videoDTO.getMoreHisRank();
 
             VideoData upd = new VideoData();
             upd.setAv(av);
             upd.setIssue(issue);
             upd.setRank(rank);
 
-
             if (rank < 150) {
-                VideoData hisData = videoDataManager.getByAvAndIssue(av, issue - 1);
-                VideoData moreHisData = videoDataManager.getByAvAndIssue(av, issue - 2);
-                int hisRank = Optional.ofNullable(hisData).map(VideoData::getRank).orElse(0);
-                int moreHisRank = Optional.ofNullable(moreHisData).map(VideoData::getRank).orElse(0);
                 boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0 && rank <= 30 && hisRank <= 30 && moreHisRank <= 30;
 
                 if (rankWithoutLen < 4) {
@@ -82,8 +81,8 @@ public class VideoDataService {
             }
 
 
-            log.info("av{} issue={} oldRank={} rank={} level={}", av, issue, videoData.getRank(), rank, upd.getLevel());
-            videoDataManager.update(upd);
+            log.info("av{} issue={} oldRank={} rank={} level={}", av, issue, oldRank, rank, upd.getLevel());
+            videoDataManager.updateVideoDataSelective(upd);
         }
         log.info("更新rank level 完毕");
     }
@@ -108,14 +107,6 @@ public class VideoDataService {
             result.add(new VideoDataAddCount().setIssue(issue).setType("coin").setNumber(coin));
         }
         return result;
-    }
-
-    public Boolean isRank(Integer issue) {
-        List<VideoData> videoDataList = videoDataManager.list(new VideoDataQuery().setIssue(issue).setStatus(0).setIsDelete(false).setSorter("point", "desc").setPageSize(1).setCurrent(1));
-        if (videoDataList.isEmpty()) {
-            return false;
-        }
-        return videoDataList.get(0).getRank() != 0;
     }
 
 }

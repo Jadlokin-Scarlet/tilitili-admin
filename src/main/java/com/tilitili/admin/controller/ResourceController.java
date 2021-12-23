@@ -1,6 +1,5 @@
 package com.tilitili.admin.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.admin.entity.RecommendFileItem;
@@ -18,6 +17,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.admin.service.ResourceService;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;
+import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.tilitili.RecommendMapper;
 import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
 import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,9 +44,10 @@ public class ResourceController extends BaseController {
     private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
     private final RecommendTalkMapper recommendTalkMapper;
+    private final VideoDataManager videoDataManager;
 
     @Autowired
-    public ResourceController(RecommendManager recommendManager, ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, RecommendTalkMapper recommendTalkMapper) {
+    public ResourceController(RecommendManager recommendManager, ResourceService resourceService, VideoDataFileService videoDataFileService, RecommendService recommendService, RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, RecommendTalkMapper recommendTalkMapper, VideoDataManager videoDataManager) {
         this.recommendManager = recommendManager;
         this.resourceService = resourceService;
         this.videoDataFileService = videoDataFileService;
@@ -53,6 +55,7 @@ public class ResourceController extends BaseController {
         this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
         this.recommendTalkMapper = recommendTalkMapper;
+        this.videoDataManager = videoDataManager;
     }
 
     @GetMapping("")
@@ -92,9 +95,26 @@ public class ResourceController extends BaseController {
 
     @GetMapping("/videoDataFile")
     @ResponseBody
-    @JsonView(VideoDataFileItem.VideoView.class)
-    public BaseModel getVideoDataList(VideoDataQuery videoDataQuery) {
-        return videoDataFileService.listForDataFile(videoDataQuery);
+    public BaseModel<PageModel<VideoDataFileItem>> getVideoDataList(VideoDataQuery query) {
+        Asserts.notNull(query, "参数异常");
+
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
+        int pageNo = query.getPageNo();
+        int pageSize = query.getPageSize();
+        int start = (pageNo - 1) * pageSize;
+        int total = videoDataManager.countForDataFile(query);
+        if (start < total) {
+            return PageModel.of(total, pageSize, pageNo, Collections.emptyList());
+        }
+        int end = pageNo * pageSize;
+        if (end > total) {
+            query.setPageSize(total - start);
+        }
+
+        return videoDataFileService.toDataFile(videoDataFileService.listForDataFile(query));
     }
 
     @GetMapping("/recommend")

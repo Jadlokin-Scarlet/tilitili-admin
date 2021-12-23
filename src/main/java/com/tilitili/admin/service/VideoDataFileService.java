@@ -1,17 +1,18 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.admin.entity.VideoDataAdminFileItem;
 import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.utils.MathUtil;
-import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,21 +30,21 @@ public class VideoDataFileService {
         this.videoDataManager = videoDataManager;
     }
 
-    public BaseModel listForDataFile(VideoDataQuery videoDataQuery) {
+    public BaseModel<PageModel<VideoDataAdminFileItem>> listForDataFile(VideoDataQuery videoDataQuery) {
         Integer pageSize = videoDataQuery.getPageSize();
         Integer current = videoDataQuery.getCurrent();
-        videoDataQuery.setHasLevel(true).setSorter("point", "desc");
-        int total = videoDataManager.count(videoDataQuery);
-        videoDataQuery.setPageSize(Math.min(videoDataQuery.getPageSize(), total));
-        List<VideoData> videoDataList = videoDataManager.listForDataFile(videoDataQuery).stream().skip(videoDataQuery.getStart()).limit(videoDataQuery.getPageSize()).collect(Collectors.toList());
-        List<VideoDataFileItem> result = videoDataList.parallelStream().map(videoData -> {
-            VideoDataFileItem video = new VideoDataFileItem();
-            Integer rank = videoData.getRank();
+        int total = videoDataManager.countForDataFile(videoDataQuery);
 
-            long view = Optional.ofNullable(videoData.getView()).orElse(0);
-            long favorite = Optional.ofNullable(videoData.getFavorite()).orElse(0);
-            long coin = Optional.ofNullable(videoData.getCoin()).orElse(0);
-            long reply = Optional.ofNullable(videoData.getReply()).orElse(0);
+        videoDataQuery.setPageSize(Math.min(videoDataQuery.getPageSize(), total));
+        List<VideoDTO> videoDataList = videoDataManager.listForDataFile(videoDataQuery).stream().skip(videoDataQuery.getStart()).limit(videoDataQuery.getPageSize()).collect(Collectors.toList());
+        List<VideoDataAdminFileItem> result = videoDataList.parallelStream().map(videoData -> {
+            VideoDataAdminFileItem video = new VideoDataAdminFileItem();
+            Long rank = videoData.getRank();
+
+            long view = Optional.ofNullable(videoData.getView()).orElse(0L);
+            long favorite = Optional.ofNullable(videoData.getFavorite()).orElse(0L);
+            long coin = Optional.ofNullable(videoData.getCoin()).orElse(0L);
+            long reply = Optional.ofNullable(videoData.getReply()).orElse(0L);
 
             switch (videoData.getLevel()) {
                 case 1: video.setShowLength(40);break;
@@ -125,7 +126,7 @@ public class VideoDataFileService {
                     }
                 } else {
                     video.setOwnerStr(videoData.getOwner());
-                    if (videoData.getIsCopyWarning()) {
+                    if (videoData.getCopyright()) {
                         video.setSubOwnerStr("疑似搬运");
                     }
                 }
@@ -148,4 +149,32 @@ public class VideoDataFileService {
         return PageModel.of(total, pageSize, current, result);
     }
 
+    public BaseModel<PageModel<VideoDataFileItem>> toDataFile(BaseModel<PageModel<VideoDataAdminFileItem>> adminDataFile) {
+        PageModel<VideoDataAdminFileItem> pageModel = adminDataFile.getData();
+        return PageModel.of(pageModel.getTotal(), pageModel.getPageSize(), pageModel.getCurrent(), pageModel.getList().stream().map(data -> {
+            VideoDataFileItem result = new VideoDataFileItem();
+            result.setAv(data.getAv());
+            result.setName(data.getName());
+            result.setImg(data.getImg());
+            result.setStartTime(data.getStartTime());
+            result.setHisRank(data.getHisRank());
+            result.setIsUp(data.getIsUp());
+            result.setIsLen(data.getIsLen());
+            result.setLevel(data.getLevel());
+            result.setShowLength(data.getShowLength());
+            result.setAvStr(data.getAvStr());
+            result.setTypeStr(data.getTypeStr());
+            result.setOwnerStr(data.getOwnerStr());
+            result.setSubOwnerStr(data.getSubOwnerStr());
+            result.setPubTimeStr(data.getPubTimeStr());
+            result.setViewStr(data.getViewStr());
+            result.setReplyStr(data.getReplyStr());
+            result.setFavoriteStr(data.getFavoriteStr());
+            result.setCoinStr(data.getCoinStr());
+            result.setPointStr(data.getPointStr());
+            result.setRankStr(data.getRankStr());
+            result.setHisRankStr(data.getHisRankStr());
+            return result;
+        }).collect(Collectors.toList()));
+    }
 }

@@ -193,7 +193,7 @@ public class RecommendController extends BaseController {
         Recommend oldRecommend = recommendMapper.getById(recommend.getId());
         Asserts.notNull(oldRecommend, "推荐信息未获取到");
 
-        VideoInfo videoInfo = videoInfoMapper.getByAv(oldRecommend.getAv());
+        VideoInfo videoInfo = videoInfoMapper.getVideoInfoByAv(oldRecommend.getAv());
         Asserts.notNull(videoInfo, "视频信息未获取到，请发起爬取");
 
         RecommendVideo recommendVideo = recommendVideoMapper.getNew();

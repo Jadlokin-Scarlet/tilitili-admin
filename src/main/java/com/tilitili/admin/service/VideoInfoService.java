@@ -32,20 +32,20 @@ public class VideoInfoService {
 
     @Transactional
     public void delete(Long av) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(true));
-        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0));
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setIsDelete(true));
+        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0L));
         videoDataService.reRank(videoDataManager.getNewIssue());
     }
 
     @Transactional
     public void recovery(Long av) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(false));
-        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0));
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setIsDelete(false));
+        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0L));
         videoDataService.reRank(videoDataManager.getNewIssue());
     }
 
     public void updateStartTime(Long av, Long startTime) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setStartTime(startTime));
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setStartTime(startTime));
     }
 
     //如果查询前14天的视频增量和涨幅（不含今天）,就查前16天的
