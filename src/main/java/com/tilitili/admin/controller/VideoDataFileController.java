@@ -29,8 +29,8 @@ public class VideoDataFileController extends BaseController {
     @Autowired
     public VideoDataFileController(VideoDataFileService videoDataFileService, VideoDataService videoDataService, VideoDataManager videoDataManager) {
         this.videoDataFileService = videoDataFileService;
-        this.videoDataService = videoDataService;
         this.videoDataManager = videoDataManager;
+        this.videoDataService = videoDataService;
     }
 
     @GetMapping("/data/adminFile")
