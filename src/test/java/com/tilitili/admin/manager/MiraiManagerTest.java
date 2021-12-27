@@ -1,8 +1,8 @@
 package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
-import com.tilitili.common.entity.view.mirai.MessageChain;
-import com.tilitili.common.entity.view.mirai.MiraiMessage;
+import com.tilitili.common.entity.view.bot.mirai.MessageChain;
+import com.tilitili.common.entity.view.bot.mirai.MiraiMessage;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.mapper.tilitili.*;
 import lombok.extern.slf4j.Slf4j;

@@ -8,7 +8,7 @@ import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.entity.view.SimpleTask;
+import com.tilitili.common.entity.view.message.SimpleTask;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.manager.TaskManager;

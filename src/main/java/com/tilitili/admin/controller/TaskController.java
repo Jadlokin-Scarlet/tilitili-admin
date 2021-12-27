@@ -8,7 +8,7 @@ import com.tilitili.common.entity.Task;
 import com.tilitili.common.entity.query.TaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.entity.view.SimpleTask;
+import com.tilitili.common.entity.view.message.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.tilitili.TaskMapper;
 import com.tilitili.common.utils.Asserts;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
