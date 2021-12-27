@@ -5,6 +5,7 @@ import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.VideoData;
+import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
@@ -14,6 +15,7 @@ import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.tilitili.AdminMapper;
 import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
+import com.tilitili.common.mapper.tilitili.VideoInfoMapper;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
@@ -64,6 +66,8 @@ public class MainTest {
     private RedisController redisController;
     @Resource
     private RedisService redisService;
+    @Resource
+    private VideoInfoMapper videoInfoMapper;
 
     @Test
     public void test4() {
@@ -99,8 +103,6 @@ public class MainTest {
 
     @Test
     public void test3() {
-//        IntStream.range(0, 1).boxed().map(StreamUtil.tryRun(a -> Math.floorDiv(a, 0))).collect()
-        List<BatchTaskIpCount> videoData = batchTaskMapper.listIpCount(new BatchTaskQuery());
-        System.out.println(videoData.size());
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(849784184L).setIsDelete(true));
     }
 }

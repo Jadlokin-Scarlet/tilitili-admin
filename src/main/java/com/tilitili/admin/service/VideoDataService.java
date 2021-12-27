@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +33,7 @@ public class VideoDataService {
 
     public List<Resource> getIssueResource() {
         Integer newIssue = videoDataMapper.getNewIssue();
-        return IntStream.range(-38, newIssue).mapToObj(Resource::new).collect(Collectors.toList());
+        return IntStream.range(-38, newIssue + 1).boxed().sorted(Comparator.reverseOrder()).map(Resource::new).collect(Collectors.toList());
     }
 
     public void reRank(int issue) {
