@@ -12,7 +12,6 @@ import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
-import com.tilitili.common.mapper.mysql.BotBillMapper;
 import com.tilitili.common.mapper.tilitili.AdminMapper;
 import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
 import com.tilitili.common.utils.RedisCache;
@@ -62,8 +61,6 @@ public class MainTest {
     @Autowired
     private AdminMapper adminMapper;
     @Autowired
-    private BotBillMapper botBillMapper;
-    @Autowired
     private RedisController redisController;
     @Resource
     private RedisService redisService;
@@ -105,103 +102,5 @@ public class MainTest {
 //        IntStream.range(0, 1).boxed().map(StreamUtil.tryRun(a -> Math.floorDiv(a, 0))).collect()
         List<BatchTaskIpCount> videoData = batchTaskMapper.listIpCount(new BatchTaskQuery());
         System.out.println(videoData.size());
-    }
-
-    public static Double fun(VideoData data) {
-        ;
-        double a=0.000999999999327989;
-        double b=0.005999999999998619;
-        double c=-0.015000000000000457;
-        double d=0.002999999998994034;
-        double e=-0.33499999999978086;
-        double newPoint = data.getView() * a + data.getReply() * b + data.getFavorite() * c + data.getCoin() * d + data.getPage() * e;
-        return newPoint;
-    }
-
-    @Test
-    public void test2() {
-        List<VideoData> dataList = videoDataManager.list(new VideoDataQuery().setIssue(videoDataManager.getNewIssue()).setPageSize(10000).setSorter("point", "desc"));
-        List<VideoData> resultList = videoDataManager.list(new VideoDataQuery().setIssue(videoDataManager.getNewIssue() - 1).setPageSize(10000).setSorter("point", "desc"));
-
-        double a=0.000999999999327989;
-        double b=0.005999999999998619;
-        double c=-0.015000000000000457;
-        double d=0.002999999998994034;
-        double e=-0.33499999999978086;
-        Ver ver = new Ver(a, b, c, d, e);
-
-        ArrayList<Ver> verList = new ArrayList<>();
-        for (Double da : Arrays.asList(0D, 0.00001D, -0.00001D))
-            for (Double db : Arrays.asList(0D, 0.00001D, -0.00001D))
-                for (Double dc : Arrays.asList(0D, 0.00001D, -0.00001D))
-                    for (Double dd : Arrays.asList(0D, 0.00001D, -0.00001D))
-                        for (Double de : Arrays.asList(0D, 0.00001D, -0.00001D))
-                            verList.add(new Ver(da, db, dc, dd, de));
-
-
-
-        for (int i = 0; i < 10000; i++) {
-            double minDcOfD = Integer.MAX_VALUE;
-            Ver minV = null;
-            for (Ver dv : verList) {
-                Ver v = ver.add(dv);
-
-                double avgDPoint = 0;
-                for (VideoData data : dataList) {
-                    double newPoint = data.getView() * v.a + data.getReply() * v.b + data.getFavorite() * v.c + data.getCoin() * v.d + data.getPage() * v.e;
-                    double dPoint = data.getPoint() - newPoint;
-                    avgDPoint += Math.abs(dPoint);
-                }
-                avgDPoint = Math.abs(avgDPoint) / dataList.size();
-
-                if (avgDPoint < minDcOfD) {
-                    minDcOfD = avgDPoint;
-                    minV = v;
-                }
-            }
-
-            ver = minV;
-            System.out.println(minDcOfD + " " + minV);// + " " + firstData.a + " " + firstData.b + " " + firstData.c);
-        }
-
-        double result = 0;
-        for (VideoData data : resultList) {
-            double newPoint = data.getView() * ver.a + data.getReply() * ver.b + data.getFavorite() * ver.c + data.getCoin() * ver.d + data.getPage() * ver.e;
-            double dPoint = data.getPoint() - newPoint;
-            result += Math.abs(dPoint);
-        }
-        System.out.println(result);
-
-    }
-}
-
-class Ver {
-    public double a;
-    public double b;
-    public double c;
-    public double d;
-    public double e;
-
-    public Ver(double a, double b, double c, double d, double e) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.e = e;
-    }
-
-    public Ver add(Ver otherVer) {
-        return new Ver(a + otherVer.a, b + otherVer.b, c + otherVer.c, d + otherVer.d, e + otherVer.e);
-    }
-
-    @Override
-    public String toString() {
-        return "Ver{" +
-                "a=" + a +
-                ", b=" + b +
-                ", c=" + c +
-                ", d=" + d +
-                ", e=" + e +
-                '}';
     }
 }

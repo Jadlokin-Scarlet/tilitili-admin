@@ -5,11 +5,10 @@ import com.tilitili.admin.entity.count.sub.NewVideoCount;
 import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.VideoInfoQuery;
-import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.manager.VideoInfoManager;
+import com.tilitili.common.mapper.tilitili.VideoDataMapper;
 import com.tilitili.common.mapper.tilitili.VideoInfoMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,34 +17,44 @@ import java.util.*;
 @Service
 public class VideoInfoService {
     private final VideoDataService videoDataService;
-
     private final VideoInfoMapper videoInfoMapper;
-    private final VideoDataManager videoDataManager;
+    private final VideoDataMapper videoDataMapper;
     private final VideoInfoManager videoInfoManager;
 
-    public VideoInfoService(VideoDataService videoDataService, VideoInfoMapper videoInfoMapper, VideoDataManager videoDataManager, VideoInfoManager videoInfoManager) {
+    public VideoInfoService(VideoDataService videoDataService, VideoInfoMapper videoInfoMapper, VideoDataMapper videoDataMapper, VideoInfoManager videoInfoManager) {
         this.videoDataService = videoDataService;
         this.videoInfoMapper = videoInfoMapper;
-        this.videoDataManager = videoDataManager;
+        this.videoDataMapper = videoDataMapper;
         this.videoInfoManager = videoInfoManager;
     }
 
-    @Transactional
     public void delete(Long av) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(true));
-        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0));
-        videoDataService.reRank(videoDataManager.getNewIssue());
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setIsDelete(true));
+        Integer issue = videoDataMapper.getNewIssue();
+        VideoData videoData = videoDataMapper.getVideoDataByAvAndIssue(av, issue);
+        if (videoData == null) {
+            return;
+        }
+        if (videoData.getRank() != 0) {
+            videoDataService.reRank(issue);
+        }
     }
 
-    @Transactional
     public void recovery(Long av) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setIsDelete(false));
-        videoDataManager.updateRank(new VideoData().setAv(av).setIssue(videoDataManager.getNewIssue()).setRank(0));
-        videoDataService.reRank(videoDataManager.getNewIssue());
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setIsDelete(false));
+        Integer issue = videoDataMapper.getNewIssue();
+        VideoData videoData = videoDataMapper.getVideoDataByAvAndIssue(av, issue);
+        VideoData theLastVideoData = videoDataMapper.getTheLastVideoDataByIssue(issue, VideoDataService.RANK_LIMIT);
+        if (videoData == null) {
+            return;
+        }
+        if (theLastVideoData == null || videoData.getPoint() >= theLastVideoData.getPoint()) {
+            videoDataService.reRank(issue);
+        }
     }
 
     public void updateStartTime(Long av, Long startTime) {
-        videoInfoMapper.update(new VideoInfo().setAv(av).setStartTime(startTime));
+        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(av).setStartTime(startTime));
     }
 
     //如果查询前14天的视频增量和涨幅（不含今天）,就查前16天的

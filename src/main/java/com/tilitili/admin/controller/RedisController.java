@@ -7,15 +7,16 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,12 +28,10 @@ import static org.apache.http.util.TextUtils.isBlank;
 public class RedisController {
     private final RedisService redisService;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisCache redisCache;
 
-    public RedisController(RedisService redisService, RedisTemplate<String, Object> redisTemplate, RedisCache redisCache) {
+    public RedisController(RedisService redisService, RedisTemplate<String, Object> redisTemplate) {
         this.redisService = redisService;
         this.redisTemplate = redisTemplate;
-        this.redisCache = redisCache;
     }
 
     @RequestMapping("/list")
