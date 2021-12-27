@@ -6,7 +6,7 @@ import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.manager.VideoDataManager;
+import com.tilitili.common.mapper.tilitili.VideoDataMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,12 @@ import java.util.List;
 @Validated
 @Slf4j
 public class VideoDataController extends BaseController {
-
-    private final VideoDataManager videoDataManager;
+    private final VideoDataMapper videoDataMapper;
     private final VideoDataService videoDataService;
 
     @Autowired
-    public VideoDataController(VideoDataManager videoDataManager, VideoDataService videoDataService) {
-        this.videoDataManager = videoDataManager;
+    public VideoDataController(VideoDataMapper videoDataMapper, VideoDataService videoDataService) {
+        this.videoDataMapper = videoDataMapper;
         this.videoDataService = videoDataService;
     }
 
@@ -40,8 +39,8 @@ public class VideoDataController extends BaseController {
         if (query.getPageNo() == null) query.setPageNo(1);
         if (query.getPageSize() == null) query.setPageSize(20);
 
-        int count = videoDataManager.countForVideoDataTable(query);
-        List<VideoDTO> videoDataList = videoDataManager.listForVideoDataTable(query);
+        int count = videoDataMapper.countForVideoDataTable(query);
+        List<VideoDTO> videoDataList = videoDataMapper.listForVideoDataTable(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoDataList);
     }
 
@@ -63,7 +62,7 @@ public class VideoDataController extends BaseController {
     @ResponseBody
     public BaseModel<?> reRank(@RequestBody Integer issue) {
         Asserts.notNull(issue, "参数异常");
-        int newIssue = videoDataManager.getNewIssue();
+        int newIssue = videoDataMapper.getNewIssue();
         if (issue != newIssue) {
             return new BaseModel<>("只有最新一期能重排");
         }

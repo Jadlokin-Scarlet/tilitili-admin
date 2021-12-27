@@ -1,7 +1,5 @@
 package com.tilitili.admin.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.tilitili.common.entity.view.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +17,7 @@ public class VideoDataFileItem {
 	private String img;
 	private Long startTime;
 
-	private Integer hisRank;
+	private Long hisRank;
 	private Boolean isUp;
 	private Boolean isLen;
 	private Integer level;

@@ -1,7 +1,5 @@
 package com.tilitili.admin.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.tilitili.common.entity.view.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +23,14 @@ public class VideoDataAdminFileItem {
 	private Long startTime;
 	private Long duration;
 
-	private Integer view;
-	private Integer reply;
-	private Integer favorite;
-	private Integer coin;
-	private Integer point;
-	private Integer rank;
+	private Long view;
+	private Long reply;
+	private Long favorite;
+	private Long coin;
+	private Long point;
+	private Long rank;
 
-	private Integer hisRank;
+	private Long hisRank;
 	private Boolean isUp;
 	private Boolean isLen;
 	private Integer level;
@@ -57,17 +55,10 @@ public class VideoDataAdminFileItem {
 
 	//不导出至视频的数据
 	private String bv;
-	private Integer page;
+	private Long page;
 	private Boolean isPointWarning;
 	private Long viewPoint;
 	private String a;
 	private String b;
 	private Long checkPoint;
-
-	public VideoDataAdminFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
-		boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0;
-		isLen &= rank <= 30 && hisRank <= 30 && moreHisRank <=30;
-		return setIsLen(isLen);
-	}
-
 }

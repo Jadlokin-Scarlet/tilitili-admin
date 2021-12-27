@@ -4,9 +4,9 @@ import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.common.emnus.*;
 import com.tilitili.common.entity.resource.Resource;
-import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
 import com.tilitili.common.mapper.tilitili.ResourcesMapper;
+import com.tilitili.common.mapper.tilitili.VideoDataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +19,16 @@ import java.util.function.Supplier;
 @Service
 public class ResourceService {
     private final ResourcesMapper resourcesMapper;
-    private final VideoDataManager videoDataManager;
     private final RecommendVideoMapper recommendVideoMapper;
+    private final VideoDataMapper videoDataMapper;
 
     private final Map<String, Supplier<List<Resource>>> resourceMap = new HashMap<>();
 
     @Autowired
-    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, VideoDataManager videoDataManager, RecommendVideoService recommendVideoService, RecommendVideoMapper recommendVideoMapper) {
+    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, RecommendVideoService recommendVideoService, RecommendVideoMapper recommendVideoMapper, VideoDataMapper videoDataMapper) {
         this.resourcesMapper = resourcesMapper;
-        this.videoDataManager = videoDataManager;
         this.recommendVideoMapper = recommendVideoMapper;
+        this.videoDataMapper = videoDataMapper;
         resourceMap.put("videoTypeResource", typeService::getTypeResource);
         resourceMap.put("videoIssueResource", videoDataService::getIssueResource);
         resourceMap.put("TaskTypeResource", TaskType::getResource);
@@ -42,9 +42,9 @@ public class ResourceService {
         return resourceMap.getOrDefault(resourceName, Collections::emptyList).get();
     }
 
-    public String getFlagFileResources() {
-        return getFlagResources().toString();
-    }
+//    public String getFlagFileResources() {
+//        return getFlagResources().toString();
+//    }
 
     public DispatchResourcesView getFlagResources() {
         DispatchResourcesView view = new DispatchResourcesView();
@@ -58,7 +58,7 @@ public class ResourceService {
         view.setTips(resourcesMapper.getValueByType(ResourcesType.TIPS.value));
         view.setMarkTime(getMarkTime());
         view.setCountTime(getCountTime());
-        view.setV(videoDataManager.getNewIssue().toString());
+        view.setV(videoDataMapper.getNewIssue().toString());
         return view;
     }
 
