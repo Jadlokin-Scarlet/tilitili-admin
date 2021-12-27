@@ -4,11 +4,7 @@ import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.emnus.RedisKeyEnum;
-import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.VideoInfo;
-import com.tilitili.common.entity.dto.BatchTaskIpCount;
-import com.tilitili.common.entity.query.BatchTaskQuery;
-import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
@@ -32,9 +28,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @RunWith(SpringRunner.class)

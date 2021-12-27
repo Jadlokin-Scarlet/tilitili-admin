@@ -1,7 +1,7 @@
 package com.tilitili.admin.service;
 
 import com.google.common.collect.ImmutableMap;
-import com.tilitili.common.entity.resource.Resource;
+import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.mapper.tilitili.TypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

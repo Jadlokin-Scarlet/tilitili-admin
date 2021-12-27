@@ -3,7 +3,7 @@ package com.tilitili.admin.service;
 import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.common.emnus.*;
-import com.tilitili.common.entity.resource.Resource;
+import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
 import com.tilitili.common.mapper.tilitili.ResourcesMapper;
 import com.tilitili.common.mapper.tilitili.VideoDataMapper;

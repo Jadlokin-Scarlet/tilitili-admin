@@ -19,7 +19,7 @@ class RecommendVideoServiceTest extends TestCase {
     RecommendVideoService recommendVideoService;
     @Test
     void listIssue() {
-        List<com.tilitili.common.entity.resource.Resource> resources = recommendVideoService.listIssue();
+        List<com.tilitili.common.entity.view.resource.Resource> resources = recommendVideoService.listIssue();
         System.out.println(resources);
     }
 }

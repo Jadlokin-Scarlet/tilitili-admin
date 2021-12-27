@@ -1,9 +1,8 @@
 package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
-import com.tilitili.common.emnus.GroupEmum;
-import com.tilitili.common.entity.mirai.MessageChain;
-import com.tilitili.common.entity.mirai.MiraiMessage;
+import com.tilitili.common.entity.view.mirai.MessageChain;
+import com.tilitili.common.entity.view.mirai.MiraiMessage;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.mapper.tilitili.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-
 import java.util.Arrays;
-
-import static com.tilitili.common.emnus.GroupEmum.*;
 
 @Slf4j
 @RunWith(SpringRunner.class)

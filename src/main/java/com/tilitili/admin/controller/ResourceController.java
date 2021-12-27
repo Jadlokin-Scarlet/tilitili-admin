@@ -13,7 +13,7 @@ import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.entity.resource.Resource;
+import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;

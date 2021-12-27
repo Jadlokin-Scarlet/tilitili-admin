@@ -3,7 +3,7 @@ package com.tilitili.admin.service;
 import com.tilitili.admin.entity.count.sub.VideoDataAddCount;
 import com.tilitili.common.entity.dto.VideoDataGroup;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.entity.resource.Resource;
+import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.tilitili.VideoDataMapper;
 import lombok.extern.slf4j.Slf4j;

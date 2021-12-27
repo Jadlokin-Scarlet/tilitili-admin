@@ -1,7 +1,7 @@
 package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
-import com.tilitili.common.entity.pixivmoe.SearchIllust;
+import com.tilitili.common.entity.view.pixivmoe.SearchIllust;
 import com.tilitili.common.manager.PixivMoeManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
