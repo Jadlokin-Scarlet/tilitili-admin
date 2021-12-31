@@ -39,33 +39,39 @@ public class TaskController extends BaseController{
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getTaskByCondition(TaskQuery query) {
-        int count = taskMapper.count(query);
-        List<Task> taskList = taskMapper.list(query);
+    public BaseModel<PageModel<Task>> getTaskByCondition(TaskQuery query) {
+        Asserts.notNull(query, "参数异常");
+
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
+        int count = taskMapper.countTaskByCondition(query);
+        List<Task> taskList = taskMapper.getTaskByCondition(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), taskList);
     }
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateTask(@RequestBody Task task) {
-        Asserts.notNull(task.getIdList(), "参数有误");
-        Asserts.notNull(task.getStatus(), "参数有误");
+    public BaseModel<?> updateTask(@RequestBody TaskQuery query) {
+        Asserts.notNull(query.getIdList(), "参数有误");
+        Asserts.notNull(query.getStatus(), "参数有误");
 
-        List<Long> idList = StringUtil.splitNumberList(task.getIdList());
+        List<Long> idList = StringUtil.splitNumberList(query.getIdList());
 
         for (Long id : idList) {
-            taskMapper.update(new Task().setId(id).setStatus(task.getStatus()));
-            if (Objects.equals(task.getStatus(), TaskStatus.WAIT.value)) {
+            taskMapper.updateTaskSelective(new Task().setId(id).setStatus(query.getStatus()));
+            if (Objects.equals(query.getStatus(), TaskStatus.WAIT.value)) {
                 taskManager.reSpiderVideo(id);
             }
         }
 
-        return new BaseModel("修改成功", true);
+        return new BaseModel<>("修改成功", true);
     }
 
     @PostMapping("")
     @ResponseBody
-    public BaseModel spiderVideo(@RequestBody SimpleTaskView simpleTaskView) {
+    public BaseModel<?> spiderVideo(@RequestBody SimpleTaskView simpleTaskView) {
         Asserts.notNull(simpleTaskView, "参数有误");
         Asserts.notNull(simpleTaskView.getValue(), "参数有误");
 
@@ -75,7 +81,7 @@ public class TaskController extends BaseController{
         }
 
         taskManager.simpleSpiderVideo(simpleTask);
-        return new BaseModel("添加任务成功", true);
+        return new BaseModel<>("添加任务成功", true);
     }
 
 }

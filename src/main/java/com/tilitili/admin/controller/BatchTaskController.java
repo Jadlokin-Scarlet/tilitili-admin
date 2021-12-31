@@ -1,7 +1,7 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.entity.view.BatchTaskView;
 import com.tilitili.admin.service.BatchTaskService;
-import com.tilitili.common.entity.BatchTask;
 import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
@@ -33,15 +33,21 @@ public class BatchTaskController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getBatchTaskByCondition(BatchTaskQuery query) {
-        int count = batchTaskMapper.count(query);
-        List<BatchTask> batchTaskList = batchTaskService.list(query);
+    public BaseModel<PageModel<BatchTaskView>> getBatchTaskByCondition(BatchTaskQuery query) {
+        Asserts.notNull(query, "参数异常");
+
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
+        int count = batchTaskMapper.countBatchTaskByCondition(query);
+        List<BatchTaskView> batchTaskList = batchTaskService.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), batchTaskList);
     }
 
     @GetMapping("/count")
     @ResponseBody
-    public BaseModel getBatchTaskCount(BatchTaskQuery query) {
+    public BaseModel<?> getBatchTaskCount(BatchTaskQuery query) {
         Asserts.notNull(query, "参数异常");
         Asserts.notNull(query.getTime(), "查询区间未获取到");
         List<BatchTaskIpCount> data = batchTaskMapper.listIpCount(query.setStatus(2).setReasonList(Arrays.asList(2, 4)));
@@ -50,37 +56,37 @@ public class BatchTaskController extends BaseController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public BaseModel deleteBatchTask(@PathVariable Long id) {
+    public BaseModel<?> deleteBatchTask(@PathVariable Long id) {
         batchTaskService.deleteBatchTask(id);
-        return new BaseModel("删除成功", true);
+        return new BaseModel<>("删除成功", true);
     }
 
     @PostMapping("/testBatchSpiderVideo")
     @ResponseBody
-    public BaseModel testBatchSpiderVideo() {
+    public BaseModel<?> testBatchSpiderVideo() {
         batchTaskService.testBatchSpiderVideo();
-        return new BaseModel("添加任务成功", true);
+        return new BaseModel<>("添加任务成功", true);
     }
 
     @PostMapping("/batchSpiderHiddenVideo")
     @ResponseBody
-    public BaseModel batchSpiderHiddenVideo() {
+    public BaseModel<?> batchSpiderHiddenVideo() {
         batchTaskService.batchSpiderHiddenVideo();
-        return new BaseModel("添加任务成功", true);
+        return new BaseModel<>("添加任务成功", true);
     }
 
     @PostMapping("/batchSpiderAllVideo")
     @ResponseBody
-    public BaseModel batchSpiderAllVideo() {
+    public BaseModel<?> batchSpiderAllVideo() {
         batchTaskService.batchSpiderAllVideo();
-        return new BaseModel("添加任务成功", true);
+        return new BaseModel<>("添加任务成功", true);
     }
 
     @PostMapping("/batchSpiderAllVideoTag")
     @ResponseBody
-    public BaseModel batchSpiderAllVideoTag() {
+    public BaseModel<?> batchSpiderAllVideoTag() {
         batchTaskService.batchSpiderAllVideoTag();
-        return new BaseModel("添加任务成功", true);
+        return new BaseModel<>("添加任务成功", true);
     }
 
 }

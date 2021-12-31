@@ -1,5 +1,6 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.admin.entity.view.BatchTaskView;
 import com.tilitili.common.emnus.TaskStatus;
 import com.tilitili.common.entity.BatchTask;
 import com.tilitili.common.entity.VideoInfo;
@@ -42,19 +43,29 @@ public class BatchTaskService {
         this.touhouAllMapper = touhouAllMapper;
     }
 
-    public List<BatchTask> list(BatchTaskQuery batchTaskQuery) {
-        return batchTaskMapper.list(batchTaskQuery).parallelStream().peek(batchTask -> {
+    public List<BatchTaskView> list(BatchTaskQuery batchTaskQuery) {
+        return batchTaskMapper.getBatchTaskByCondition(batchTaskQuery).parallelStream().map(batchTask -> {
             Map<Integer, Integer> taskCountMap = taskManager.countByGroupStatus(new TaskQuery().setBatchId(batchTask.getId()));
 
             long successTaskNumber = taskCountMap.getOrDefault(SUCCESS.value, 0);
             long failTaskNumber = taskCountMap.getOrDefault(FAIL.value, 0) + taskCountMap.getOrDefault(TaskStatus.TIMEOUT.value, 0);
             long waitTaskNumber = taskCountMap.getOrDefault(WAIT.value, 0);
-            Integer totalTaskNumber = taskMapper.count(new TaskQuery().setBatchId(batchTask.getId()));
+            Integer totalTaskNumber = taskMapper.countTaskByCondition(new TaskQuery().setBatchId(batchTask.getId()));
 
-            batchTask.setSuccessTaskNumber(Math.toIntExact(successTaskNumber));
-            batchTask.setFailTaskNumber(Math.toIntExact(failTaskNumber));
-            batchTask.setWaitTaskNumber(Math.toIntExact(waitTaskNumber));
-            batchTask.setTotalTaskNumber(totalTaskNumber);
+            BatchTaskView result = new BatchTaskView();
+            result.setId(batchTask.getId());
+            result.setStatus(batchTask.getStatus());
+            result.setType(batchTask.getType());
+            result.setCreateTime(batchTask.getCreateTime());
+            result.setUpdateTime(batchTask.getUpdateTime());
+            result.setRemark(batchTask.getRemark());
+            result.setReason(batchTask.getReason());
+
+            result.setSuccessTaskNumber(Math.toIntExact(successTaskNumber));
+            result.setFailTaskNumber(Math.toIntExact(failTaskNumber));
+            result.setWaitTaskNumber(Math.toIntExact(waitTaskNumber));
+            result.setTotalTaskNumber(totalTaskNumber);
+            return result;
         }).collect(Collectors.toList());
     }
 
@@ -77,8 +88,8 @@ public class BatchTaskService {
     }
 
     public void batchSpiderAllVideo() {
-        List<BatchTask> batchTaskList = list(new BatchTaskQuery().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value));
-        boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
+        List<BatchTaskView> batchTaskList = list(new BatchTaskQuery().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value));
+        boolean isComplete = batchTaskList.stream().map(BatchTaskView::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
         List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
@@ -88,8 +99,8 @@ public class BatchTaskService {
     public void batchSpiderAllVideoTag() {
         Integer type = BatchSpiderVideo.value;
         Integer reason = RE_SPIDER_All_VIDEO_TAG.value;
-        List<BatchTask> batchTaskList = list(new BatchTaskQuery().setType(type).setReason(reason));
-        boolean isComplete = batchTaskList.stream().map(BatchTask::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
+        List<BatchTaskView> batchTaskList = list(new BatchTaskQuery().setType(type).setReason(reason));
+        boolean isComplete = batchTaskList.stream().map(BatchTaskView::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
         Assert.isTrue(isComplete, "上次的还没爬完");
         BatchTask batchTask = new BatchTask().setType(type).setReason(reason);
         List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
