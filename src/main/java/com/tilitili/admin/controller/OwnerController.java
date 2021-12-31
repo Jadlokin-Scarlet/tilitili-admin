@@ -30,21 +30,27 @@ public class OwnerController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getOwnerByCondition(OwnerQuery query) {
-        int count = ownerMapper.count(query);
-        List<Owner> ownerList = ownerMapper.list(query);
+    public BaseModel<PageModel<Owner>> getOwnerByCondition(OwnerQuery query) {
+        Asserts.notNull(query, "参数异常");
+
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
+        int count = ownerMapper.countOwnerByCondition(query);
+        List<Owner> ownerList = ownerMapper.getOwnerByCondition(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), ownerList);
     }
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateOwner(@RequestBody Owner owner) {
+    public BaseModel<?> updateOwner(@RequestBody Owner owner) {
         Asserts.notNull(owner, "参数有误");
         Asserts.notNull(owner.getUid(), "参数有误");
         Asserts.notNull(owner.getStatus(), "参数有误");
 
-        ownerMapper.update(owner);
-        return new BaseModel("更新作者成功", true);
+        ownerMapper.updateOwnerSelective(owner);
+        return new BaseModel<>("更新作者成功", true);
     }
 
 }

@@ -110,7 +110,7 @@ public class RecommendService {
             String videoType = recommend.getVideoType();
             String pubTime = recommend.getPubTime();
 
-            List<Owner> ownerList = ownerMapper.list(new OwnerQuery().setName(ownerName));
+            List<Owner> ownerList = ownerMapper.getOwnerByCondition(new OwnerQuery().setName(ownerName));
 
             String face = null;
             if (ownerList.size() == 1) {
