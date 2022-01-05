@@ -60,33 +60,4 @@ public class BatchTaskController extends BaseController {
         batchTaskService.deleteBatchTask(id);
         return new BaseModel<>("删除成功", true);
     }
-
-    @PostMapping("/testBatchSpiderVideo")
-    @ResponseBody
-    public BaseModel<?> testBatchSpiderVideo() {
-        batchTaskService.testBatchSpiderVideo();
-        return new BaseModel<>("添加任务成功", true);
-    }
-
-    @PostMapping("/batchSpiderHiddenVideo")
-    @ResponseBody
-    public BaseModel<?> batchSpiderHiddenVideo() {
-        batchTaskService.batchSpiderHiddenVideo();
-        return new BaseModel<>("添加任务成功", true);
-    }
-
-    @PostMapping("/batchSpiderAllVideo")
-    @ResponseBody
-    public BaseModel<?> batchSpiderAllVideo() {
-        batchTaskService.batchSpiderAllVideo();
-        return new BaseModel<>("添加任务成功", true);
-    }
-
-    @PostMapping("/batchSpiderAllVideoTag")
-    @ResponseBody
-    public BaseModel<?> batchSpiderAllVideoTag() {
-        batchTaskService.batchSpiderAllVideoTag();
-        return new BaseModel<>("添加任务成功", true);
-    }
-
 }

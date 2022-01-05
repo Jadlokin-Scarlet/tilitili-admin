@@ -69,8 +69,8 @@ public class VideoInfoService {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery().setStatus(0).setIsDelete(false).setPubTimeStart(createTimeStart).setPubTimeEnd(createTimeEnd).setType(request.getType()).setPageNo(1).setPageSize(20);
         Map<String, Integer> groupMap = videoInfoManager.groupByPubTime(videoInfoQuery);
 
-        VideoInfoQuery videoInfoQuery1 = new VideoInfoQuery().setStatus(0).setIsDelete(false).setPubTimeEnd(createTimeStart).setType(request.getType());
-        int count = videoInfoMapper.count(videoInfoQuery1);
+        VideoInfoQuery videoInfoQuery1 = new VideoInfoQuery().setPubTimeEnd(createTimeStart).setType(request.getType());
+        int count = videoInfoMapper.countVideoInfoWithPubTime(videoInfoQuery1);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 

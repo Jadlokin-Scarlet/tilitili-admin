@@ -104,7 +104,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel addRecommend(@RequestBody Recommend recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
         if (recommend.getBv() != null) {
-            recommend.setAv(BilibiliUtil.converseAvToBv(recommend.getBv()));
+            recommend.setAv(BilibiliUtil.converseBvToAv(recommend.getBv()));
         }
 
         Asserts.notNull(recommend.getAv(), "av号未获取到");

@@ -74,37 +74,4 @@ public class BatchTaskService {
         batchTaskMapper.delete(batchId);
         taskMapper.deleteByBatchId(batchId);
     }
-
-    public void testBatchSpiderVideo() {
-        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(NO_REASON.value);
-        List<String> avList = videoInfoMapper.list(new VideoInfoQuery().setAv(12L).setPageNo(1).setPageSize(20)).stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
-        taskManager.batchSpiderVideo(batchTask, avList);
-    }
-
-    public void batchSpiderHiddenVideo() {
-        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_HIDDEN_VIDEO.value);
-        List<String> avList = videoInfoMapper.listHiddenVideo().stream().map(VideoInfo::getAv).map(String::valueOf).collect(Collectors.toList());
-        taskManager.batchSpiderVideo(batchTask, avList);
-    }
-
-    public void batchSpiderAllVideo() {
-        List<BatchTaskView> batchTaskList = list(new BatchTaskQuery().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value));
-        boolean isComplete = batchTaskList.stream().map(BatchTaskView::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
-        Assert.isTrue(isComplete, "上次的还没爬完");
-        BatchTask batchTask = new BatchTask().setType(BatchSpiderVideo.value).setReason(RE_SPIDER_All_VIDEO.value);
-        List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
-        taskManager.batchSpiderVideo(batchTask, avList);
-    }
-
-    public void batchSpiderAllVideoTag() {
-        Integer type = BatchSpiderVideo.value;
-        Integer reason = RE_SPIDER_All_VIDEO_TAG.value;
-        List<BatchTaskView> batchTaskList = list(new BatchTaskQuery().setType(type).setReason(reason));
-        boolean isComplete = batchTaskList.stream().map(BatchTaskView::getWaitTaskNumber).allMatch(Predicate.isEqual(0));
-        Assert.isTrue(isComplete, "上次的还没爬完");
-        BatchTask batchTask = new BatchTask().setType(type).setReason(reason);
-        List<String> avList = touhouAllMapper.selectAllAv().stream().map(String::valueOf).collect(Collectors.toList());
-        taskManager.batchSpiderVideo(batchTask, avList);
-    }
-
 }
