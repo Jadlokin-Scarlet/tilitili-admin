@@ -18,7 +18,7 @@ public class GitlabController {
 		this.gitlabManager = gitlabManager;
 	}
 
-	@RequestMapping("/deleteContainer")
+	@RequestMapping("/pub/deleteContainer")
 	public void deleteContainer(String projectName) {
 		Long projectId = gitlabManager.getProjectIdByProjectName(projectName);
 		List<GitlabContainer> containerList = gitlabManager.getContainerList(projectId);
