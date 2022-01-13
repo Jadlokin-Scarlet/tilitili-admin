@@ -1,6 +1,8 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.emnus.SendTypeEmum;
+import com.tilitili.common.entity.view.bot.BotMessage;
+import com.tilitili.common.manager.BotManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -20,6 +22,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,11 +40,13 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/mock")
 public class MockController {
-    private final MiraiManager miraiManager;
+    @Value("${mirai.master-qq}")
+    private Long MASTER_QQ;
+    private final BotManager botManager;
 
     @Autowired
-    public MockController(MiraiManager miraiManager) {
-        this.miraiManager = miraiManager;
+    public MockController(BotManager botManager) {
+        this.botManager = botManager;
     }
 
     @RequestMapping("")
@@ -50,7 +55,8 @@ public class MockController {
         String queryString = request.getQueryString();
         body = body == null? "": body;
         String cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{})).map(c -> String.format("%s=%s", c.getName(), c.getValue())).collect(Collectors.joining("; "));
-        miraiManager.sendFriendMessage("Plain", String.format("%s?%s\nbody=%s\ncookie=%s", requestURL, queryString, body, cookie));
+        String message = String.format("%s?%s\nbody=%s\ncookie=%s", requestURL, queryString, body, cookie);
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(MASTER_QQ));
     }
 
     // HttpClient 支持socks5代理的自定义类

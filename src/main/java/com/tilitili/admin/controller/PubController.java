@@ -1,8 +1,11 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.common.emnus.GroupEmum;
+import com.tilitili.common.emnus.SendTypeEmum;
 import com.tilitili.common.entity.view.BaseModel;
+import com.tilitili.common.entity.view.bot.BotMessage;
 import com.tilitili.common.manager.BaiduManager;
-import com.tilitili.common.manager.MiraiManager;
+import com.tilitili.common.manager.BotManager;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +23,20 @@ import java.util.Objects;
 @RequestMapping("/api/pub/qq")
 public class PubController extends BaseController{
     private final BaiduManager baiduManager;
-    private final MiraiManager miraiManager;
+    private final BotManager botManager;
     private String lastMessage = null;
 
     @Autowired
-    public PubController(MiraiManager miraiManager, BaiduManager baiduManager) {
-        this.miraiManager = miraiManager;
+    public PubController(BaiduManager baiduManager, BotManager botManager) {
         this.baiduManager = baiduManager;
+        this.botManager = botManager;
     }
 
     @PostMapping("/group/{group}")
     @ResponseBody
     public BaseModel sendMessage(@RequestBody String message, @PathVariable Long group) {
         Asserts.notBlank(message, "消息为空");
-        miraiManager.sendGroupMessage("Plain", message, group);
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(group));
         return BaseModel.success();
     }
 
@@ -41,7 +44,7 @@ public class PubController extends BaseController{
     @ResponseBody
     public BaseModel sendMessage(@RequestBody String message) {
         Asserts.notBlank(message, "消息为空");
-        miraiManager.sendGroupMessage("Plain", message);
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(GroupEmum.RANK_GROUP.value));
         return BaseModel.success();
     }
 

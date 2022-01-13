@@ -1,8 +1,6 @@
 package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
-import com.tilitili.common.entity.view.bot.mirai.MessageChain;
-import com.tilitili.common.entity.view.bot.mirai.MiraiMessage;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.mapper.tilitili.*;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -51,9 +48,9 @@ public class MiraiManagerTest {
 //        Integer integer = miraiManager.sendMessage(new MiraiMessage().setSendType("GroupMessage").setMessageType("Image").setGroup(TEST_GROUP.value)
 //                .setUrl("https://api.lolicon.app/assets/img/lx.jpg"));
 
-        miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setQuote(1048L).setMessageChainList(Arrays.asList(
-                new MessageChain().setType("Plain").setText("?")
-        )));
+//        miraiManager.sendMessage(new MiraiMessage().setMessageType("List").setQuote(1048L).setMessageChainList(Arrays.asList(
+//                new MiraiMessageChain().setType("Plain").setText("?")
+//        )));
     }
 
 
