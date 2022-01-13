@@ -4,6 +4,7 @@ import com.tilitili.admin.entity.DispatchRecommendResourcesView;
 import com.tilitili.admin.entity.DispatchResourcesView;
 import com.tilitili.common.emnus.*;
 import com.tilitili.common.entity.view.resource.Resource;
+import com.tilitili.common.manager.BotTaskManager;
 import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
 import com.tilitili.common.mapper.tilitili.ResourcesMapper;
 import com.tilitili.common.mapper.tilitili.VideoDataMapper;
@@ -25,7 +26,7 @@ public class ResourceService {
     private final Map<String, Supplier<List<Resource>>> resourceMap = new HashMap<>();
 
     @Autowired
-    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, RecommendVideoService recommendVideoService, RecommendVideoMapper recommendVideoMapper, VideoDataMapper videoDataMapper) {
+    public ResourceService(TypeService typeService, VideoDataService videoDataService, ResourcesMapper resourcesMapper, RecommendVideoService recommendVideoService, RecommendVideoMapper recommendVideoMapper, VideoDataMapper videoDataMapper, BotTaskManager botTaskManager) {
         this.resourcesMapper = resourcesMapper;
         this.recommendVideoMapper = recommendVideoMapper;
         this.videoDataMapper = videoDataMapper;
@@ -36,6 +37,7 @@ public class ResourceService {
         resourceMap.put("TaskReasonResource", TaskReason::getResource);
         resourceMap.put("TagTypeResource", TagType::getResource);
         resourceMap.put("recommendIssueResource", recommendVideoService::listIssue);
+        resourceMap.put("BotTaskResource", botTaskManager::listTaskResource);
     }
 
     public List<Resource> getResource(String resourceName) {
