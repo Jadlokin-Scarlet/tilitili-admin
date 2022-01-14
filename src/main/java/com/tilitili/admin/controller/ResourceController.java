@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 public class ResourceController extends BaseController {
     private final ResourceService resourceService;
     private final RecommendManager recommendManager;
-    private final VideoDataFileService videoDataFileService;
     private final RecommendService recommendService;
     private final RecommendMapper recommendMapper;
     private final RecommendVideoMapper recommendVideoMapper;
     private final RecommendTalkMapper recommendTalkMapper;
+    private final VideoDataFileService videoDataFileService;
 
     private List<VideoDataFileItem> cacheDataFile;
 
