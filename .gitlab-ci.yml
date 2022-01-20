@@ -8,8 +8,6 @@ bulid:
     - echo "start building ..."
     - cd /home/www/
     - ./docker_build tilitili-admin springboot master
-  tags:
-    - tilitili
   only:
     - master
 
@@ -19,7 +17,5 @@ deploy:
     - echo "start deploy ..."
     - cd /home/www/
     - ./docker_deploy tilitili-admin 150.158.138.139 8083
-  tags:
-    - tilitili
   only:
     - master
