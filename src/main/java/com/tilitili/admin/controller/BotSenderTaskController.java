@@ -34,7 +34,9 @@ public class BotSenderTaskController extends BaseController {
 		List<BotSenderDTO> senderWithTaskIdList = botSenderTaskMappingMapper.getSenderTaskTable(query);
 		List<Map<String, Object>> result = senderWithTaskIdList.stream().map(s -> {
 			ImmutableMap.Builder<String, Object> mapBuild = ImmutableMap.<String, Object>builder().put("name", s.getName()).put("id", s.getId()).put("sendType", s.getSendType());
-			Arrays.asList(s.getTaskIdListStr().split(",")).forEach(taskId -> mapBuild.put(taskId, true));
+			if (s.getTaskIdListStr() != null) {
+				Arrays.asList(s.getTaskIdListStr().split(",")).forEach(taskId -> mapBuild.put(taskId, true));
+			}
 			return mapBuild.build();
 		}).collect(Collectors.toList());
 		return PageModel.of(total, query.getPageSize(), query.getPageNo(), result);
