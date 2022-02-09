@@ -5,6 +5,7 @@ import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.VideoInfo;
+import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
@@ -12,9 +13,9 @@ import com.tilitili.common.entity.view.message.SimpleTask;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.manager.ResourcesManager;
 import com.tilitili.common.manager.TaskManager;
-import com.tilitili.common.mapper.tilitili.RecommendMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
-import com.tilitili.common.mapper.tilitili.VideoInfoMapper;
+import com.tilitili.common.mapper.rank.RecommendMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.VideoInfoMapper;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.BilibiliUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class RecommendController extends BaseController {
     public BaseModel getRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         int count = recommendMapper.count(query);
-        List<Recommend> recommendList = recommendMapper.list(query);
+        List<RecommendDTO> recommendList = recommendMapper.list(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
@@ -65,7 +66,7 @@ public class RecommendController extends BaseController {
     public BaseModel getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         int count = recommendManager.countUseRecommend(query);
-        List<Recommend> recommendList = recommendManager.listUseRecommend(query);
+        List<RecommendDTO> recommendList = recommendManager.listUseRecommend(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
@@ -75,7 +76,7 @@ public class RecommendController extends BaseController {
     public BaseModel getRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         int count = recommendManager.countRecommendPool(query);
-        List<Recommend> recommendList = recommendManager.listRecommendPool(query);
+        List<RecommendDTO> recommendList = recommendManager.listRecommendPool(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
@@ -85,7 +86,7 @@ public class RecommendController extends BaseController {
     public BaseModel getSelfRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         int count = recommendManager.countSelfRecommend(query);
-        List<Recommend> recommendList = recommendManager.listSelfRecommend(query);
+        List<RecommendDTO> recommendList = recommendManager.listSelfRecommend(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
@@ -95,14 +96,14 @@ public class RecommendController extends BaseController {
     public BaseModel getSelfRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         int count = recommendManager.countSelfRecommendPool(query);
-        List<Recommend> recommendList = recommendManager.listSelfRecommendPool(query);
+        List<RecommendDTO> recommendList = recommendManager.listSelfRecommendPool(query);
         recommendService.supplementRecommend(recommendList);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendList);
     }
 
     @PostMapping("")
     @ResponseBody
-    public BaseModel addRecommend(@RequestBody Recommend recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
+    public BaseModel addRecommend(@RequestBody RecommendDTO recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
         if (recommend.getBv() != null) {
             recommend.setAv(BilibiliUtil.converseBvToAv(recommend.getBv()));
         }
@@ -114,7 +115,7 @@ public class RecommendController extends BaseController {
             recommend.setOperator(admin.getUserName());
         }
 
-        Recommend oldRecommend = recommendMapper.getByAv(recommend.getAv());
+        Recommend oldRecommend = recommendMapper.getNormalRecommendByAv(recommend.getAv());
         Asserts.checkNull(oldRecommend, "该视频推荐已存在");
 
         if (isNull(recommend.getStartTime())) {
@@ -136,17 +137,17 @@ public class RecommendController extends BaseController {
             recommend.setStatus(1);
         }
 
-        recommendMapper.insert(recommend);
+        recommendMapper.addRecommendSelective(recommend);
         taskManager.simpleSpiderVideo(new SimpleTask().setReason(NO_REASON.value).setValueList(Arrays.asList(String.valueOf(recommend.getAv()))));
         return new BaseModel("推荐成功",true);
     }
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateRecommend(@RequestBody Recommend recommend) {
+    public BaseModel updateRecommend(@RequestBody RecommendDTO recommend) {
         Asserts.notNull(recommend.getId(), "id未获取到");
 
-        Recommend old = recommendMapper.getById(recommend.getId());
+        Recommend old = recommendMapper.getNormalRecommendById(recommend.getId());
         if (recommend.getStartTime() != null || recommend.getEndTime() != null) {
             Integer startTime = recommend.getStartTime() != null? recommend.getStartTime(): old.getStartTime();
             Integer endTime = recommend.getEndTime() != null? recommend.getEndTime(): old.getEndTime();
@@ -155,7 +156,7 @@ public class RecommendController extends BaseController {
             recommend.setEndTime(endTime);
         }
 
-        recommendMapper.update(recommend);
+        recommendMapper.updateRecommendSelective(recommend);
         if (recommend.getExternalOwner() != null) {
             Long av = recommend.getAv() != null? recommend.getAv(): old.getAv();
             videoInfoMapper.updateExternalOwner(av, recommend.getExternalOwner());
@@ -172,7 +173,7 @@ public class RecommendController extends BaseController {
         Recommend updateRecommend = new Recommend();
         updateRecommend.setId(recommend.getId());
         updateRecommend.setStatus(-1);
-        recommendMapper.update(updateRecommend);
+        recommendMapper.updateRecommendSelective(updateRecommend);
 
         return new BaseModel("废弃成功",true);
     }
@@ -190,7 +191,7 @@ public class RecommendController extends BaseController {
     public BaseModel useRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号未获取到");
 
-        Recommend oldRecommend = recommendMapper.getById(recommend.getId());
+        Recommend oldRecommend = recommendMapper.getNormalRecommendById(recommend.getId());
         Asserts.notNull(oldRecommend, "推荐信息未获取到");
 
         VideoInfo videoInfo = videoInfoMapper.getVideoInfoByAv(oldRecommend.getAv());
@@ -202,7 +203,7 @@ public class RecommendController extends BaseController {
         updateRecommend.setId(recommend.getId());
         updateRecommend.setStatus(1);
         updateRecommend.setIssueId(recommendVideo.getId());
-        recommendMapper.update(updateRecommend);
+        recommendMapper.updateRecommendSelective(updateRecommend);
 
         return new BaseModel("使用成功",true);
     }

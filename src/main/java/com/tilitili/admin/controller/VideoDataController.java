@@ -6,7 +6,7 @@ import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.VideoDataMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

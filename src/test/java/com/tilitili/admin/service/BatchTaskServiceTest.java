@@ -7,7 +7,7 @@ import com.tilitili.common.emnus.TaskType;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
+import com.tilitili.common.mapper.rank.BatchTaskMapper;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

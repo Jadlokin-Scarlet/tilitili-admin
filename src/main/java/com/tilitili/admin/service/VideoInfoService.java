@@ -6,8 +6,8 @@ import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.manager.VideoInfoManager;
-import com.tilitili.common.mapper.tilitili.VideoDataMapper;
-import com.tilitili.common.mapper.tilitili.VideoInfoMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
+import com.tilitili.common.mapper.rank.VideoInfoMapper;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;

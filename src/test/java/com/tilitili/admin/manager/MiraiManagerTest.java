@@ -2,7 +2,7 @@ package com.tilitili.admin.manager;
 
 import com.tilitili.common.StartApplication;
 import com.tilitili.common.manager.MiraiManager;
-import com.tilitili.common.mapper.tilitili.*;
+import com.tilitili.common.mapper.rank.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -5,7 +5,7 @@ import com.tilitili.admin.entity.VideoDataFileItem;
 import com.tilitili.admin.utils.MathUtil;
 import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.mapper.tilitili.VideoDataMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

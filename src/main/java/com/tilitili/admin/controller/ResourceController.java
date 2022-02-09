@@ -17,9 +17,9 @@ import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.manager.RecommendManager;
-import com.tilitili.common.mapper.tilitili.RecommendMapper;
-import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.RecommendMapper;
+import com.tilitili.common.mapper.rank.RecommendTalkMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +120,7 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setSorter("sort_num", "desc");
+        query.setSorter("sort_num").setSorted("desc");
         int total = recommendManager.countUseRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
@@ -133,7 +133,7 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setSorter("sort_num", "desc");
+        query.setSorter("sort_num").setSorted("desc");
         int total = recommendManager.countSelfRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getSelfRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
@@ -142,7 +142,7 @@ public class ResourceController extends BaseController {
     @GetMapping("/recommend/text")
     @ResponseBody
     public BaseModel<?> getRecommendText(Long av) {
-        Recommend recommend = recommendMapper.getByAv(av);
+        Recommend recommend = recommendMapper.getNormalRecommendByAv(av);
         return BaseModel.success(recommend.getText());
     }
 
@@ -153,9 +153,9 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setStatus(0).setSorter("id", "asc");
-        int total = recommendTalkMapper.count(query);
-        List<RecommendTalk> recommendTalkList = recommendTalkMapper.list(query);
+        query.setStatus(0).setSorter("id").setSorted("asc");
+        int total = recommendTalkMapper.countRecommendTalkByCondition(query);
+        List<RecommendTalk> recommendTalkList = recommendTalkMapper.getRecommendTalkByCondition(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendTalkList);
     }
 

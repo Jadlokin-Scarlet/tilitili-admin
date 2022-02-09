@@ -4,9 +4,9 @@ import com.tilitili.admin.entity.count.sub.TopTagCount;
 import com.tilitili.common.entity.VideoTag;
 import com.tilitili.common.entity.dto.TagRelationGroup;
 import com.tilitili.common.entity.query.VideoTagQuery;
-import com.tilitili.common.mapper.tilitili.TagMapper;
-import com.tilitili.common.mapper.tilitili.VideoDataMapper;
-import com.tilitili.common.mapper.tilitili.VideoTagRelationMapper;
+import com.tilitili.common.mapper.rank.TagMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
+import com.tilitili.common.mapper.rank.VideoTagRelationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

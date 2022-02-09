@@ -6,7 +6,7 @@ import com.tilitili.common.entity.VideoData;
 import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
 import com.tilitili.common.manager.VideoDataManager;
-import com.tilitili.common.mapper.tilitili.VideoDataMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

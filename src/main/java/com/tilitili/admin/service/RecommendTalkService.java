@@ -4,8 +4,8 @@ import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.RecommendTalk;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.manager.RecommendTalkManager;
-import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.RecommendTalkMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +32,8 @@ public class RecommendTalkService {
 
     public String getTotalNewRecommendTalk(Integer type) {
         Integer issueId = recommendVideoMapper.getNew().getId();
-        RecommendTalkQuery query = new RecommendTalkQuery().setIssueId(issueId).setType(type).setStatus(0).setSorter("id", "asc");
-        List<RecommendTalk> recommendTalkList = recommendTalkMapper.list(query);
+        RecommendTalkQuery query = new RecommendTalkQuery().setIssueId(issueId).setType(type).setStatus(0).setSorter("id").setSorted("asc");
+        List<RecommendTalk> recommendTalkList = recommendTalkMapper.getRecommendTalkByCondition(query);
         return recommendTalkList.stream().map(this::mapRecommendTalkToString).collect(Collectors.joining("\n"));
     }
 

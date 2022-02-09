@@ -1,15 +1,17 @@
 package com.tilitili.admin.service;
 
+import com.tilitili.admin.entity.view.RecommendVideoView;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.query.RecommendVideoQuery;
 import com.tilitili.common.entity.view.resource.RecommendVideoIssueResource;
 import com.tilitili.common.entity.view.resource.Resource;
-import com.tilitili.common.mapper.tilitili.RecommendMapper;
-import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.RecommendMapper;
+import com.tilitili.common.mapper.rank.RecommendTalkMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,21 +33,32 @@ public class RecommendVideoService {
     }
 
     public List<RecommendVideo> list(RecommendVideoQuery query) {
-        return recommendVideoMapper.list(query).stream().peek(recommendVideo -> {
+        return recommendVideoMapper.getRecommendVideoByCondition(query).stream().map(recommendVideo -> {
             Integer issueId = recommendVideo.getId();
-            List<Recommend> recommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(0).setStatus(1).setSorter("sort_num", "desc"));
-            recommendVideo.setRecommendList(recommendList);
-            recommendVideo.setRecommendNumber(recommendList.size());
-            List<Recommend> selfRecommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(1).setStatus(1).setSorter("sort_num", "desc"));
-            recommendVideo.setSelfRecommendList(selfRecommendList);
-            recommendVideo.setSelfRecommendNumber(selfRecommendList.size());
-            boolean hasTalk = ! recommendTalkMapper.list(new RecommendTalkQuery().setIssueId(issueId).setStatus(0).setPageSize(1)).isEmpty();
-            recommendVideo.setHasTalk(hasTalk);
+            List<RecommendDTO> recommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(0).setStatus(1).setSorter("sort_num").setSorted("desc"));
+            List<RecommendDTO> selfRecommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(1).setStatus(1).setSorter("sort_num").setSorted("desc"));
+            boolean hasTalk = ! recommendTalkMapper.getRecommendTalkByCondition(new RecommendTalkQuery().setIssueId(issueId).setStatus(0).setPageSize(1)).isEmpty();
+
+            RecommendVideoView result = new RecommendVideoView();
+            result.setId(issueId);
+            result.setName(recommendVideo.getName());
+            result.setCreateTime(recommendVideo.getCreateTime());
+            result.setUpdateTime(recommendVideo.getUpdateTime());
+            result.setType(recommendVideo.getType());
+            result.setStatus(recommendVideo.getStatus());
+            result.setIssue(recommendVideo.getIssue());
+
+            result.setRecommendList(recommendList);
+            result.setRecommendNumber(recommendList.size());
+            result.setSelfRecommendList(selfRecommendList);
+            result.setSelfRecommendNumber(selfRecommendList.size());
+            result.setHasTalk(hasTalk);
+            return result;
         }).collect(Collectors.toList());
     }
 
     public List<Resource> listIssue() {
-        List<RecommendVideo> recommendVideoList = recommendVideoMapper.list(new RecommendVideoQuery().setStatus(0).setPageSize(1000));
+        List<RecommendVideo> recommendVideoList = recommendVideoMapper.getRecommendVideoByCondition(new RecommendVideoQuery().setStatus(0).setPageSize(1000));
         return recommendVideoList.stream().filter(Objects::nonNull).map(RecommendVideoIssueResource::new).collect(Collectors.toList());
     }
 }

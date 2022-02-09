@@ -5,10 +5,11 @@ import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.Owner;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.manager.RecommendManager;
-import com.tilitili.common.mapper.tilitili.*;
+import com.tilitili.common.mapper.rank.*;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,8 @@ public class RecommendService {
         }).collect(Collectors.toList());
     }
 
-    public void supplementRecommend(List<Recommend> recommendList) {
-        for (Recommend recommend : recommendList) {
+    public void supplementRecommend(List<RecommendDTO> recommendList) {
+        for (RecommendDTO recommend : recommendList) {
             if (recommend.getIssueId() != null) {
                 RecommendVideo recommendVideo = recommendVideoMapper.getById(recommend.getIssueId());
                 recommend.setIssueName(recommendVideo.getName());
@@ -67,7 +68,7 @@ public class RecommendService {
             String videoType = recommend.getVideoType();
             String pubTime = recommend.getPubTime();
 
-            Admin admin = adminMapper.getByName(operator);
+            Admin admin = adminMapper.getNormalAdminByName(operator);
 
             String face = null;
             if (admin != null) {
@@ -140,7 +141,7 @@ public class RecommendService {
     }
 
     public void unUseRecommend(Long id) {
-        Recommend recommend = recommendMapper.getById(id);
+        Recommend recommend = recommendMapper.getNormalRecommendById(id);
         if (recommend == null || recommend.getStatus() == -1) {
             return;
         }
@@ -149,6 +150,6 @@ public class RecommendService {
         updateRecommend.setId(id);
         updateRecommend.setStatus(0);
         updateRecommend.setIssueId(-1);
-        recommendMapper.update(updateRecommend);
+        recommendMapper.updateRecommendSelective(updateRecommend);
     }
 }

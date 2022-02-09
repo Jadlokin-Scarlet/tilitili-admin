@@ -3,7 +3,7 @@ package com.tilitili.admin.interceptor;
 import com.google.gson.Gson;
 import com.tilitili.common.entity.Admin;
 import com.tilitili.common.entity.view.BaseModel;
-import com.tilitili.common.mapper.tilitili.AdminMapper;
+import com.tilitili.common.mapper.rank.AdminMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -59,7 +59,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-        Admin oldAdmin = adminMapper.getById(admin.getId());
+        Admin oldAdmin = adminMapper.getAdminById(admin.getId());
 
         if (oldAdmin == null) {
             this.returnResp(response,new BaseModel("请重新登录"));

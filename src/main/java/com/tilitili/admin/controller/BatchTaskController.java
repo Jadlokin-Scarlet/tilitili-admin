@@ -6,7 +6,7 @@ import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.BatchTaskMapper;
+import com.tilitili.common.mapper.rank.BatchTaskMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

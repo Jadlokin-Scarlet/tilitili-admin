@@ -1,14 +1,15 @@
 package com.tilitili.admin.controller;
 
 import com.google.common.collect.ImmutableMap;
+import com.tilitili.admin.entity.view.RecommendTalkView;
 import com.tilitili.admin.service.RecommendTalkService;
 import com.tilitili.common.entity.RecommendTalk;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.RecommendTalkMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.RecommendTalkMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,8 @@ public class RecommendTalkController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        int total = recommendTalkMapper.count(query);
-        List<RecommendTalk> list = recommendTalkMapper.list(query);
+        int total = recommendTalkMapper.countRecommendTalkByCondition(query);
+        List<RecommendTalk> list = recommendTalkMapper.getRecommendTalkByCondition(query);
         Map<Object, Object> data = ImmutableMap.of(
                 "op", recommendTalkService.getTotalNewRecommendTalk(1),
                 "ed", recommendTalkService.getTotalNewRecommendTalk(3)
@@ -51,7 +52,7 @@ public class RecommendTalkController extends BaseController {
     @PatchMapping("")
     @ResponseBody
     @Transactional
-    public BaseModel batchUpdateRecommendTalk(@RequestBody RecommendTalk recommendTalk) {
+    public BaseModel batchUpdateRecommendTalk(@RequestBody RecommendTalkView recommendTalk) {
         Asserts.notNull(recommendTalk.getOp(), "op未获取到");
         Asserts.notNull(recommendTalk.getEd(), "ed未获取到");
         recommendTalkService.batchUpdate(recommendTalk.getOp(), 1);

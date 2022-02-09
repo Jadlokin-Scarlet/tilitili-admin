@@ -6,7 +6,7 @@ import com.tilitili.common.entity.VideoTag;
 import com.tilitili.common.entity.query.VideoTagQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.VideoTagRelationMapper;
+import com.tilitili.common.mapper.rank.VideoTagRelationMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.common.entity.Admin;
-import com.tilitili.common.mapper.tilitili.AdminMapper;
+import com.tilitili.common.mapper.rank.AdminMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class AdminService {
     }
 
     public Admin login(String userName, String password) {
-        Admin admin = adminMapper.getByName(userName);
+        Admin admin = adminMapper.getNormalAdminByName(userName);
         Asserts.isTrue(admin != null, "账号不存在");
         Assert.isTrue(Objects.equals(DigestUtils.md5DigestAsHex(password.getBytes()), admin.getPassword()), "密码错误");
         return admin;

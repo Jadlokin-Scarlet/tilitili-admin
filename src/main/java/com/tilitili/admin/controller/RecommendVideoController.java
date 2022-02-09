@@ -4,12 +4,13 @@ import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.RecommendVideoService;
 import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
+import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.query.RecommendVideoQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.RecommendMapper;
-import com.tilitili.common.mapper.tilitili.RecommendVideoMapper;
+import com.tilitili.common.mapper.rank.RecommendMapper;
+import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,7 @@ public class RecommendVideoController extends BaseController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getRecommendVideoByCondition(RecommendVideoQuery query) {
-        int count = recommendVideoMapper.count(query);
+        int count = recommendVideoMapper.countRecommendVideoByCondition(query);
         List<RecommendVideo> recommendVideoList = recommendVideoService.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendVideoList);
     }
@@ -45,7 +46,7 @@ public class RecommendVideoController extends BaseController {
     @PostMapping("")
     @ResponseBody
     public BaseModel addRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
-        recommendVideoMapper.insert(recommendVideo);
+        recommendVideoMapper.addRecommendVideoSelective(recommendVideo);
         return BaseModel.success();
     }
 
@@ -60,12 +61,12 @@ public class RecommendVideoController extends BaseController {
         }
         if (Objects.equals(recommendVideo.getStatus(), -1)) {
             RecommendQuery recommendQuery = new RecommendQuery().setIssueId(recommendVideo.getId()).setStatus(1);
-            List<Recommend> recommendList = recommendMapper.list(recommendQuery);
-            for (Recommend recommend : recommendList) {
+            List<RecommendDTO> recommendList = recommendMapper.list(recommendQuery);
+            for (RecommendDTO recommend : recommendList) {
                 recommendService.unUseRecommend(recommend.getId());
             }
         }
-        recommendVideoMapper.update(recommendVideo);
+        recommendVideoMapper.updateRecommendVideoSelective(recommendVideo);
         return BaseModel.success();
     }
 

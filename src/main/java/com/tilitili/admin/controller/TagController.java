@@ -5,7 +5,7 @@ import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.TagQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
-import com.tilitili.common.mapper.tilitili.TagMapper;
+import com.tilitili.common.mapper.rank.TagMapper;
 import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class TagController {
     @GetMapping("")
     @ResponseBody
     public BaseModel getTagByCondition(TagQuery query) {
-        int count = tagMapper.count(query);
-        List<Tag> tagList = tagMapper.list(query);
+        int count = tagMapper.countTagByCondition(query);
+        List<Tag> tagList = tagMapper.getTagByCondition(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), tagList);
     }
 
@@ -43,7 +43,7 @@ public class TagController {
         Asserts.notNull(tag.getId(), "参数有误");
         Asserts.notNull(tag.getType(), "参数有误");
 
-        tagMapper.update(tag);
+        tagMapper.updateTagSelective(tag);
         return new BaseModel("更新tag成功", true);
     }
 }
