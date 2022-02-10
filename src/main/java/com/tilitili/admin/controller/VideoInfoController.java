@@ -85,7 +85,7 @@ public class VideoInfoController extends BaseController {
     public BaseModel<?> updateExternalOwner(@RequestBody VideoInfo videoInfo) {
         Asserts.notNull(videoInfo, "参数异常");
         Asserts.notNull(videoInfo.getAv(), "参数异常");
-        Asserts.notNull(videoInfo.getExternalOwner(), "参数异常");
+        if (videoInfo.getExternalOwner() == null) videoInfo.setExternalOwner("");
         videoInfoMapper.updateExternalOwner(videoInfo.getAv(), videoInfo.getExternalOwner());
         return new BaseModel<>("更新成功", true);
     }
