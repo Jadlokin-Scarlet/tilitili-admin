@@ -69,7 +69,7 @@ public class BatchTaskService {
         }).collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(transactionManager = "rankTransactionManager")
     public void deleteBatchTask(Long batchId) {
         batchTaskMapper.delete(batchId);
         taskMapper.deleteByBatchId(batchId);

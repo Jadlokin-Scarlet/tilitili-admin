@@ -58,7 +58,7 @@ public class RecommendVideoService {
     }
 
     public List<Resource> listIssue() {
-        List<RecommendVideo> recommendVideoList = recommendVideoMapper.getRecommendVideoByCondition(new RecommendVideoQuery().setStatus(0).setPageSize(1000));
+        List<RecommendVideo> recommendVideoList = recommendVideoMapper.getRecommendVideoByCondition(new RecommendVideoQuery().setStatus(0).setPageSize(1000).setSorter("id").setSorted("desc"));
         return recommendVideoList.stream().filter(Objects::nonNull).map(RecommendVideoIssueResource::new).collect(Collectors.toList());
     }
 }

@@ -51,7 +51,7 @@ public class RecommendTalkController extends BaseController {
 
     @PatchMapping("")
     @ResponseBody
-    @Transactional
+    @Transactional(transactionManager = "rankTransactionManager")
     public BaseModel batchUpdateRecommendTalk(@RequestBody RecommendTalkView recommendTalk) {
         Asserts.notNull(recommendTalk.getOp(), "op未获取到");
         Asserts.notNull(recommendTalk.getEd(), "ed未获取到");

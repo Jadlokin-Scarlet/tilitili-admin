@@ -107,7 +107,7 @@ public class RecommendController extends BaseController {
         if (recommend.getBv() != null) {
             recommend.setAv(BilibiliUtil.converseBvToAv(recommend.getBv()));
         }
-
+        Asserts.notNull(recommend.getStatus(), "参数异常");
         Asserts.notNull(recommend.getAv(), "av号未获取到");
         Asserts.notNull(admin.getUserName(), "操作人未获取到");
 
@@ -126,15 +126,14 @@ public class RecommendController extends BaseController {
         }
         Asserts.isTrue(recommend.getStartTime() < recommend.getEndTime(), "开始时间应在结束时间之前");
 
-        if (recommend.getIssue() == null) {
-            RecommendVideo newVideo = recommendVideoMapper.getNew();
-            recommend.setIssueId(newVideo.getId());
-        } else if (recommend.getIssue() != null) {
-            RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
-            recommend.setIssueId(recommendVideo.getId());
-        }
-        if (recommend.getIssueId() != null) {
-            recommend.setStatus(1);
+        if (recommend.getStatus().equals(1)) {
+            if (recommend.getIssue() == null) {
+                RecommendVideo newVideo = recommendVideoMapper.getNew();
+                recommend.setIssueId(newVideo.getId());
+            } else if (recommend.getIssue() != null) {
+                RecommendVideo recommendVideo = recommendVideoMapper.getByIssue(recommend.getIssue());
+                recommend.setIssueId(recommendVideo.getId());
+            }
         }
 
         recommendMapper.addRecommendSelective(recommend);
@@ -157,10 +156,10 @@ public class RecommendController extends BaseController {
         }
 
         recommendMapper.updateRecommendSelective(recommend);
-        if (recommend.getExternalOwner() != null) {
-            Long av = recommend.getAv() != null? recommend.getAv(): old.getAv();
-            videoInfoMapper.updateExternalOwner(av, recommend.getExternalOwner());
-        }
+
+        String externalOwner = recommend.getExternalOwner() == null ? "" : recommend.getExternalOwner();
+        Long av = recommend.getAv() != null? recommend.getAv(): old.getAv();
+        videoInfoMapper.updateExternalOwner(av, externalOwner);
 
         return new BaseModel("更新成功",true);
     }

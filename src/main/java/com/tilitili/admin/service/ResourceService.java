@@ -114,7 +114,7 @@ public class ResourceService {
         return df.format(calendar.getTime());
     }
 
-    @Transactional
+    @Transactional(transactionManager = "rankTransactionManager")
     public void updateFlagResources(DispatchResourcesView resourcesView) {
         resourcesMapper.updateValueByType(ResourcesType.IS_STAFF_SHOW_1.value, resourcesView.getIsStaffShow1());
         resourcesMapper.updateValueByType(ResourcesType.IS_STAFF_SHOW_2.value, resourcesView.getIsStaffShow2());

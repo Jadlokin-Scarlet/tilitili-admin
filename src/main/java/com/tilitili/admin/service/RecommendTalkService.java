@@ -41,7 +41,7 @@ public class RecommendTalkService {
         return String.format("%s：%s（%s）", recommendTalk.getSpeaker(), recommendTalk.getText(), recommendTalk.getExpression());
     }
 
-    @Transactional
+    @Transactional(transactionManager = "rankTransactionManager")
     public void batchUpdate(String op, Integer type) {
         String area = type == 1? "OP": "ED";
         Integer issueId = recommendVideoMapper.getNew().getId();

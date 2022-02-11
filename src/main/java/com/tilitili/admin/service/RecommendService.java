@@ -145,11 +145,6 @@ public class RecommendService {
         if (recommend == null || recommend.getStatus() == -1) {
             return;
         }
-
-        Recommend updateRecommend = new Recommend();
-        updateRecommend.setId(id);
-        updateRecommend.setStatus(0);
-        updateRecommend.setIssueId(-1);
-        recommendMapper.updateRecommendSelective(updateRecommend);
+        recommendMapper.unUseRecommend(id);
     }
 }

@@ -1,8 +1,8 @@
 package com.tilitili.admin.entity.view;
 
-import com.tilitili.common.entity.query.BaseQuery;
+import com.tilitili.common.entity.query.base.BaseTableQuery;
 
-public class RedisQuery extends BaseQuery<RedisQuery> {
+public class RedisQuery extends BaseTableQuery<RedisQuery> {
     private String key;
     private String subKey;
 
