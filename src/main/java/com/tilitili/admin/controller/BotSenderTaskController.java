@@ -60,6 +60,7 @@ public class BotSenderTaskController extends BaseController {
 	}
 
 	@RequestMapping("/copyMapping")
+	@ResponseBody
 	public BaseModel<?> copyMapping(Long fromTaskId, Long toTaskId) {
 		Asserts.notNull(fromTaskId, "参数异常");
 		Asserts.notNull(toTaskId, "参数异常");
@@ -69,14 +70,14 @@ public class BotSenderTaskController extends BaseController {
 		Asserts.notNull(toTask, "参数异常");
 
 		List<BotSenderTaskMapping> fromMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(fromTaskId);
-		List<BotSenderTaskMapping> toMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(fromTaskId);
+		List<BotSenderTaskMapping> toMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(toTaskId);
 
 		for (BotSenderTaskMapping toMapping : toMappingList) {
 			botSenderTaskMappingMapper.deleteBotSenderTaskMappingById(toMapping.getId());
 		}
 
 		for (BotSenderTaskMapping fromMapping : fromMappingList) {
-			botSenderTaskMappingMapper.deleteBotSenderTaskMappingById(fromMapping.getId());
+			botSenderTaskMappingMapper.addBotSenderTaskMappingSelective(new BotSenderTaskMapping().setTaskId(toTaskId).setSenderId(fromMapping.getSenderId()));
 		}
 
 		return BaseModel.success();
