@@ -2,11 +2,14 @@ package com.tilitili.admin.controller;
 
 import com.google.common.collect.ImmutableMap;
 import com.tilitili.common.entity.BotSenderTaskMapping;
+import com.tilitili.common.entity.BotTask;
 import com.tilitili.common.entity.dto.BotSenderDTO;
 import com.tilitili.common.entity.query.BotSenderQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.mysql.BotSenderTaskMappingMapper;
+import com.tilitili.common.mapper.mysql.BotTaskMapper;
+import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +24,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/botSenderTask")
 public class BotSenderTaskController extends BaseController {
 	private final BotSenderTaskMappingMapper botSenderTaskMappingMapper;
+	private final BotTaskMapper botTaskMapper;
 
 	@Autowired
-	public BotSenderTaskController(BotSenderTaskMappingMapper botSenderTaskMappingMapper) {
+	public BotSenderTaskController(BotSenderTaskMappingMapper botSenderTaskMappingMapper, BotTaskMapper botTaskMapper) {
 		this.botSenderTaskMappingMapper = botSenderTaskMappingMapper;
+		this.botTaskMapper = botTaskMapper;
 	}
 
 	@RequestMapping("/list")
@@ -51,6 +56,30 @@ public class BotSenderTaskController extends BaseController {
 		} else if (!checked && botSenderTaskMapping != null) {
 			botSenderTaskMappingMapper.deleteBotSenderTaskMappingById(botSenderTaskMapping.getId());
 		}
+		return BaseModel.success();
+	}
+
+	@RequestMapping("/copyMapping")
+	@ResponseBody
+	public BaseModel<?> copyMapping(Long fromTaskId, Long toTaskId) {
+		Asserts.notNull(fromTaskId, "参数异常");
+		Asserts.notNull(toTaskId, "参数异常");
+		BotTask fromTask = botTaskMapper.getBotTaskById(fromTaskId);
+		BotTask toTask = botTaskMapper.getBotTaskById(toTaskId);
+		Asserts.notNull(fromTask, "参数异常");
+		Asserts.notNull(toTask, "参数异常");
+
+		List<BotSenderTaskMapping> fromMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(fromTaskId);
+		List<BotSenderTaskMapping> toMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(toTaskId);
+
+		for (BotSenderTaskMapping toMapping : toMappingList) {
+			botSenderTaskMappingMapper.deleteBotSenderTaskMappingById(toMapping.getId());
+		}
+
+		for (BotSenderTaskMapping fromMapping : fromMappingList) {
+			botSenderTaskMappingMapper.addBotSenderTaskMappingSelective(new BotSenderTaskMapping().setTaskId(toTaskId).setSenderId(fromMapping.getSenderId()));
+		}
+
 		return BaseModel.success();
 	}
 }

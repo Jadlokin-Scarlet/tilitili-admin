@@ -1,9 +1,7 @@
 package com.tilitili.admin.config;
 
 import com.tilitili.admin.interceptor.LoginInterceptor;
-import com.tilitili.admin.interceptor.RequestLoggingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
