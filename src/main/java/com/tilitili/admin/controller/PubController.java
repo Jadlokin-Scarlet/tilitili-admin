@@ -7,6 +7,7 @@ import com.tilitili.common.entity.view.bot.BotMessage;
 import com.tilitili.common.manager.BaiduManager;
 import com.tilitili.common.manager.BotManager;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -75,9 +76,9 @@ public class PubController extends BaseController{
     @PostMapping("/translate")
     @ResponseBody
     public BaseModel<String> translate(@RequestParam(required = false) String from, @RequestParam(required = false) String to, @RequestBody String text) {
-        if (from != null && to != null) {
+        if (StringUtils.isNotBlank(from) && StringUtils.isNotBlank(to)) {
             return BaseModel.success(baiduManager.translate(from, to, text));
-        } else if (to != null) {
+        } else if (StringUtils.isNotBlank(to)) {
             return BaseModel.success(baiduManager.translate(to, text));
         } else {
             return BaseModel.success(baiduManager.translate(text));
