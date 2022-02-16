@@ -22,8 +22,8 @@ import java.util.List;
 @Validated
 @Slf4j
 public class BatchTaskController extends BaseController {
-    private final BatchTaskMapper batchTaskMapper;
     private final BatchTaskService batchTaskService;
+    private final BatchTaskMapper batchTaskMapper;
 
     @Autowired
     public BatchTaskController(BatchTaskMapper batchTaskMapper, BatchTaskService batchTaskService) {
