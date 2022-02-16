@@ -74,7 +74,13 @@ public class PubController extends BaseController{
 
     @PostMapping("/translate")
     @ResponseBody
-    public BaseModel<String> translate(@RequestBody String text) {
-        return BaseModel.success(baiduManager.translate(text));
+    public BaseModel<String> translate(@RequestParam(required = false) String from, @RequestParam(required = false) String to, @RequestBody String text) {
+        if (from != null && to != null) {
+            return BaseModel.success(baiduManager.translate(from, to, text));
+        } else if (to != null) {
+            return BaseModel.success(baiduManager.translate(to, text));
+        } else {
+            return BaseModel.success(baiduManager.translate(text));
+        }
     }
 }
