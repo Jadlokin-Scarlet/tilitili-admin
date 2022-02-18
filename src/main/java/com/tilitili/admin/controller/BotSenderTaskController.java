@@ -3,6 +3,7 @@ package com.tilitili.admin.controller;
 import com.google.common.collect.ImmutableMap;
 import com.tilitili.admin.entity.view.BotTaskView;
 import com.tilitili.common.entity.BotKey;
+import com.tilitili.common.entity.BotSender;
 import com.tilitili.common.entity.BotSenderTaskMapping;
 import com.tilitili.common.entity.BotTask;
 import com.tilitili.common.entity.dto.BotSenderDTO;
@@ -11,6 +12,7 @@ import com.tilitili.common.entity.query.BotTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.mysql.BotKeyMapper;
+import com.tilitili.common.mapper.mysql.BotSenderMapper;
 import com.tilitili.common.mapper.mysql.BotSenderTaskMappingMapper;
 import com.tilitili.common.mapper.mysql.BotTaskMapper;
 import com.tilitili.common.utils.Asserts;
@@ -31,12 +33,14 @@ public class BotSenderTaskController extends BaseController {
 	private final BotSenderTaskMappingMapper botSenderTaskMappingMapper;
 	private final BotTaskMapper botTaskMapper;
 	private final BotKeyMapper botKeyMapper;
+	private final BotSenderMapper botSenderMapper;
 
 	@Autowired
-	public BotSenderTaskController(BotSenderTaskMappingMapper botSenderTaskMappingMapper, BotTaskMapper botTaskMapper, BotKeyMapper botKeyMapper) {
+	public BotSenderTaskController(BotSenderTaskMappingMapper botSenderTaskMappingMapper, BotTaskMapper botTaskMapper, BotKeyMapper botKeyMapper, BotSenderMapper botSenderMapper) {
 		this.botSenderTaskMappingMapper = botSenderTaskMappingMapper;
 		this.botTaskMapper = botTaskMapper;
 		this.botKeyMapper = botKeyMapper;
+		this.botSenderMapper = botSenderMapper;
 	}
 
 	@RequestMapping("/list")
@@ -121,6 +125,27 @@ public class BotSenderTaskController extends BaseController {
 			}
 			return BaseModel.fail();
 		}
+		return BaseModel.success();
+	}
+
+	@RequestMapping("/addMappingToGuild")
+	@ResponseBody
+	public BaseModel<?> addMappingToGuild(Long botTaskId, String guildId) {
+		Asserts.notNull(botTaskId, "参数异常");
+		Asserts.notNull(guildId, "参数异常");
+
+		List<BotSenderTaskMapping> oldMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(botTaskId);
+		List<Long> oldSenderIdList = oldMappingList.stream().map(BotSenderTaskMapping::getSenderId).collect(Collectors.toList());
+
+		List<BotSender> channelList = botSenderMapper.getBotSenderByCondition(new BotSenderQuery().setGuildId(guildId).setStatus(0));
+		List<Long> channelSenderIdList = channelList.stream().map(BotSender::getId).collect(Collectors.toList());
+
+		channelSenderIdList.removeAll(oldSenderIdList);
+
+		for (Long senderId : channelSenderIdList) {
+			botSenderTaskMappingMapper.addBotSenderTaskMappingSelective(new BotSenderTaskMapping().setTaskId(botTaskId).setSenderId(senderId));
+		}
+
 		return BaseModel.success();
 	}
 }
