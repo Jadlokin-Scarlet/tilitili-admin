@@ -130,17 +130,21 @@ public class BotSenderTaskController extends BaseController {
 
 	@RequestMapping("/addMappingToGuild")
 	@ResponseBody
-	public BaseModel<?> addMappingToGuild(Long botTaskId, String guildId) {
-		Asserts.notNull(botTaskId, "参数异常");
+	public BaseModel<?> addMappingToGuild(String nick, String guildId) {
+		Asserts.notNull(nick, "参数异常");
 		Asserts.notNull(guildId, "参数异常");
-
+		BotTask botTask = botTaskMapper.getBotTaskByNick(nick);
+		Asserts.notNull(botTask, "找不到task");
+		Long botTaskId = botTask.getId();
 		List<BotSenderTaskMapping> oldMappingList = botSenderTaskMappingMapper.getBotSenderTaskMappingByTaskId(botTaskId);
 		List<Long> oldSenderIdList = oldMappingList.stream().map(BotSenderTaskMapping::getSenderId).collect(Collectors.toList());
 
 		List<BotSender> channelList = botSenderMapper.getBotSenderByCondition(new BotSenderQuery().setGuildId(guildId).setStatus(0));
+		Asserts.notEmpty(channelList, "找不到子频道");
 		List<Long> channelSenderIdList = channelList.stream().map(BotSender::getId).collect(Collectors.toList());
 
 		channelSenderIdList.removeAll(oldSenderIdList);
+		Asserts.notEmpty(channelSenderIdList, "无可新增子频道");
 
 		for (Long senderId : channelSenderIdList) {
 			botSenderTaskMappingMapper.addBotSenderTaskMappingSelective(new BotSenderTaskMapping().setTaskId(botTaskId).setSenderId(senderId));
