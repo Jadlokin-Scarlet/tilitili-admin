@@ -10,6 +10,7 @@ import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,8 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/api/pub/qq")
 public class PubController extends BaseController{
+    @Value("${mirai.master-qq}")
+    private Long MASTER_QQ;
     private final BaiduManager baiduManager;
     private final BotManager botManager;
     private String lastMessage = null;
@@ -35,15 +38,23 @@ public class PubController extends BaseController{
 
     @PostMapping("/group/{group}")
     @ResponseBody
-    public BaseModel sendMessage(@RequestBody String message, @PathVariable Long group) {
+    public BaseModel<?> sendMessage(@RequestBody String message, @PathVariable Long group) {
         Asserts.notBlank(message, "消息为空");
         botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(group));
         return BaseModel.success();
     }
 
+    @PostMapping("/friend")
+    @ResponseBody
+    public BaseModel<?> sendFriendMessage(@RequestBody String message) {
+        Asserts.notBlank(message, "消息为空");
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(MASTER_QQ));
+        return BaseModel.success();
+    }
+
     @PostMapping
     @ResponseBody
-    public BaseModel sendMessage(@RequestBody String message) {
+    public BaseModel<?> sendMessage(@RequestBody String message) {
         Asserts.notBlank(message, "消息为空");
         botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(GroupEmum.RANK_GROUP.value));
         return BaseModel.success();
