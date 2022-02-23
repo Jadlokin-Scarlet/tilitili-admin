@@ -5,12 +5,14 @@ import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.emnus.RedisKeyEnum;
 import com.tilitili.common.entity.VideoInfo;
+import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
 import com.tilitili.common.mapper.rank.AdminMapper;
 import com.tilitili.common.mapper.rank.BatchTaskMapper;
+import com.tilitili.common.mapper.rank.VideoDataMapper;
 import com.tilitili.common.mapper.rank.VideoInfoMapper;
 import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -61,6 +64,8 @@ public class MainTest {
     private RedisService redisService;
     @Resource
     private VideoInfoMapper videoInfoMapper;
+    @Resource
+    private VideoDataMapper videoDataMapper;
 
     @Test
     public void test4() {
@@ -96,6 +101,7 @@ public class MainTest {
 
     @Test
     public void test3() {
-        videoInfoMapper.updateVideoInfoSelective(new VideoInfo().setAv(849784184L).setIsDelete(true));
+        List<VideoDTO> videoDTOList = videoDataMapper.listForDataFile(videoDataMapper.getNewIssue());
+        System.out.println(videoDataMapper.getNewIssue());
     }
 }

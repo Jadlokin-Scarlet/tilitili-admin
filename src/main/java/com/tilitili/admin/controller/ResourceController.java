@@ -116,6 +116,10 @@ public class ResourceController extends BaseController {
     @GetMapping("/recommend")
     @ResponseBody
     public BaseModel<PageModel<RecommendFileItem>> getRecommend(RecommendQuery query) {
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
@@ -129,6 +133,10 @@ public class ResourceController extends BaseController {
     @GetMapping("/selfRecommend")
     @ResponseBody
     public BaseModel<PageModel<RecommendFileItem>> getSelfRecommend(RecommendQuery query) {
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
@@ -149,6 +157,10 @@ public class ResourceController extends BaseController {
     @GetMapping("/recommendTalk")
     @ResponseBody
     public BaseModel<PageModel<RecommendTalk>> getRecommendTalk(RecommendTalkQuery query) {
+        if (query.getSorted() == null) query.setSorted("desc");
+        if (query.getPageNo() == null) query.setPageNo(1);
+        if (query.getPageSize() == null) query.setPageSize(20);
+
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
