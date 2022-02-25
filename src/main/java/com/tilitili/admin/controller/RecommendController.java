@@ -166,6 +166,10 @@ public class RecommendController extends BaseController {
     public BaseModel updateRecommend(@RequestBody RecommendDTO recommend) {
         Asserts.notNull(recommend.getId(), "id未获取到");
 
+        if (recommend.getText() == null) {
+            recommend.setText("");
+        }
+
         Recommend old = recommendMapper.getNormalRecommendById(recommend.getId());
         if (recommend.getStartTime() != null || recommend.getEndTime() != null) {
             Integer startTime = recommend.getStartTime() != null? recommend.getStartTime(): old.getStartTime();
