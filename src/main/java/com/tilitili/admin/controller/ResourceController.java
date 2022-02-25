@@ -124,7 +124,7 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setSorter("sort_num").setSorted("desc");
+        query.setSorter("sort_num").setSorted("desc").setSubSorter("id").setSubSorted("asc");
         int total = recommendManager.countUseRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);
@@ -141,7 +141,7 @@ public class ResourceController extends BaseController {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
         }
-        query.setSorter("sort_num").setSorted("desc");
+        query.setSorter("sort_num").setSorted("desc").setSubSorter("id").setSubSorted("asc");
         int total = recommendManager.countSelfRecommend(query);
         List<RecommendFileItem> recommendList = recommendService.getSelfRecommendFile(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), recommendList);

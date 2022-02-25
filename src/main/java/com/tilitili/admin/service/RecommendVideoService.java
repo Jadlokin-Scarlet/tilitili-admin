@@ -35,8 +35,8 @@ public class RecommendVideoService {
     public List<RecommendVideo> list(RecommendVideoQuery query) {
         return recommendVideoMapper.getRecommendVideoByCondition(query).stream().map(recommendVideo -> {
             Integer issueId = recommendVideo.getId();
-            List<RecommendDTO> recommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(0).setStatus(1).setSorter("sort_num").setSorted("desc"));
-            List<RecommendDTO> selfRecommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(1).setStatus(1).setSorter("sort_num").setSorted("desc"));
+            List<RecommendDTO> recommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(0).setStatus(1).setSorter("sort_num").setSorted("desc").setSubSorter("id").setSubSorted("asc"));
+            List<RecommendDTO> selfRecommendList = recommendMapper.list(new RecommendQuery().setIssueId(issueId).setType(1).setStatus(1).setSorter("sort_num").setSorted("desc").setSubSorter("id").setSubSorted("asc"));
             boolean hasTalk = ! recommendTalkMapper.getRecommendTalkByCondition(new RecommendTalkQuery().setIssueId(issueId).setStatus(0).setPageSize(1)).isEmpty();
 
             RecommendVideoView result = new RecommendVideoView();
