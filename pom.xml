@@ -64,6 +64,12 @@
             <scope>provided</scope>
             <version>1.18.20</version>
         </dependency>
+        <!-- mvn install:install-file -Dfile=/Users/admin/Documents/libjwoff2.jar -DgroupId=com.typoface -DartifactId=jwoff2 -Dversion=1.0.0 -Dpackaging=jar -->
+        <dependency>
+            <groupId>com.typoface</groupId>
+            <artifactId>jwoff2</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
