@@ -1,8 +1,13 @@
 From hub.c.163.com/library/java:8-jre
 
-COPY lib /usr/lib/
+COPY libAquesTalk10.so.1 /usr/lib/
+COPY libAqKanji2Koe.so.4 /usr/lib/
+COPY libAqUsrDic.so.4 /usr/lib/
+COPY libjwoff2.so /usr/lib/
 
 CMD ldconfig
+
+ENV LD_LIBRARY_PATH=/usr/lib/
 
 COPY silk /home/admin/silk/
 
