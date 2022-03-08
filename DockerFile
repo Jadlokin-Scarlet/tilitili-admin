@@ -7,8 +7,6 @@ COPY libjwoff2.so /usr/lib/
 
 CMD ldconfig
 
-ENV LD_LIBRARY_PATH=/usr/lib/
-
 COPY silk /home/admin/silk/
 
 ADD target/*.jar tilitili-admin.jar
