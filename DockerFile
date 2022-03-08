@@ -1,4 +1,4 @@
-From openjdk:11-jre-slim-buster
+From hub.c.163.com/library/java:11-jre
 
 COPY libAquesTalk10.so.1 /usr/lib/
 COPY libAqKanji2Koe.so.4 /usr/lib/
