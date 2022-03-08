@@ -26,7 +26,6 @@
     </repositories>
 
     <properties>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>4.3.12.RELEASE</org.springframework.version>
         <tf8.basic.version>4.0.1.9</tf8.basic.version>
