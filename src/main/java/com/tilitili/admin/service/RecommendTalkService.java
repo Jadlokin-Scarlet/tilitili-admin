@@ -3,6 +3,7 @@ package com.tilitili.admin.service;
 import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.RecommendTalk;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
+import com.tilitili.common.exception.AssertException;
 import com.tilitili.common.manager.RecommendTalkManager;
 import com.tilitili.common.mapper.rank.RecommendTalkMapper;
 import com.tilitili.common.mapper.rank.RecommendVideoMapper;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,6 +65,7 @@ public class RecommendTalkService {
                 case "灵梦": Asserts.isTrue(reimuExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);break;
                 case "早苗": Asserts.isTrue(sanaeExpression.contains(expression), "%s第%s行，%s没有表情%s", area, index, speaker, expression);break;
                 case "灵梦&早苗": Asserts.isTrue(reimuExpression.contains(expression) && sanaeExpression.contains(expression), "%s第%s行，灵梦或早苗没有表情%s", area, index, speaker, expression);break;
+                default: throw new AssertException("不对劲");
             }
 
             RecommendTalk recommendTalk = new RecommendTalk().setSpeaker(speaker).setText(text).setExpression(expression).setType(type).setIssueId(issueId);

@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 @EnableAutoConfiguration
 public class MiraiManagerTest {
     @Value("${mirai.master-qq}")
-    private Long MASTER_QQ;
+    private Long masterQQ;
     @Resource
     private MiraiManager miraiManager;
     @Resource

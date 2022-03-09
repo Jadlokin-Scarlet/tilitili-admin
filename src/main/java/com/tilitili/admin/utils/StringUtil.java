@@ -1,5 +1,7 @@
 package com.tilitili.admin.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,7 +11,12 @@ import java.util.stream.Stream;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
+@Slf4j
 public class StringUtil {
+
+    private StringUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static List<Long> splitNumberList(String listStr) {
         if (isBlank(listStr)) {
@@ -56,4 +63,12 @@ public class StringUtil {
         return null;
     }
 
+    public static Long parseLongIfNumber(String str) {
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException e) {
+            log.error(str + " is not Number!");
+            return null;
+        }
+    }
 }

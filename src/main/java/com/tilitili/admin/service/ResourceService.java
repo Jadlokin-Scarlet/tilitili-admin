@@ -44,10 +44,6 @@ public class ResourceService {
         return resourceMap.getOrDefault(resourceName, Collections::emptyList).get();
     }
 
-//    public String getFlagFileResources() {
-//        return getFlagResources().toString();
-//    }
-
     public DispatchResourcesView getFlagResources() {
         DispatchResourcesView view = new DispatchResourcesView();
         view.setIsStaffShow1(resourcesMapper.getValueByType(ResourcesType.IS_STAFF_SHOW_1.value));

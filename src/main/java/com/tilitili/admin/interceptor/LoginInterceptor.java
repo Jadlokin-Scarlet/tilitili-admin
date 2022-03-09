@@ -71,10 +71,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-//        if (! HttpMethod.GET.matches(method)) {
-//            Log.info("request %s %s params: %s", method, request.getRequestURL(), request.());
-//        }
-
         return true;
     }
 

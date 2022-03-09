@@ -13,14 +13,15 @@ import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
+import com.tilitili.common.entity.view.resource.Resource;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.rank.RecommendMapper;
 import com.tilitili.common.mapper.rank.RecommendTalkMapper;
 import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,7 +65,7 @@ public class ResourceController extends BaseController {
         needResourcesList.forEach(
                 resourceName -> resourceMap.put(resourceName, resourceService.getResource(resourceName))
         );
-        return new BaseModel<>("查询成功", true, resourceMap);
+        return BaseModel.success(resourceMap);
     }
 
     @GetMapping("/flag")
@@ -75,21 +76,21 @@ public class ResourceController extends BaseController {
         flagResource.setMusicOwner("社团: " + flagResource.getMusicOwner());
         flagResource.setMusicCard("专辑: " + flagResource.getMusicCard());
         flagResource.setMusicSource("原曲: " + flagResource.getMusicSource());
-        return new BaseModel<>("success", true, flagResource);
+        return BaseModel.success(flagResource);
     }
 
     @GetMapping("/recommendFlag")
     @ResponseBody
     public BaseModel<?> getRecommendFlag() {
         DispatchRecommendResourcesView flagResource = resourceService.getRecommendFlagResources();
-        return new BaseModel<>("success", true, flagResource);
+        return BaseModel.success(flagResource);
     }
 
     @GetMapping("/adminFlag")
     @ResponseBody
     public BaseModel<?> getAdminFlag() {
         DispatchResourcesView flagResource = resourceService.getFlagResources();
-        return new BaseModel<>("success", true, flagResource);
+        return BaseModel.success(flagResource);
     }
 
     @GetMapping("/videoDataFile")
@@ -116,9 +117,7 @@ public class ResourceController extends BaseController {
     @GetMapping("/recommend")
     @ResponseBody
     public BaseModel<PageModel<RecommendFileItem>> getRecommend(RecommendQuery query) {
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
@@ -133,9 +132,7 @@ public class ResourceController extends BaseController {
     @GetMapping("/selfRecommend")
     @ResponseBody
     public BaseModel<PageModel<RecommendFileItem>> getSelfRecommend(RecommendQuery query) {
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
@@ -157,9 +154,7 @@ public class ResourceController extends BaseController {
     @GetMapping("/recommendTalk")
     @ResponseBody
     public BaseModel<PageModel<RecommendTalk>> getRecommendTalk(RecommendTalkQuery query) {
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();

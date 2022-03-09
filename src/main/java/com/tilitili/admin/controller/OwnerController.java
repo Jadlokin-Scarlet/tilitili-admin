@@ -1,12 +1,12 @@
 package com.tilitili.admin.controller;
 
 import com.tilitili.common.entity.Owner;
-import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.rank.OwnerMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,9 +33,7 @@ public class OwnerController {
     public BaseModel<PageModel<Owner>> getOwnerByCondition(OwnerQuery query) {
         Asserts.notNull(query, "参数异常");
 
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = ownerMapper.countOwnerByCondition(query);
         List<Owner> ownerList = ownerMapper.getOwnerByCondition(query);

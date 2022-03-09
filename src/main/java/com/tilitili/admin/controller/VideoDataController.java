@@ -4,20 +4,18 @@ import com.tilitili.admin.entity.count.VideoDataCountResponse;
 import com.tilitili.admin.service.VideoDataService;
 import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.entity.query.VideoDataQuery;
-import com.tilitili.common.entity.query.VideoInfoQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.rank.VideoDataMapper;
-import com.tilitili.common.mapper.rank.VideoInfoMapper;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.BilibiliUtil;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -27,13 +25,11 @@ import java.util.List;
 public class VideoDataController extends BaseController {
     private final VideoDataMapper videoDataMapper;
     private final VideoDataService videoDataService;
-    private final VideoInfoMapper videoInfoMapper;
 
     @Autowired
-    public VideoDataController(VideoDataMapper videoDataMapper, VideoDataService videoDataService, VideoInfoMapper videoInfoMapper) {
+    public VideoDataController(VideoDataMapper videoDataMapper, VideoDataService videoDataService) {
         this.videoDataMapper = videoDataMapper;
         this.videoDataService = videoDataService;
-        this.videoInfoMapper = videoInfoMapper;
     }
 
     @GetMapping("")
@@ -41,16 +37,9 @@ public class VideoDataController extends BaseController {
     public BaseModel<PageModel<VideoDTO>> getVideoDataByCondition(VideoDataQuery query) {
         Asserts.notNull(query, "参数异常");
 
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         if (query.getBv() != null) query.setAv(BilibiliUtil.converseBvToAv(query.getBv()));
-
-//        VideoInfoQuery videoInfoQuery = new VideoInfoQuery().setAv(videoDataQuery.getAv()).setBv(videoDataQuery.getBv()).setName(videoDataQuery.getName()).setType(videoDataQuery.getType()).setOwner(videoDataQuery.getOwner()).setCopyright(videoDataQuery.getCopyright()).setIsDelete(videoDataQuery.getIsDelete()).setStatus(videoDataQuery.getStatus());
-//        int videoInfoCount = videoInfoMapper.countForVideoInfoTable(videoInfoQuery);
-//        if (videoInfoCount == 0) return PageModel.of(0, videoDataQuery.getPageSize(), videoDataQuery.getPageNo(), Collections.emptyList());
-//        videoDataQuery.setPageSize(Math.min(videoInfoCount, videoDataQuery.getPageSize()));
 
         int count = videoDataMapper.countForVideoDataTable(query);
         List<VideoDTO> videoDataList = videoDataMapper.listForVideoDataTable(query);
@@ -62,9 +51,7 @@ public class VideoDataController extends BaseController {
     public BaseModel<VideoDataCountResponse> getVideoDataCount(VideoDataQuery query) {
         Asserts.notNull(query, "参数异常");
 
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         VideoDataCountResponse videoDataCountResponse = new VideoDataCountResponse();
         videoDataCountResponse.setVideoDataAddCountList(videoDataService.getVideoDataCount(query));

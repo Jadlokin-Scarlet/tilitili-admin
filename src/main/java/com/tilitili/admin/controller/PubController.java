@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 @Slf4j
@@ -25,7 +26,9 @@ import java.util.Objects;
 @RequestMapping("/api/pub/qq")
 public class PubController extends BaseController{
     @Value("${mirai.master-qq}")
-    private Long MASTER_QQ;
+    private Long masterQQ;
+    @Value("${silk.path}")
+    private String silkPath;
     private final BaiduManager baiduManager;
     private final BotManager botManager;
     private String lastMessage = null;
@@ -48,7 +51,7 @@ public class PubController extends BaseController{
     @ResponseBody
     public BaseModel<?> sendFriendMessage(@RequestBody String message) {
         Asserts.notBlank(message, "消息为空");
-        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(MASTER_QQ));
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(masterQQ));
         return BaseModel.success();
     }
 
@@ -62,8 +65,8 @@ public class PubController extends BaseController{
 
     @PostMapping("/downloadVoice")
     public void runShell(String message, HttpServletRequest request, HttpServletResponse response) throws IOException, InterruptedException {
-        File wavFile = new File("/home/admin/silk/voice.wav");
-        File slkFile = new File("/home/admin/silk/voice.slk");
+        File wavFile = new File(silkPath,"voice.wav");
+        File slkFile = new File(silkPath, "voice.slk");
 
         if (Objects.equals(lastMessage, message)) {
             download(request, response, wavFile);
@@ -71,12 +74,12 @@ public class PubController extends BaseController{
         }
         lastMessage = message;
 
-        if (wavFile.exists()) Asserts.isTrue(wavFile.delete(), "删除wav失败");
-        if (slkFile.exists()) Asserts.isTrue(slkFile.delete(), "删除slk失败");
+        if (wavFile.exists()) Files.delete(wavFile.toPath());
+        if (slkFile.exists()) Files.delete(slkFile.toPath());
 
         String jpText = baiduManager.translate("jp", message);
 
-        String speakShell = String.format("sh /home/admin/silk/run.sh %s", jpText);
+        String speakShell = String.format("sh %s%srun.sh %s", silkPath, File.pathSeparator, jpText);
         Runtime.getRuntime().exec(speakShell);
 
         Thread.sleep(1000);

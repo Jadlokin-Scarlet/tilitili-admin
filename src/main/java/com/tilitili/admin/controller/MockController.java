@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/mock")
 public class MockController {
     @Value("${mirai.master-qq}")
-    private Long MASTER_QQ;
+    private Long masterQQ;
     private final BotManager botManager;
 
     @Autowired
@@ -35,7 +35,7 @@ public class MockController {
         String queryString = request.getQueryString();
         body = body == null? "": body;
         String cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{})).map(c -> String.format("%s=%s", c.getName(), c.getValue())).collect(Collectors.joining("; "));
-        String message = String.format("%s?%s\nbody=%s\ncookie=%s", requestURL, queryString, body, cookie);
-        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(MASTER_QQ));
+        String message = String.format("%s?%s\nbody=%s%ncookie=%s", requestURL, queryString, body, cookie);
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(masterQQ));
     }
 }

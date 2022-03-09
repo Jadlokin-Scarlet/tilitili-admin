@@ -1,5 +1,6 @@
 package com.tilitili.admin.controller;
 
+import com.tilitili.admin.utils.StringUtil;
 import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.exception.AssertException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 @Slf4j
 public class BaseController {
@@ -49,23 +51,21 @@ public class BaseController {
             response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
             // Accept-Ranges: bytes
             response.setHeader("Accept-Ranges", "bytes");
-            long pos = 0, last = fSize - 1, sum = 0;// pos开始读取位置; last最后读取位置; sum记录总共已经读取了多少字节
-            if (null != request.getHeader("Range")) {
+            long pos = 0; // pos开始读取位置; last最后读取位置; sum记录总共已经读取了多少字节
+            long last = fSize - 1;
+            long sum = 0;
+            String range = request.getHeader("Range");
+            if (null != range) {
                 // 断点续传
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-                try {
-                    // 情景一：RANGE: bytes=2000070- 情景二：RANGE: bytes=2000070-2000970
-                    String numRang = request.getHeader("Range").replaceAll("bytes=", "");
-                    String[] strRange = numRang.split("-");
-                    if (strRange.length == 2) {
-                        pos = Long.parseLong(strRange[0].trim());
-                        last = Long.parseLong(strRange[1].trim());
-                    } else {
-                        pos = Long.parseLong(numRang.replaceAll("-", "").trim());
-                    }
-                } catch (NumberFormatException e) {
-                    log.error(request.getHeader("Range") + " is not Number!");
-                    pos = 0;
+                // 情景一：RANGE: bytes=2000070- 情景二：RANGE: bytes=2000070-2000970
+                String numRang = range.replace("bytes=", "");
+                String[] strRange = numRang.split("-");
+                if (strRange.length == 2) {
+                    pos = Optional.ofNullable(StringUtil.parseLongIfNumber(strRange[0].trim())).orElse(0L);
+                    last = Optional.ofNullable(StringUtil.parseLongIfNumber(strRange[1].trim())).orElse(0L);
+                } else {
+                    pos = Optional.ofNullable(StringUtil.parseLongIfNumber(numRang.replace("-", "").trim())).orElse(0L);
                 }
             }
             long rangLength = last - pos + 1;// 总共需要读取的字节
@@ -91,14 +91,12 @@ public class BaseController {
                     }
                 }
             }
+        } catch (ClientAbortException e) {
+            // 浏览器点击取消
+            log.info("用户取消下载!");
         } catch (Throwable e) {
-            if (e instanceof ClientAbortException) {
-                // 浏览器点击取消
-                log.info("用户取消下载!");
-            } else {
-                log.info("下载文件失败....");
-                e.printStackTrace();
-            }
+            log.info("下载文件失败....");
+            e.printStackTrace();
         }
     }
 }

@@ -8,6 +8,7 @@ import com.tilitili.common.entity.view.BaseModel;
 import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.rank.BatchTaskMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,9 +37,7 @@ public class BatchTaskController extends BaseController {
     public BaseModel<PageModel<BatchTaskView>> getBatchTaskByCondition(BatchTaskQuery query) {
         Asserts.notNull(query, "参数异常");
 
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = batchTaskMapper.countBatchTaskByCondition(query);
         List<BatchTaskView> batchTaskList = batchTaskService.list(query);

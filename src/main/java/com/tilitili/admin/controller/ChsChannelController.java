@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/pub/chsChannel")
 public class ChsChannelController extends BaseController {
-    private final String caiHongGuildId = GuildEmum.Cai_Hong_Guild.guildId;
+    private static final String caiHongGuildId = GuildEmum.Cai_Hong_Guild.guildId;
     private final TwitterChannelNameMappingMapper twitterChannelNameMappingMapper;
 
     @Autowired

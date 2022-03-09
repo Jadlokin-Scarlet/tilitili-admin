@@ -39,10 +39,4 @@ public class VideoDataFileItem {
 
 	private String hisRankStr;
 
-	public VideoDataFileItem setIsLen(long rank, long hisRank, long moreHisRank) {
-		boolean isLen = rank > 0 && hisRank > 0 && moreHisRank > 0;
-		isLen &= rank <= 30 && hisRank <= 30 && moreHisRank <=30;
-		return setIsLen(isLen);
-	}
-
 }

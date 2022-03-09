@@ -18,6 +18,7 @@ import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.mapper.rank.VideoInfoMapper;
 import com.tilitili.common.utils.Asserts;
 import com.tilitili.common.utils.BilibiliUtil;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,9 +56,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel<PageModel<RecommendDTO>> getRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = recommendMapper.count(query);
         List<RecommendDTO> recommendList = recommendMapper.list(query);
@@ -69,9 +68,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel<PageModel<RecommendDTO>> getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = recommendManager.countUseRecommend(query);
         List<RecommendDTO> recommendList = recommendManager.listUseRecommend(query);
@@ -83,9 +80,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel<PageModel<RecommendDTO>> getRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = recommendManager.countRecommendPool(query);
         List<RecommendDTO> recommendList = recommendManager.listRecommendPool(query);
@@ -97,9 +92,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel<PageModel<RecommendDTO>> getSelfRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = recommendManager.countSelfRecommend(query);
         List<RecommendDTO> recommendList = recommendManager.listSelfRecommend(query);
@@ -111,9 +104,7 @@ public class RecommendController extends BaseController {
     @ResponseBody
     public BaseModel<PageModel<RecommendDTO>> getSelfRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = recommendManager.countSelfRecommendPool(query);
         List<RecommendDTO> recommendList = recommendManager.listSelfRecommendPool(query);

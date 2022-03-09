@@ -61,6 +61,9 @@ public class BotSenderTaskController extends BaseController {
 	@RequestMapping("/update")
 	@ResponseBody
 	public BaseModel<?> updateBotSenderTask(Long id, Long taskId, Boolean checked) {
+		Asserts.notNull(id, "参数异常");
+		Asserts.notNull(taskId, "参数异常");
+		Asserts.notNull(checked, "参数异常");
 		BotSenderTaskMapping botSenderTaskMapping = botSenderTaskMappingMapper.getBotSenderTaskMappingBySenderIdAndTaskId(id, taskId);
 		if (checked && botSenderTaskMapping == null) {
 			botSenderTaskMappingMapper.addBotSenderTaskMappingSelective(new BotSenderTaskMapping().setTaskId(taskId).setSenderId(id));

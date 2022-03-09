@@ -41,8 +41,8 @@ public class VideoDataFileService {
             String type = Optional.ofNullable(videoDTO.getType()).orElse("");
             String owner = Optional.ofNullable(videoDTO.getOwner()).orElse("");
             String externalOwner = Optional.ofNullable(videoDTO.getExternalOwner()).orElse("");
-            Boolean copyright = Optional.ofNullable(videoDTO.getCopyright()).orElse(true);
-            Boolean copyWarning = Optional.ofNullable(videoDTO.getIsCopyWarning()).orElse(true);
+            boolean copyright = Optional.ofNullable(videoDTO.getCopyright()).orElse(true);
+            boolean copyWarning = Optional.ofNullable(videoDTO.getIsCopyWarning()).orElse(true);
             String pubTime = Optional.ofNullable(videoDTO.getPubTime()).orElse("");
             long startTime = Optional.ofNullable(videoDTO.getStartTime()).orElse(0L);
             long duration = Optional.ofNullable(videoDTO.getDuration()).orElse(0L);
@@ -102,13 +102,17 @@ public class VideoDataFileService {
 
             String avStr = "av" + av;
             String nameStr = name;
+
             String typeStr;
-            String ownerStr;
-            String subOwnerStr;
-            String hisRankStr;
-            String pubTimeStr;
             if (level < 5) {
                 typeStr = type;
+            } else {
+                typeStr = "";
+            }
+
+            String ownerStr;
+            String subOwnerStr;
+            if (level < 5) {
                 if (copyright) {
                     if (isBlank(externalOwner)) {
                         ownerStr = owner;
@@ -125,22 +129,32 @@ public class VideoDataFileService {
                         subOwnerStr = "";
                     }
                 }
+            } else {
+                ownerStr = "";
+                subOwnerStr = "";
+            }
+
+            // 副榜历史排名默认显示上周-位，主榜不显示
+            String hisRankStr;
+            if (level < 5) {
                 hisRankStr = hisRank != 0? "上周" + hisRank + "位": "";
+            } else {
+                if (hisRank == 0) {
+                    hisRankStr = "上周-位";
+                } else {
+                    hisRankStr = "上周" + hisRank + "位";
+                }
+
+            }
+
+            String pubTimeStr;
+            if (level < 5) {
                 if (pubTime.contains(" ")) {
                     pubTimeStr = pubTime.split(" ")[0];
                 } else {
                     pubTimeStr = "";
                 }
             } else {
-                typeStr = "";
-                ownerStr = "";
-                subOwnerStr = "";
-                // 副榜历史排名默认显示上周-位，主榜不显示
-                if (hisRank == 0) {
-                    hisRankStr = "上周-位";
-                } else {
-                    hisRankStr = "上周" + hisRank + "位";
-                }
                 if (pubTime.contains(" ")) {
                     pubTimeStr = "投稿日期 " + pubTime.split(" ")[0];
                 } else {

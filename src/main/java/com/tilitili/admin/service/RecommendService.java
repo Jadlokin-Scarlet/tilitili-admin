@@ -10,7 +10,6 @@ import com.tilitili.common.entity.query.OwnerQuery;
 import com.tilitili.common.entity.query.RecommendQuery;
 import com.tilitili.common.manager.RecommendManager;
 import com.tilitili.common.mapper.rank.*;
-import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,7 @@ public class RecommendService {
     private final AdminMapper adminMapper;
 
     @Autowired
-    public RecommendService(RecommendMapper recommendMapper, VideoInfoMapper videoInfoMapper, TaskMapper taskMapper, RecommendVideoMapper recommendVideoMapper, RecommendManager recommendManager, OwnerMapper ownerMapper, AdminMapper adminMapper) {
+    public RecommendService(RecommendMapper recommendMapper, RecommendVideoMapper recommendVideoMapper, RecommendManager recommendManager, OwnerMapper ownerMapper, AdminMapper adminMapper) {
         this.recommendMapper = recommendMapper;
         this.recommendVideoMapper = recommendVideoMapper;
         this.recommendManager = recommendManager;
@@ -35,12 +34,13 @@ public class RecommendService {
     }
 
     public List<Recommend> list(RecommendQuery query) {
-        return recommendMapper.list(query).parallelStream().peek(recommend -> {
+        return recommendMapper.list(query).parallelStream().map(recommend -> {
             if (recommend.getIssueId() != null) {
                 RecommendVideo recommendVideo = recommendVideoMapper.getById(recommend.getIssueId());
                 recommend.setIssueName(recommendVideo.getName());
                 recommend.setIssue(recommendVideo.getIssue());
             }
+            return recommend;
         }).collect(Collectors.toList());
     }
 
@@ -58,7 +58,6 @@ public class RecommendService {
         return recommendManager.listUseRecommend(query).stream().map(recommend -> {
             Long av = recommend.getAv();
             String operator = recommend.getOperator();
-            String text = recommend.getText();
             Integer startTime = recommend.getStartTime();
             Integer endTime = recommend.getEndTime();
 
@@ -74,8 +73,6 @@ public class RecommendService {
             if (admin != null) {
                 face = admin.getFace();
             }
-
-            String textStr = text.replaceAll("\n", " ");
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);
@@ -100,7 +97,6 @@ public class RecommendService {
     public List<RecommendFileItem> getSelfRecommendFile(RecommendQuery query) {
         return recommendManager.listSelfRecommend(query).stream().map(recommend -> {
             Long av = recommend.getAv();
-            String operator = recommend.getOperator();
             String text = recommend.getText();
             Integer startTime = recommend.getStartTime();
             Integer endTime = recommend.getEndTime();
@@ -117,8 +113,6 @@ public class RecommendService {
             if (ownerList.size() == 1) {
                 face = ownerList.get(0).getFace();
             }
-
-            String textStr = text.replaceAll("\n", " ");
 
             RecommendFileItem recommendFileItem = new RecommendFileItem();
             recommendFileItem.setAv(av);

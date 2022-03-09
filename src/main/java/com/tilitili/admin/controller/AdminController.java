@@ -25,7 +25,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/isLogin")
     @ResponseBody
-    public BaseModel<?>isLogin(@SessionAttribute(value = "admin", required = false) Admin admin) {
+    public BaseModel<Admin> isLogin(@SessionAttribute(value = "admin", required = false) Admin admin) {
         if (admin == null) {
             return new BaseModel<>("请重新登陆");
         }else {
@@ -35,7 +35,7 @@ public class AdminController extends BaseController {
 
     @PostMapping("/login")
     @ResponseBody
-    public BaseModel<?>login(@RequestBody Admin reqAdmin, HttpSession session) {
+    public BaseModel<Admin> login(@RequestBody Admin reqAdmin, HttpSession session) {
         Asserts.notNull(reqAdmin, "参数异常");
         Asserts.notNull(reqAdmin.getUserName(), "请输入用户名");
         Asserts.notNull(reqAdmin.getPassword(), "请输入密码");
@@ -47,7 +47,7 @@ public class AdminController extends BaseController {
 
     @PostMapping("/loginOut")
     @ResponseBody
-    public BaseModel<?>loginOut(HttpSession session) {
+    public BaseModel<?> loginOut(HttpSession session) {
         session.removeAttribute("admin");
         return new BaseModel<>("退出登录成功", true);
     }

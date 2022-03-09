@@ -1,7 +1,6 @@
 package com.tilitili.admin.service;
 
 import com.tilitili.admin.entity.view.RecommendVideoView;
-import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.RecommendQuery;

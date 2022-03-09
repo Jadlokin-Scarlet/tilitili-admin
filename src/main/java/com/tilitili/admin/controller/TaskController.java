@@ -12,6 +12,7 @@ import com.tilitili.common.entity.view.message.SimpleTask;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.mapper.rank.TaskMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.QueryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,9 +43,7 @@ public class TaskController extends BaseController{
     public BaseModel<PageModel<Task>> getTaskByCondition(TaskQuery query) {
         Asserts.notNull(query, "参数异常");
 
-        if (query.getSorted() == null) query.setSorted("desc");
-        if (query.getPageNo() == null) query.setPageNo(1);
-        if (query.getPageSize() == null) query.setPageSize(20);
+        QueryUtil.suppleQuery(query);
 
         int count = taskMapper.countTaskByCondition(query);
         List<Task> taskList = taskMapper.getTaskByCondition(query);

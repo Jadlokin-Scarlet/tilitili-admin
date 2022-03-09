@@ -3,15 +3,15 @@ package com.tilitili.admin.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tilitili.admin.entity.view.RedisView;
-import com.tilitili.common.utils.Asserts;
-import com.tilitili.common.utils.RedisCache;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,11 +19,9 @@ import java.util.stream.Collectors;
 public class RedisService {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisCache redisCache;
 
-    public RedisService(RedisTemplate<String, Object> redisTemplate, RedisCache redisCache) {
+    public RedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.redisCache = redisCache;
     }
 
     public List<RedisView> getRedisViewByKey(String key) {
@@ -33,14 +31,10 @@ public class RedisService {
         DataType keyType = redisTemplate.type(key);
         String type = Optional.ofNullable(keyType).map(DataType::code).orElse("");
         RedisView redisView = new RedisView().setKey(key).setType(type);
+        // TODO: type of (list set none zset stream) is not work
         switch (type) {
             case "string": return suppleString(redisView);
             case "hash": return suppleMap(redisView);
-//                case "list": redisService.suppleList(redisView);
-//                case "set": redisService.suppleSet(redisView);
-//                case "none":
-//                case "zset":
-//                case "stream":
             default: log.warn("key{}类型未知", key);
         }
         return Collections.emptyList();
