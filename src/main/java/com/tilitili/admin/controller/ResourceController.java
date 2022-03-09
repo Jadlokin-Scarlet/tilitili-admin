@@ -146,8 +146,11 @@ public class ResourceController extends BaseController {
 
     @GetMapping("/recommend/text")
     @ResponseBody
-    public BaseModel<?> getRecommendText(Long av) {
+    public BaseModel<String> getRecommendText(Long av) {
         Recommend recommend = recommendMapper.getNormalRecommendByAv(av);
+        if (recommend.getText().length() > 100) {
+            return BaseModel.success("");
+        }
         return BaseModel.success(recommend.getText());
     }
 
