@@ -18,9 +18,7 @@ import com.tilitili.common.mapper.mysql.BotTaskMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +41,7 @@ public class BotSenderTaskController extends BaseController {
 		this.botSenderMapper = botSenderMapper;
 	}
 
-	@RequestMapping("/list")
+	@GetMapping("/list")
 	@ResponseBody
 	public BaseModel<PageModel<Map<String, Object>>> getBotSenderTaskByCondition(BotSenderQuery query) {
 		int total = botSenderTaskMappingMapper.countSenderTaskTable(query);
@@ -58,7 +56,7 @@ public class BotSenderTaskController extends BaseController {
 		return PageModel.of(total, query.getPageSize(), query.getPageNo(), result);
 	}
 
-	@RequestMapping("/update")
+	@PostMapping("/update")
 	@ResponseBody
 	public BaseModel<?> updateBotSenderTask(Long id, Long taskId, Boolean checked) {
 		Asserts.notNull(id, "参数异常");
@@ -73,7 +71,7 @@ public class BotSenderTaskController extends BaseController {
 		return BaseModel.success();
 	}
 
-	@RequestMapping("/copyMapping")
+	@PostMapping("/copyMapping")
 	@ResponseBody
 	public BaseModel<?> copyMapping(Long fromTaskId, Long toTaskId) {
 		Asserts.notNull(fromTaskId, "参数异常");
@@ -97,7 +95,7 @@ public class BotSenderTaskController extends BaseController {
 		return BaseModel.success();
 	}
 
-	@RequestMapping("/addBotTask")
+	@PostMapping("/addBotTask")
 	@ResponseBody
 	public BaseModel<?> addBotTask(@RequestBody BotTaskView botTaskView) {
 		Asserts.notNull(botTaskView, "参数异常");
@@ -131,7 +129,7 @@ public class BotSenderTaskController extends BaseController {
 		return BaseModel.success();
 	}
 
-	@RequestMapping("/addMappingToGuild")
+	@PostMapping("/addMappingToGuild")
 	@ResponseBody
 	public BaseModel<?> addMappingToGuild(String nick, String guildId) {
 		Asserts.notNull(nick, "参数异常");

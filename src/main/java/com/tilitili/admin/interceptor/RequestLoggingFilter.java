@@ -27,5 +27,6 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected void afterRequest(HttpServletRequest httpServletRequest, String s) {
+        // Do nothing anything
     }
 }

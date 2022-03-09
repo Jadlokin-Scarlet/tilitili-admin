@@ -97,7 +97,6 @@ public class RecommendService {
     public List<RecommendFileItem> getSelfRecommendFile(RecommendQuery query) {
         return recommendManager.listSelfRecommend(query).stream().map(recommend -> {
             Long av = recommend.getAv();
-            String text = recommend.getText();
             Integer startTime = recommend.getStartTime();
             Integer endTime = recommend.getEndTime();
 

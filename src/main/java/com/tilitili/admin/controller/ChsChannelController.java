@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/pub/chsChannel")
 public class ChsChannelController extends BaseController {
-    private static final String caiHongGuildId = GuildEmum.Cai_Hong_Guild.guildId;
+    private static final String CAI_HONG_GUILD_ID = GuildEmum.Cai_Hong_Guild.guildId;
     private final TwitterChannelNameMappingMapper twitterChannelNameMappingMapper;
 
     @Autowired
@@ -28,7 +28,7 @@ public class ChsChannelController extends BaseController {
     @RequestMapping("/list")
     @ResponseBody
     public BaseModel<PageModel<TwitterChannelNameMapping>> listChsChannel(TwitterChannelNameMappingQuery query) {
-        query.setGuildId(caiHongGuildId).setStatus(0);
+        query.setGuildId(CAI_HONG_GUILD_ID).setStatus(0);
         int total = twitterChannelNameMappingMapper.countTwitterChannelNameMappingByCondition(query);
         List<TwitterChannelNameMapping> chsChannelList = twitterChannelNameMappingMapper.getTwitterChannelNameMappingByCondition(query);
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), chsChannelList);
