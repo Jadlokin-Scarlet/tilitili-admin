@@ -1,9 +1,8 @@
 package com.tilitili.admin.controller;
 
-import static org.junit.Assert.*;
-
 import com.google.gson.Gson;
 import com.tilitili.StartApplication;
+import com.tilitili.common.entity.dto.BatchTaskIpCount;
 import com.tilitili.common.entity.query.BatchTaskQuery;
 import com.tilitili.common.entity.view.BaseModel;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -24,7 +24,7 @@ public class BatchTaskControllerTest {
 
     @Test
     public void getBatchTaskCount() {
-        BaseModel batchTaskCount = tester.getBatchTaskCount(new BatchTaskQuery().setStatus(2).setTime(1).setReasonList(Arrays.asList(2, 4)));
+        BaseModel<List<BatchTaskIpCount>> batchTaskCount = tester.getBatchTaskCount(new BatchTaskQuery().setStatus(2).setTime(1).setReasonList(Arrays.asList(2, 4)));
         System.out.println(new Gson().toJson(batchTaskCount));
     }
 }

@@ -1,6 +1,5 @@
 package com.tilitili.admin.controller;
 
-import com.tilitili.admin.entity.count.TagCount;
 import com.tilitili.common.entity.Tag;
 import com.tilitili.common.entity.query.TagQuery;
 import com.tilitili.common.entity.view.BaseModel;
@@ -10,7 +9,6 @@ import com.tilitili.common.utils.Asserts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +28,7 @@ public class TagController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getTagByCondition(TagQuery query) {
+    public BaseModel<PageModel<Tag>> getTagByCondition(TagQuery query) {
         int count = tagMapper.countTagByCondition(query);
         List<Tag> tagList = tagMapper.getTagByCondition(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), tagList);
@@ -38,12 +36,12 @@ public class TagController {
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateTag(@RequestBody Tag tag) {
+    public BaseModel<?> updateTag(@RequestBody Tag tag) {
         Asserts.notNull(tag, "参数有误");
         Asserts.notNull(tag.getId(), "参数有误");
         Asserts.notNull(tag.getType(), "参数有误");
 
         tagMapper.updateTagSelective(tag);
-        return new BaseModel("更新tag成功", true);
+        return new BaseModel<>("更新tag成功", true);
     }
 }

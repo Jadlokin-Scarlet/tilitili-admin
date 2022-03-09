@@ -11,17 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
-//@EnableWebMvc
 public class CorsConfig implements WebMvcConfigurer {
-//	@Override
-//	public void addCorsMappings(CorsRegistry registry) {
-//		registry.addMapping("/**")
-//				.allowedOrigins("*")
-//				.allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS")
-//				.allowedHeaders("Authorization", "Cache-Control", "Content-Type")
-//				.maxAge(3600)
-//				.allowCredentials(true);
-//	}
 	@Bean
 	public CorsFilter corsFilter() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

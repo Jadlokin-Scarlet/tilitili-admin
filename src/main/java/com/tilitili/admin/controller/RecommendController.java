@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.tilitili.common.emnus.TaskReason.NO_REASON;
@@ -53,7 +53,7 @@ public class RecommendController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getRecommendByCondition(RecommendQuery query) {
+    public BaseModel<PageModel<RecommendDTO>> getRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         if (query.getSorted() == null) query.setSorted("desc");
         if (query.getPageNo() == null) query.setPageNo(1);
@@ -67,7 +67,7 @@ public class RecommendController extends BaseController {
 
     @GetMapping("/use")
     @ResponseBody
-    public BaseModel getUseRecommendByCondition(RecommendQuery query) {
+    public BaseModel<PageModel<RecommendDTO>> getUseRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         if (query.getSorted() == null) query.setSorted("desc");
         if (query.getPageNo() == null) query.setPageNo(1);
@@ -81,7 +81,7 @@ public class RecommendController extends BaseController {
 
     @GetMapping("/pool")
     @ResponseBody
-    public BaseModel getRecommendPoolByCondition(RecommendQuery query) {
+    public BaseModel<PageModel<RecommendDTO>> getRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         if (query.getSorted() == null) query.setSorted("desc");
         if (query.getPageNo() == null) query.setPageNo(1);
@@ -95,7 +95,7 @@ public class RecommendController extends BaseController {
 
     @GetMapping("/self")
     @ResponseBody
-    public BaseModel getSelfRecommendByCondition(RecommendQuery query) {
+    public BaseModel<PageModel<RecommendDTO>> getSelfRecommendByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         if (query.getSorted() == null) query.setSorted("desc");
         if (query.getPageNo() == null) query.setPageNo(1);
@@ -109,7 +109,7 @@ public class RecommendController extends BaseController {
 
     @GetMapping("/selfPool")
     @ResponseBody
-    public BaseModel getSelfRecommendPoolByCondition(RecommendQuery query) {
+    public BaseModel<PageModel<RecommendDTO>> getSelfRecommendPoolByCondition(RecommendQuery query) {
         Asserts.notNull(query, "参数异常");
         if (query.getSorted() == null) query.setSorted("desc");
         if (query.getPageNo() == null) query.setPageNo(1);
@@ -123,7 +123,7 @@ public class RecommendController extends BaseController {
 
     @PostMapping("")
     @ResponseBody
-    public BaseModel addRecommend(@RequestBody RecommendDTO recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
+    public BaseModel<?> addRecommend(@RequestBody RecommendDTO recommend, @SessionAttribute(value = "admin", required = false) Admin admin) {
         if (recommend.getBv() != null) {
             recommend.setAv(BilibiliUtil.converseBvToAv(recommend.getBv()));
         }
@@ -157,13 +157,13 @@ public class RecommendController extends BaseController {
         }
 
         recommendMapper.addRecommendSelective(recommend);
-        taskManager.simpleSpiderVideo(new SimpleTask().setReason(NO_REASON.value).setValueList(Arrays.asList(String.valueOf(recommend.getAv()))));
-        return new BaseModel("推荐成功",true);
+        taskManager.simpleSpiderVideo(new SimpleTask().setReason(NO_REASON.value).setValueList(Collections.singletonList(String.valueOf(recommend.getAv()))));
+        return new BaseModel<>("推荐成功",true);
     }
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateRecommend(@RequestBody RecommendDTO recommend) {
+    public BaseModel<?> updateRecommend(@RequestBody RecommendDTO recommend) {
         Asserts.notNull(recommend.getId(), "id未获取到");
 
         if (recommend.getText() == null) {
@@ -185,12 +185,12 @@ public class RecommendController extends BaseController {
         Long av = recommend.getAv() != null? recommend.getAv(): old.getAv();
         videoInfoMapper.updateExternalOwner(av, externalOwner);
 
-        return new BaseModel("更新成功",true);
+        return new BaseModel<>("更新成功",true);
     }
 
     @PatchMapping("/status/-1")
     @ResponseBody
-    public BaseModel updateDeleteRecommend(@RequestBody Recommend recommend) {
+    public BaseModel<?> updateDeleteRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号未获取到");
 
         Recommend updateRecommend = new Recommend();
@@ -198,20 +198,20 @@ public class RecommendController extends BaseController {
         updateRecommend.setStatus(-1);
         recommendMapper.updateRecommendSelective(updateRecommend);
 
-        return new BaseModel("废弃成功",true);
+        return new BaseModel<>("废弃成功",true);
     }
 
     @PatchMapping("/status/0")
     @ResponseBody
-    public BaseModel unUseRecommend(@RequestBody Recommend recommend) {
+    public BaseModel<?> unUseRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号未获取到");
         recommendService.unUseRecommend(recommend.getId());
-        return new BaseModel("使用成功",true);
+        return new BaseModel<>("使用成功",true);
     }
 
     @PatchMapping("/status/1")
     @ResponseBody
-    public BaseModel useRecommend(@RequestBody Recommend recommend) {
+    public BaseModel<?> useRecommend(@RequestBody Recommend recommend) {
         Asserts.notNull(recommend.getId(), "av号未获取到");
 
         Recommend oldRecommend = recommendMapper.getNormalRecommendById(recommend.getId());
@@ -228,6 +228,6 @@ public class RecommendController extends BaseController {
         updateRecommend.setIssueId(recommendVideo.getId());
         recommendMapper.updateRecommendSelective(updateRecommend);
 
-        return new BaseModel("使用成功",true);
+        return new BaseModel<>("使用成功",true);
     }
 }

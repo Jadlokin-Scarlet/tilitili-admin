@@ -55,19 +55,19 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         //未登录
         if (admin == null){
-            this.returnResp(response,new BaseModel("请重新登录"));
+            this.returnResp(response,new BaseModel<>("请重新登录"));
             return false;
         }
 
         Admin oldAdmin = adminMapper.getAdminById(admin.getId());
 
         if (oldAdmin == null) {
-            this.returnResp(response,new BaseModel("请重新登录"));
+            this.returnResp(response,new BaseModel<>("请重新登录"));
             return false;
         }
 
         if (oldAdmin.getType() == 2 && ! HttpMethod.GET.matches(method)) {
-            this.returnResp(response,new BaseModel("暂无权限"));
+            this.returnResp(response,new BaseModel<>("暂无权限"));
             return false;
         }
 
@@ -78,7 +78,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    private void returnResp(HttpServletResponse response, BaseModel baseModel) {
+    private void returnResp(HttpServletResponse response, BaseModel<?> baseModel) {
         PrintWriter writer = null;
         try {
             response.setContentType("application/json;charset=UTF-8");

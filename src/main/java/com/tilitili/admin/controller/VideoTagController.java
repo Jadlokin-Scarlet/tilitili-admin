@@ -33,7 +33,7 @@ public class VideoTagController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getVideoTagByCondition(VideoTagQuery query) {
+    public BaseModel<PageModel<VideoTag>> getVideoTagByCondition(VideoTagQuery query) {
         int count = videoTagRelationMapper.countVideoTag(query);
         List<VideoTag> videoTagList = videoTagService.listVideoTag(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), videoTagList);
@@ -41,7 +41,7 @@ public class VideoTagController extends BaseController {
 
     @GetMapping("/count")
     @ResponseBody
-    public BaseModel getTagCount(VideoTagQuery query) {
+    public BaseModel<TagCount> getTagCount(VideoTagQuery query) {
         TagCount tagCount = new TagCount();
         tagCount.setTopTagList(videoTagService.listTopTagCount(query));
         return BaseModel.success(tagCount);

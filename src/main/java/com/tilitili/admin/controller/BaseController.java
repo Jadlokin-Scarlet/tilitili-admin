@@ -17,15 +17,15 @@ public class BaseController {
 
     @ExceptionHandler(AssertException.class)
     @ResponseBody
-    public BaseModel handleAssertError(Exception ex) {
-        return new BaseModel(ex.getMessage());
+    public BaseModel<?> handleAssertError(Exception ex) {
+        return new BaseModel<>(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public BaseModel handleError(HttpServletRequest req, Exception ex) {
+    public BaseModel<?> handleError(HttpServletRequest req, Exception ex) {
         log.error("Request: " + req.getRequestURL(), ex);
-        return new BaseModel(ex.getMessage());
+        return new BaseModel<>(ex.getMessage());
     }
 
     /**
@@ -40,8 +40,7 @@ public class BaseController {
      */
     public void download(HttpServletRequest request, HttpServletResponse response, File file) {
         log.debug("下载文件路径：" + file.getPath());
-        InputStream inputStream = null;
-        OutputStream bufferOut = null;
+
         try {
             // 设置响应报头
             long fSize = file.length();
@@ -71,21 +70,26 @@ public class BaseController {
             }
             long rangLength = last - pos + 1;// 总共需要读取的字节
             // Content-Range: bytes 10-1033/304974592
-            String contentRange = new StringBuffer("bytes ").append(pos).append("-").append(last).append("/").append(fSize).toString();
+            String contentRange = "bytes " + pos + "-" + last + "/" + fSize;
             response.setHeader("Content-Range", contentRange);
             // Content-Length: 1024
             response.addHeader("Content-Length", String.valueOf(rangLength));
 
             // 跳过已经下载的部分，进行后续下载
-            bufferOut = new BufferedOutputStream(response.getOutputStream());
-            inputStream = new BufferedInputStream(new FileInputStream(file));
-            inputStream.skip(pos);
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while (sum < rangLength) {
-                length = inputStream.read(buffer, 0, ((rangLength - sum) <= buffer.length ? ((int) (rangLength - sum)) : buffer.length));
-                sum = sum + length;
-                bufferOut.write(buffer, 0, length);
+            try (OutputStream bufferOut = new BufferedOutputStream(response.getOutputStream())) {
+                try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file))){
+                    long skip = inputStream.skip(pos);
+                    if (pos != skip) {
+                        log.error("断点查找失败 pos={} skip={}", pos, skip);
+                    }
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while (sum < rangLength) {
+                        length = inputStream.read(buffer, 0, ((rangLength - sum) <= buffer.length ? ((int) (rangLength - sum)) : buffer.length));
+                        sum = sum + length;
+                        bufferOut.write(buffer, 0, length);
+                    }
+                }
             }
         } catch (Throwable e) {
             if (e instanceof ClientAbortException) {
@@ -93,17 +97,6 @@ public class BaseController {
                 log.info("用户取消下载!");
             } else {
                 log.info("下载文件失败....");
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                if (bufferOut != null) {
-                    bufferOut.close();
-                }
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

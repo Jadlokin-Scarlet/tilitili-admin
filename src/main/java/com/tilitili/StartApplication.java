@@ -1,7 +1,6 @@
 package com.tilitili;
 
 import org.apache.ibatis.io.VFS;
-import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

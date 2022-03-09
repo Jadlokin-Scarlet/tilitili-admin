@@ -2,7 +2,6 @@ package com.tilitili.admin.controller;
 
 import com.tilitili.admin.service.RecommendService;
 import com.tilitili.admin.service.RecommendVideoService;
-import com.tilitili.common.entity.Recommend;
 import com.tilitili.common.entity.RecommendVideo;
 import com.tilitili.common.entity.dto.RecommendDTO;
 import com.tilitili.common.entity.query.RecommendQuery;
@@ -37,7 +36,7 @@ public class RecommendVideoController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getRecommendVideoByCondition(RecommendVideoQuery query) {
+    public BaseModel<PageModel<RecommendVideo>> getRecommendVideoByCondition(RecommendVideoQuery query) {
         int count = recommendVideoMapper.countRecommendVideoByCondition(query);
         List<RecommendVideo> recommendVideoList = recommendVideoService.list(query);
         return PageModel.of(count, query.getPageSize(), query.getCurrent(), recommendVideoList);
@@ -45,14 +44,14 @@ public class RecommendVideoController extends BaseController {
 
     @PostMapping("")
     @ResponseBody
-    public BaseModel addRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
+    public BaseModel<?> addRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
         recommendVideoMapper.addRecommendVideoSelective(recommendVideo);
         return BaseModel.success();
     }
 
     @PatchMapping("")
     @ResponseBody
-    public BaseModel updateRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
+    public BaseModel<?> updateRecommendVideo(@RequestBody RecommendVideo recommendVideo) {
         Asserts.notNull(recommendVideo.getId(), "id未获取到");
         RecommendVideo newVideo = recommendVideoMapper.getNew();
         Asserts.checkEquals(recommendVideo.getId(), newVideo.getId(), "只有最新一期可以编辑");

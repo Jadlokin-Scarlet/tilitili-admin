@@ -35,7 +35,7 @@ public class RecommendTalkController extends BaseController {
 
     @GetMapping("")
     @ResponseBody
-    public BaseModel getRecommendTalkByCondition(RecommendTalkQuery query) {
+    public BaseModel<PageModel<RecommendTalk>> getRecommendTalkByCondition(RecommendTalkQuery query) {
         if (query.getIssueId() == null) {
             RecommendVideo recommendVideo = recommendVideoMapper.getNew();
             query.setIssueId(recommendVideo.getId());
@@ -52,7 +52,7 @@ public class RecommendTalkController extends BaseController {
     @PatchMapping("")
     @ResponseBody
     @Transactional(transactionManager = "rankTransactionManager")
-    public BaseModel batchUpdateRecommendTalk(@RequestBody RecommendTalkView recommendTalk) {
+    public BaseModel<?> batchUpdateRecommendTalk(@RequestBody RecommendTalkView recommendTalk) {
         Asserts.notNull(recommendTalk.getOp(), "op未获取到");
         Asserts.notNull(recommendTalk.getEd(), "ed未获取到");
         recommendTalkService.batchUpdate(recommendTalk.getOp(), 1);

@@ -54,7 +54,7 @@ class BatchTaskServiceTest extends TestCase {
     @Test
     void of() {
         long a = System.currentTimeMillis();
-        BaseModel objectPageModel = PageModel.of(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
+        BaseModel<?> objectPageModel = PageModel.of(0, batchTaskQuery.getPageSize(), batchTaskQuery.getCurrent(), new ArrayList<>());
         long b = System.currentTimeMillis();
         System.out.println(b-a);
     }

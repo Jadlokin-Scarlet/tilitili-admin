@@ -47,7 +47,7 @@ public class BatchTaskController extends BaseController {
 
     @GetMapping("/count")
     @ResponseBody
-    public BaseModel<?> getBatchTaskCount(BatchTaskQuery query) {
+    public BaseModel<List<BatchTaskIpCount>> getBatchTaskCount(BatchTaskQuery query) {
         Asserts.notNull(query, "参数异常");
         Asserts.notNull(query.getTime(), "查询区间未获取到");
         List<BatchTaskIpCount> data = batchTaskMapper.listIpCount(query.setStatus(2).setReasonList(Arrays.asList(2, 4)));
