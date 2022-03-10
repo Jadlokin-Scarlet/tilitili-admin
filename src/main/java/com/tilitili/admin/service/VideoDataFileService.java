@@ -182,8 +182,8 @@ public class VideoDataFileService {
         String type = Optional.ofNullable(videoDTO.getType()).orElse("");
         String owner = Optional.ofNullable(videoDTO.getOwner()).orElse("");
         String externalOwner = Optional.ofNullable(videoDTO.getExternalOwner()).orElse("");
-        Boolean copyright = Optional.ofNullable(videoDTO.getCopyright()).orElse(true);
-        Boolean copyWarning = Optional.ofNullable(videoDTO.getIsCopyWarning()).orElse(true);
+        boolean copyright = Optional.ofNullable(videoDTO.getCopyright()).orElse(true);
+        boolean copyWarning = Optional.ofNullable(videoDTO.getIsCopyWarning()).orElse(true);
         String pubTime = Optional.ofNullable(videoDTO.getPubTime()).orElse("");
         long hisRank = Optional.ofNullable(videoDTO.getHisRank()).orElse(0L);
 
