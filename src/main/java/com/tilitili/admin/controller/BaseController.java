@@ -93,10 +93,9 @@ public class BaseController {
             }
         } catch (ClientAbortException e) {
             // 浏览器点击取消
-            log.info("用户取消下载!");
+            log.warn("用户取消下载!");
         } catch (Throwable e) {
-            log.info("下载文件失败....");
-            e.printStackTrace();
+            log.error("下载文件失败....", e);
         }
     }
 }

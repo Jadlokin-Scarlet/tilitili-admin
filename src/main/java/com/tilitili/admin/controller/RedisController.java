@@ -82,14 +82,10 @@ public class RedisController {
         Asserts.notNull(keyType, "参数异常");
         String type = keyType.code();
 
+        // TODO: type of (list set none zset stream) is not work
         switch (type) {
             case "string": redisService.editString(redisView); break;
             case "hash": redisService.editHash(redisView); break;
-//            case "list": redisService.editList(redisView); break;
-//            case "set": redisService.editSet(redisView); break;
-//            case "none": break;
-//            case "zset": break;
-//            case "stream": break;
             default: throw new AssertException("未知类型");
         }
         return BaseModel.success();
