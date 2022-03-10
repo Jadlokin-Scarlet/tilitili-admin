@@ -9,6 +9,8 @@ import com.tilitili.common.mapper.mysql.TwitterChannelNameMappingMapper;
 import com.tilitili.common.utils.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,7 +27,7 @@ public class ChsChannelController extends BaseController {
         this.twitterChannelNameMappingMapper = twitterChannelNameMappingMapper;
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     @ResponseBody
     public BaseModel<PageModel<TwitterChannelNameMapping>> listChsChannel(TwitterChannelNameMappingQuery query) {
         query.setGuildId(CAI_HONG_GUILD_ID).setStatus(0);
@@ -34,7 +36,7 @@ public class ChsChannelController extends BaseController {
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), chsChannelList);
     }
 
-    @RequestMapping("/add")
+    @PostMapping("/add")
     @ResponseBody
     public BaseModel<?> addChsChannel(TwitterChannelNameMapping chsChannel) {
         Asserts.notNull(chsChannel, "参数异常");
@@ -56,7 +58,7 @@ public class ChsChannelController extends BaseController {
         return BaseModel.success();
     }
 
-    @RequestMapping("/edit")
+    @PostMapping("/edit")
     @ResponseBody
     public BaseModel<?> editChsChannel(TwitterChannelNameMapping chsChannel) {
         Asserts.notNull(chsChannel, "参数异常");
@@ -81,7 +83,7 @@ public class ChsChannelController extends BaseController {
     }
 
 
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
     public BaseModel<?> deleteChsChannel(TwitterChannelNameMapping chsChannel) {
         Asserts.notNull(chsChannel, "参数异常");

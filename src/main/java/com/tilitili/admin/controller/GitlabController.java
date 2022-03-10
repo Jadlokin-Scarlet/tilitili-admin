@@ -4,6 +4,7 @@ import com.tilitili.common.entity.view.gitlab.GitlabContainer;
 import com.tilitili.common.manager.GitlabManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class GitlabController {
 		this.gitlabManager = gitlabManager;
 	}
 
-	@RequestMapping("/pub/deleteContainer")
+	@PostMapping("/pub/deleteContainer")
 	public void deleteContainer(String projectName) {
 		Long projectId = gitlabManager.getProjectIdByProjectName(projectName);
 		List<GitlabContainer> containerList = gitlabManager.getContainerList(projectId);

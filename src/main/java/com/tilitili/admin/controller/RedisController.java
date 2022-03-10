@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +31,7 @@ public class RedisController {
         this.redisTemplate = redisTemplate;
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     @ResponseBody
     public BaseModel<PageModel<RedisView>> listRedis(RedisQuery query) {
         int start = query.getStart();
