@@ -1,6 +1,9 @@
 package com.tilitili.admin.controller;
 
 import com.google.common.collect.ImmutableMap;
+import com.tilitili.admin.entity.request.AddMappingToGuildRequest;
+import com.tilitili.admin.entity.request.CopyMappingRequest;
+import com.tilitili.admin.entity.request.UpdateBotSenderTaskRequest;
 import com.tilitili.admin.entity.view.BotTaskView;
 import com.tilitili.common.entity.BotKey;
 import com.tilitili.common.entity.BotSender;
@@ -58,7 +61,12 @@ public class BotSenderTaskController extends BaseController {
 
 	@PostMapping("/update")
 	@ResponseBody
-	public BaseModel<?> updateBotSenderTask(Long id, Long taskId, Boolean checked) {
+	public BaseModel<?> updateBotSenderTask(@RequestBody UpdateBotSenderTaskRequest request) {
+		Asserts.notNull(request, "参数异常");
+		Long id = request.getId();
+		Long taskId = request.getTaskId();
+		Boolean checked = request.getChecked();
+
 		Asserts.notNull(id, "参数异常");
 		Asserts.notNull(taskId, "参数异常");
 		Asserts.notNull(checked, "参数异常");
@@ -73,7 +81,11 @@ public class BotSenderTaskController extends BaseController {
 
 	@PostMapping("/copyMapping")
 	@ResponseBody
-	public BaseModel<?> copyMapping(Long fromTaskId, Long toTaskId) {
+	public BaseModel<?> copyMapping(@RequestBody CopyMappingRequest request) {
+		Asserts.notNull(request, "参数异常");
+		Long fromTaskId = request.getFromTaskId();
+		Long toTaskId = request.getToTaskId();
+
 		Asserts.notNull(fromTaskId, "参数异常");
 		Asserts.notNull(toTaskId, "参数异常");
 		BotTask fromTask = botTaskMapper.getBotTaskById(fromTaskId);
@@ -131,7 +143,11 @@ public class BotSenderTaskController extends BaseController {
 
 	@PostMapping("/addMappingToGuild")
 	@ResponseBody
-	public BaseModel<?> addMappingToGuild(String nick, String guildId) {
+	public BaseModel<?> addMappingToGuild(@RequestBody AddMappingToGuildRequest request) {
+		Asserts.notNull(request, "参数异常");
+		String nick = request.getNick();
+		String guildId = request.getGuildId();
+
 		Asserts.notNull(nick, "参数异常");
 		Asserts.notNull(guildId, "参数异常");
 		BotTask botTask = botTaskMapper.getBotTaskByNick(nick);
