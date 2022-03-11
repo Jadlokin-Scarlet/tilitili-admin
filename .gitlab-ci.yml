@@ -17,7 +17,7 @@ deploy:
   script:
     - echo "start deploy ..."
     - cd /home/www/
-    - ./docker_deploy tilitili-admin 150.158.138.139 8083
+    - ./docker_deploy tilitili-admin 150.158.138.139 8083 10.0.0.15
   only:
     - master
 
