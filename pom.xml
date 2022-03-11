@@ -34,6 +34,18 @@
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.2.7.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.tilitili.common</groupId>
@@ -64,6 +76,10 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
             <version>1.18.20</version>
+        </dependency>
+        <dependency><!--添加nacos依赖 -->
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
     </dependencies>
 
