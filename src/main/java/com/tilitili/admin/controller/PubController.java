@@ -43,7 +43,7 @@ public class PubController extends BaseController{
     @ResponseBody
     public BaseModel<?> sendMessage(@RequestBody String message, @PathVariable Long group) {
         Asserts.notBlank(message, "消息为空");
-        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(group));
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.GROUP_MESSAGE.sendType).setGroup(group));
         return BaseModel.success();
     }
 
@@ -51,7 +51,7 @@ public class PubController extends BaseController{
     @ResponseBody
     public BaseModel<?> sendFriendMessage(@RequestBody String message) {
         Asserts.notBlank(message, "消息为空");
-        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Friend_Message.sendType).setQq(masterQQ));
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.FRIEND_MESSAGE.sendType).setQq(masterQQ));
         return BaseModel.success();
     }
 
@@ -59,7 +59,7 @@ public class PubController extends BaseController{
     @ResponseBody
     public BaseModel<?> sendMessage(@RequestBody String message) {
         Asserts.notBlank(message, "消息为空");
-        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.Group_Message.sendType).setGroup(GroupEmum.RANK_GROUP.value));
+        botManager.sendMessage(BotMessage.simpleTextMessage(message).setSendType(SendTypeEmum.GROUP_MESSAGE.sendType).setGroup(GroupEmum.RANK_GROUP.value));
         return BaseModel.success();
     }
 

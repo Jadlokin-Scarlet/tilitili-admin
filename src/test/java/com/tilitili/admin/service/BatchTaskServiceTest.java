@@ -32,7 +32,7 @@ class BatchTaskServiceTest extends TestCase {
     @Autowired
     private BatchTaskMapper batchTaskMapper;
 
-    BatchTaskQuery batchTaskQuery = new BatchTaskQuery().setType(TaskType.BatchSpiderVideo.value).setSorter("create_time").setSorted("desc");
+    BatchTaskQuery batchTaskQuery = new BatchTaskQuery().setType(TaskType.BATCH_SPIDER_VIDEO.value).setSorter("create_time").setSorted("desc");
 
     @Test
     void api() {
