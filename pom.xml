@@ -47,11 +47,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>com.tilitili.common</groupId>
-            <artifactId>tilitili-common</artifactId>
-            <version>4.0-SNAPSHOT</version>
-        </dependency>
         <dependency><!--添加websocket依赖 -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
@@ -80,6 +75,11 @@
         <dependency><!--添加nacos依赖 -->
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tilitili.common</groupId>
+            <artifactId>tilitili-common</artifactId>
+            <version>4.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
