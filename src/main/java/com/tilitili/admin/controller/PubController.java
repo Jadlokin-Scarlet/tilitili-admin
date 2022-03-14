@@ -90,6 +90,7 @@ public class PubController extends BaseController{
     @PostMapping("/translate")
     @ResponseBody
     public BaseModel<String> translate(@RequestParam(required = false) String from, @RequestParam(required = false) String to, @RequestBody String text) {
+        log.debug("from={} to={} text={}", from, to, text);
         if (StringUtils.isNotBlank(from) && StringUtils.isNotBlank(to)) {
             return BaseModel.success(baiduManager.translate(from, to, text));
         } else if (StringUtils.isNotBlank(to)) {
