@@ -1,6 +1,6 @@
 stages:
   - build
-  - sonarqube
+#  - sonarqube
   - deploy
 
 bulid:
@@ -17,22 +17,22 @@ deploy:
   script:
     - echo "start deploy ..."
     - cd /home/www/
-    - ./docker_deploy tilitili-admin 150.158.138.139 8083
+    - ./docker_deploy tilitili-admin 150.158.138.139 8083 10.0.0.15
   only:
     - master
 
-sonarqube:
-  stage: sonarqube
-  image: maven:3.6.3-jdk-11
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: 0
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script:
-    - mvn verify sonar:sonar -Dsonar.projectKey=tilitili_tilitili-admin_AX9pAsVMLWEU_SMLGZOR
-  allow_failure: true
-  only:
-    - master
+#sonarqube:
+#  stage: sonarqube
+#  image: maven:3.6.3-jdk-11
+#  variables:
+#    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+#    GIT_DEPTH: 0
+#  cache:
+#    key: "${CI_JOB_NAME}"
+#    paths:
+#      - .sonar/cache
+#  script:
+#    - mvn verify sonar:sonar -Dsonar.projectKey=tilitili_tilitili-admin_AX9pAsVMLWEU_SMLGZOR
+#  allow_failure: true
+#  only:
+#    - master
