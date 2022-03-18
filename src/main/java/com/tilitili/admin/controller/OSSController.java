@@ -20,7 +20,7 @@ public class OSSController extends BaseController {
 		Asserts.notNull(file, "参数异常");
 		String filename = file.getOriginalFilename();
 		String ossUrl;
-		if (filename != null && filename.contains("\\.")) {
+		if (filename != null && filename.contains(".")) {
 			String fileType = filename.substring(filename.indexOf(".") + 1);
 			ossUrl = OSSUtil.uploadOSSBySteamWithType(file.getInputStream(), fileType);
 		} else {
