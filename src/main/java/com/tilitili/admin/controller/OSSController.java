@@ -19,11 +19,13 @@ public class OSSController extends BaseController {
 	public BaseModel<String> uploadFileToOSS(MultipartFile file) throws IOException {
 		Asserts.notNull(file, "参数异常");
 		String filename = file.getOriginalFilename();
-		if (filename.contains("\\.")) {
-			filename.substring(filename.indexOf(".") + 1);
+		String ossUrl;
+		if (filename != null && filename.contains("\\.")) {
+			String fileType = filename.substring(filename.indexOf(".") + 1);
+			ossUrl = OSSUtil.uploadOSSBySteamWithType(file.getInputStream(), fileType);
+		} else {
+			ossUrl = OSSUtil.uploadOSSBySteam(file.getInputStream());
 		}
-
-		String ossUrl = OSSUtil.uploadOSSBySteam(file.getInputStream());
 		Asserts.notBlank(ossUrl, "上传文件失败");
 		return BaseModel.success(ossUrl);
 	}
