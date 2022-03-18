@@ -11,6 +11,7 @@ import com.tilitili.common.entity.view.PageModel;
 import com.tilitili.common.mapper.rank.RecommendTalkMapper;
 import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class RecommendTalkController extends BaseController {
         return PageModel.of(total, query.getPageSize(), query.getCurrent(), list, data);
     }
 
-    @PatchMapping("")
+    @PatchMapping("/batch")
     @ResponseBody
     @Transactional(transactionManager = "rankTransactionManager")
     public BaseModel<?> batchUpdateRecommendTalk(@RequestBody RecommendTalkView recommendTalk) {
@@ -57,6 +58,16 @@ public class RecommendTalkController extends BaseController {
         Asserts.notNull(recommendTalk.getEd(), "ed未获取到");
         recommendTalkService.batchUpdate(recommendTalk.getOp(), 1);
         recommendTalkService.batchUpdate(recommendTalk.getEd(), 3);
+        return BaseModel.success();
+    }
+
+    @PatchMapping("")
+    @ResponseBody
+    public BaseModel<?> updateRecommendTalkVoice(@RequestBody RecommendTalk recommendTalk) {
+        Asserts.notNull(recommendTalk, "参数异常");
+        Asserts.notNull(recommendTalk.getId(), "参数异常");
+        if (StringUtils.isBlank(recommendTalk.getVoiceUrl())) recommendTalkMapper.deleteRecommendTalkVoiceUrlById(recommendTalk.getId());
+        recommendTalkMapper.updateRecommendTalkSelective(recommendTalk);
         return BaseModel.success();
     }
 }

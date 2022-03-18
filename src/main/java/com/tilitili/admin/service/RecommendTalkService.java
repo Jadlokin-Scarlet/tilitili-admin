@@ -68,7 +68,7 @@ public class RecommendTalkService {
                 default: throw new AssertException("不对劲");
             }
 
-            RecommendTalk recommendTalk = new RecommendTalk().setSpeaker(speaker).setText(text).setExpression(expression).setType(type).setIssueId(issueId);
+            RecommendTalk recommendTalk = new RecommendTalk().setSpeaker(speaker).setText(text).setExpression(expression).setType(type).setIssueId(issueId).setIndex(index);
             recommendTalkList.add(recommendTalk);
         }
         recommendTalkManager.batchDeleteAndAdd(issueId, type, recommendTalkList);

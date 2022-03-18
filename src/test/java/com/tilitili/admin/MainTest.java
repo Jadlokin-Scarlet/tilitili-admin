@@ -4,7 +4,6 @@ import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.emnus.RedisKeyEnum;
-import com.tilitili.common.entity.VideoInfo;
 import com.tilitili.common.entity.dto.VideoDTO;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;

@@ -78,12 +78,14 @@ public class PubController extends BaseController{
         if (slkFile.exists()) Files.delete(slkFile.toPath());
 
         String jpText = baiduManager.translate("jp", message);
+        Asserts.notBlank(jpText, "翻译失败");
 
         String speakShell = String.format("sh %s%srun.sh %s", silkPath, File.pathSeparator, jpText);
         Runtime.getRuntime().exec(speakShell);
 
         Thread.sleep(1000);
 
+        Asserts.isTrue(wavFile.exists(), "生成wav失败");
         download(request, response, wavFile);
     }
 
