@@ -8,6 +8,7 @@ import com.tilitili.common.manager.RecommendTalkManager;
 import com.tilitili.common.mapper.rank.RecommendTalkMapper;
 import com.tilitili.common.mapper.rank.RecommendVideoMapper;
 import com.tilitili.common.utils.Asserts;
+import com.tilitili.common.utils.StreamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class RecommendTalkService {
         List<String> sanaeExpression = Arrays.asList("默认", "开心", "猫耳", "互动", "汗颜", "好奇", "汇报");
 
         List<RecommendTalk> oldRecommendTalkList = recommendTalkMapper.getRecommendTalkByCondition(new RecommendTalkQuery().setIssueId(issueId).setType(type).setStatus(0));
-        Map<Integer, String> voiceMap = oldRecommendTalkList.stream().collect(Collectors.toMap(RecommendTalk::getIndex, RecommendTalk::getVoiceUrl));
+        Map<Integer, String> voiceMap = oldRecommendTalkList.stream().filter(StreamUtil.isNotNull(RecommendTalk::getVoiceUrl)).collect(Collectors.toMap(RecommendTalk::getIndex, RecommendTalk::getVoiceUrl));
 
         List<RecommendTalk> recommendTalkList = new ArrayList<>();
         for (Integer index = 1; index <= talkList.length; index++) {

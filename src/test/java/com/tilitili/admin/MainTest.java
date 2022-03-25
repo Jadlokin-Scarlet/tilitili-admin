@@ -4,16 +4,15 @@ import com.tilitili.StartApplication;
 import com.tilitili.admin.controller.RedisController;
 import com.tilitili.admin.service.RedisService;
 import com.tilitili.common.emnus.RedisKeyEnum;
-import com.tilitili.common.entity.dto.VideoDTO;
+import com.tilitili.common.entity.RecommendTalk;
+import com.tilitili.common.entity.query.RecommendTalkQuery;
 import com.tilitili.common.manager.MiraiManager;
 import com.tilitili.common.manager.PixivMoeManager;
 import com.tilitili.common.manager.TaskManager;
 import com.tilitili.common.manager.VideoDataManager;
-import com.tilitili.common.mapper.rank.AdminMapper;
-import com.tilitili.common.mapper.rank.BatchTaskMapper;
-import com.tilitili.common.mapper.rank.VideoDataMapper;
-import com.tilitili.common.mapper.rank.VideoInfoMapper;
+import com.tilitili.common.mapper.rank.*;
 import com.tilitili.common.utils.RedisCache;
+import com.tilitili.common.utils.StreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,6 +29,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -50,6 +51,10 @@ public class MainTest {
     private BatchTaskMapper batchTaskMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private RecommendVideoMapper recommendVideoMapper;
+    @Resource
+    private RecommendTalkMapper recommendTalkMapper;
 
     private static final int TIME_OUT = 10000;
     private static final CloseableHttpClient httpClient;
@@ -100,7 +105,10 @@ public class MainTest {
 
     @Test
     public void test3() {
-        List<VideoDTO> videoDTOList = videoDataMapper.listForDataFile(videoDataMapper.getNewIssue());
-        System.out.println(videoDataMapper.getNewIssue());
+        Integer issueId = recommendVideoMapper.getNew().getId();
+        Integer type = 1;
+        List<RecommendTalk> oldRecommendTalkList = recommendTalkMapper.getRecommendTalkByCondition(new RecommendTalkQuery().setIssueId(issueId).setType(type).setStatus(0));
+        Map<Integer, String> voiceMap = oldRecommendTalkList.stream().filter(StreamUtil.isNotNull(RecommendTalk::getVoiceUrl)).collect(Collectors.toMap(RecommendTalk::getIndex, RecommendTalk::getVoiceUrl));
+        System.out.println(oldRecommendTalkList);
     }
 }
